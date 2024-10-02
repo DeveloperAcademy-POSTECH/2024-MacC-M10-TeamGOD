@@ -28,17 +28,3 @@ public class RootCoordinator: Coordinator {
         window?.makeKeyAndVisible()
     }
 }
-
-public class SampleCoordinator: NavigationCoordinator {
-    public var childCoordinators: [any Coordinator] = []
-    public let navigationController: UINavigationController
-
-    public init(navigationController: UINavigationController) {
-        self.navigationController = navigationController
-    }
-
-    public func start() {
-        let viewController = ViewController() // SAMPLE입니다..!
-        self.navigationController.pushViewController(viewController, animated: true)
-    }
-}
