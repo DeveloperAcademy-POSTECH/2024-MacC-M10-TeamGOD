@@ -1,7 +1,7 @@
-name: ⚒️ Fix!
+name: ⚒️ fix!
 description: 수정사항을 추가할 때 사용합니다.
-title: "[Fix] <제목>"
-labels: ["Fix"]
+title: "[fix] <제목>"
+labels: ["fix"]
 body:
 - type: textarea
   attributes:

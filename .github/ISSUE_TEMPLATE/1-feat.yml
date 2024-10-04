@@ -1,7 +1,7 @@
 name: ✨ 새로운 기능!
 description: 새로운 기능을 추가할 때 사용합니다.
-title: "[Feat] <제목>"
-labels: ["Feat"]
+title: "[feat] <제목>"
+labels: ["feat"]
 body:
 - type: textarea
   attributes:

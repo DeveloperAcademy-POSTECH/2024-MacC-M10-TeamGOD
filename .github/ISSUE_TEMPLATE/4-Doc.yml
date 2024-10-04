@@ -1,7 +1,7 @@
 name: 📝 문서 작성!
 description: 문서를 작성하거나 정리할 때 사용합니다.
-title: "[Doc] <제목>"
-labels: ["Doc"]
+title: "[doc] <제목>"
+labels: ["doc"]
 body:
 - type: textarea
   attributes:
