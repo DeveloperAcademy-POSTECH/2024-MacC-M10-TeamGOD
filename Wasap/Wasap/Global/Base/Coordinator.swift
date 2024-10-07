@@ -48,3 +48,8 @@ public protocol TabCoordinator: Coordinator {
 public protocol NavigationCoordinator: Coordinator {
     var navigationController: UINavigationController { get }
 }
+
+// MARK: - CoordinatorController ( 추가 )
+public protocol WifiConnectCoordinatorController: AnyObject {
+    func performTransition(to flow: WifiConnectCoordinator.Flow)
+}

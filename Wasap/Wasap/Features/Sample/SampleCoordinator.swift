@@ -2,9 +2,10 @@
 //  SampleCoordinator.swift
 //  Wasap
 //
-//  Created by chongin on 10/3/24.
+//  Created by 김상준 on 10/7/24.
 //
 
+import Foundation
 import UIKit
 
 public class SampleCoordinator: NavigationCoordinator {
