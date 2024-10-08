@@ -84,7 +84,7 @@ struct CameraUseCaseTests {
     func testStartCameraPreviewSuccess() throws {
 
         // UseCase 실행
-        let result = try? cameraUseCase.configureCamera().toBlocking().first()
+        let result: Void? = try? cameraUseCase.configureCamera().toBlocking().first()
 
         // 결과 검증
         try #require(result != nil)
