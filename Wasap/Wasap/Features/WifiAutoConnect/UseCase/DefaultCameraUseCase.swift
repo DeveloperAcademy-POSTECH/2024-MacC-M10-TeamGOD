@@ -10,7 +10,15 @@ import UIKit
 import RxSwift
 import AVFoundation
 
-final class CameraUseCase {
+protocol CameraUseCase {
+    func configureCamera() -> Single<Void>
+    func takePhoto() -> Single<UIImage>
+    func getCapturePreviewLayer() -> Single<AVCaptureVideoPreviewLayer>
+    func startRunning()
+    func stopRunning()
+}
+
+final class DefaultCameraUseCase: CameraUseCase {
     private let repository: CameraRepository
 
     init(repository: CameraRepository) {
