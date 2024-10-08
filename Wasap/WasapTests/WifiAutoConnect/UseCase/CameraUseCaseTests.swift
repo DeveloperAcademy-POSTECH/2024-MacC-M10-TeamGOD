@@ -72,11 +72,11 @@ class MockAVCapturePhoto: AVCapturePhoto {
 /// CameraUseCaseTests
 struct CameraUseCaseTests {
     var mockRepository: MockCameraRepository!
-    var cameraUseCase: CameraUseCase!
+    var cameraUseCase: DefaultCameraUseCase!
 
     init() async throws {
         mockRepository = MockCameraRepository()
-        cameraUseCase = CameraUseCase(repository: mockRepository)
+        cameraUseCase = DefaultCameraUseCase(repository: mockRepository)
     }
 
     /// 카메라 프리뷰 시작 테스트

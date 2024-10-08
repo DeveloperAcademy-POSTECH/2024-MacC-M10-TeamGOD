@@ -10,7 +10,7 @@ import AVFoundation
 import RxSwift
 
 class CameraViewController: UIViewController {
-    private let cameraUseCase: CameraUseCase
+    private let cameraUseCase: DefaultCameraUseCase
     private var previewLayer: AVCaptureVideoPreviewLayer?
     private let disposeBag = DisposeBag()
 
@@ -18,7 +18,7 @@ class CameraViewController: UIViewController {
     private var capturedImageView: UIImageView!
     private var takePhotoButton: UIButton!
 
-    init(cameraUseCase: CameraUseCase) {
+    init(cameraUseCase: DefaultCameraUseCase) {
         self.cameraUseCase = cameraUseCase
         super.init(nibName: nil, bundle: nil)
     }
