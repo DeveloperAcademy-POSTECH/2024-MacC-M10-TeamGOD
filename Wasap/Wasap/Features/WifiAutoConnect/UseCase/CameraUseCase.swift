@@ -17,19 +17,37 @@ final class CameraUseCase {
         self.repository = repository
     }
 
-    func startCameraPreview() -> Single<AVCaptureSession> {
+    func configureCamera() -> Single<Void> {
         return repository.configureCamera()
+            .map { _ in () }
     }
 
-    func takePhoto() -> Single<Data> {
+    func takePhoto() -> Single<UIImage> {
         return repository.capturePhoto()
+            .map {
+                guard let image = UIImage(data: $0) else {
+                    throw CameraErrors.imageConvertError
+                }
+                return image
+            }
+    }
+
+    func getCapturePreviewLayer() -> Single<AVCaptureVideoPreviewLayer> {
+        Single.create { [weak self] single in
+            guard let previewLayer = self?.repository.previewLayer else {
+                single(.failure(CameraErrors.previewLayerError))
+                return Disposables.create()
+            }
+            single(.success(previewLayer))
+            return Disposables.create()
+        }
     }
 
     func startRunning() {
-        repository.startMonitoring()
+        repository.startRunning()
     }
 
     func stopRunning() {
-        repository.stopMonitoring()
+        repository.stopRunning()
     }
 }

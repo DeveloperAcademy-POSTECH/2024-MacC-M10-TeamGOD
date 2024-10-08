@@ -16,6 +16,7 @@ import UIKit
 class MockCameraRepository: NSObject, CameraRepository {
     var captureSession: AVCaptureSession?
     private var stillImageOutput: AVCapturePhotoOutput?
+    var previewLayer: AVCaptureVideoPreviewLayer? { nil }
 
     // 카메라 프리뷰 설정
     func configureCamera() -> Single<AVCaptureSession> {
@@ -42,20 +43,20 @@ class MockCameraRepository: NSObject, CameraRepository {
     func capturePhoto() -> Single<Data> {
         return Single.create { single in
             if let mockImage = UIImage(systemName: "star")?.pngData() {
-                single(.success(mockImage as Data))
+                single(.success(mockImage))
             }
 
             return Disposables.create()
         }
     }
 
-    func startMonitoring() {
+    func startRunning() {
         DispatchQueue.global(qos: .userInitiated).async {
             self.captureSession?.startRunning()
         }
     }
 
-    func stopMonitoring() {
+    func stopRunning() {
         DispatchQueue.global(qos: .userInitiated).async {
             self.captureSession?.stopRunning()
         }
@@ -77,18 +78,17 @@ struct CameraUseCaseTests {
     func testStartCameraPreviewSuccess() throws {
 
         // UseCase 실행
-        let result = try? cameraUseCase.startCameraPreview().toBlocking().first()
+        let result = try? cameraUseCase.configureCamera().toBlocking().first()
 
         // 결과 검증
         try #require(result != nil)
-        #expect(result == mockRepository.captureSession)
     }
 
     /// 사진 촬영 성공 테스트
     @Test
     func testTakePhotoSuccess() throws {
         // camera preview 실행
-        _ = try cameraUseCase.startCameraPreview().toBlocking().first()
+        _ = try cameraUseCase.configureCamera().toBlocking().first()
 
         try testStartCameraPreviewSuccess()
 
@@ -101,7 +101,7 @@ struct CameraUseCaseTests {
         let result = try? cameraUseCase.takePhoto().toBlocking().first()
 
         // 결과 검증
-        try #require(result != nil)
-        #expect(result == mockPhotoData)
+        try #require(result?.pngData() != nil)
+        #expect(result?.pngData() == mockPhotoData)
     }
 }

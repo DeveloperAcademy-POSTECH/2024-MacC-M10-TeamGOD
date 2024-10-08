@@ -9,25 +9,43 @@ import RxSwift
 import AVFoundation
 
 protocol CameraRepository {
+    /// previewLayer : 프리뷰 레이어. 이 레이어를 뷰에서 활용하세요.
+    var previewLayer: AVCaptureVideoPreviewLayer? { get }
+
+    /// configureCamera : 카메라의 초기 설정을 담당. Input과 Output을 지정함.
+    /// configure과 previewLayer 세팅이 끝나면 startRunning() 함수로 시작하세요.
     func configureCamera() -> Single<AVCaptureSession>
-    func startMonitoring()
-    func stopMonitoring()
+
+    /// startRunning() : 카메라 프리뷰를 시작합니다. 캡쳐 대기를 합니다.
+    func startRunning()
+
+    /// stopRunning() : 카메라 프리뷰를 중지합니다. 캡쳐 대기를 종료합니다.
+    func stopRunning()
+
+    /// capturePhoto() : 캡쳐를 수행합니다. 그 결과를 Single로 받습니다.
     func capturePhoto() -> Single<Data>
 }
 
 class DefaultCameraRepository: NSObject, CameraRepository {
-    private var captureSession: AVCaptureSession?
+    private var captureSession: AVCaptureSession? {
+        didSet {
+            guard let captureSession else { return }
+            let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+            previewLayer.videoGravity = .resizeAspectFill
+            self.previewLayer = previewLayer
+        }
+    }
     private var stillImageOutput: AVCapturePhotoOutput?
     private var photoCaptureCompletion: ((Result<Data, Error>) -> Void)?
+    var previewLayer: AVCaptureVideoPreviewLayer? = nil
 
-    // 카메라 프리뷰 설정
     func configureCamera() -> Single<AVCaptureSession> {
-        return Single.create { single in
+        return Single.create { [weak self] single in
             let session = AVCaptureSession()
             session.sessionPreset = .photo
 
             guard let backCamera = AVCaptureDevice.default(for: .video) else {
-                single(.failure(NSError(domain: "CameraError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Back camera not found"])))
+                single(.failure(CameraErrors.cameraNotFound))
                 return Disposables.create()
             }
 
@@ -35,15 +53,15 @@ class DefaultCameraRepository: NSObject, CameraRepository {
                 let input = try AVCaptureDeviceInput(device: backCamera)
                 session.addInput(input)
 
-                self.stillImageOutput = AVCapturePhotoOutput()
-                if session.canAddOutput(self.stillImageOutput!) {
-                    session.addOutput(self.stillImageOutput!)
+                self?.stillImageOutput = AVCapturePhotoOutput()
+                if session.canAddOutput((self?.stillImageOutput!)!) {
+                    session.addOutput((self?.stillImageOutput!)!)
                 }
 
-                self.captureSession = session
+                self?.captureSession = session
                 single(.success(session))
             } catch {
-                single(.failure(error))
+                single(.failure(CameraErrors.captureDeviceError))
             }
 
             return Disposables.create {
@@ -52,15 +70,14 @@ class DefaultCameraRepository: NSObject, CameraRepository {
         }
     }
 
-    // 사진 촬영
     func capturePhoto() -> Single<Data> {
         return Single.create { [weak self] single in
             guard let self else {
-                single(.failure(NSError(domain: "ObjectError", code: -3, userInfo: [NSLocalizedDescriptionKey: "Object of this method is nil"])))
+                single(.failure(CameraErrors.unknown))
                 return Disposables.create()
             }
             guard let stillImageOutput = self.stillImageOutput else {
-                single(.failure(NSError(domain: "PhotoError", code: -2, userInfo: [NSLocalizedDescriptionKey: "Still image output not available"])))
+                single(.failure(CameraErrors.imageOutputNotAvailable))
                 return Disposables.create()
             }
 
@@ -79,14 +96,14 @@ class DefaultCameraRepository: NSObject, CameraRepository {
         }
     }
 
-    func startMonitoring() {
-        DispatchQueue.global(qos: .userInitiated).async {
+    func startRunning() {
+        DispatchQueue.main.async {
             self.captureSession?.startRunning()
         }
     }
 
-    func stopMonitoring() {
-        DispatchQueue.global(qos: .userInitiated).async {
+    func stopRunning() {
+        DispatchQueue.main.async {
             self.captureSession?.stopRunning()
         }
     }
@@ -94,14 +111,13 @@ class DefaultCameraRepository: NSObject, CameraRepository {
 
 extension DefaultCameraRepository: AVCapturePhotoCaptureDelegate {
 
-    // 사진 처리 완료 시 호출
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         if let error {
             photoCaptureCompletion?(.failure(error))
         } else if let imageData = photo.fileDataRepresentation() {
             photoCaptureCompletion?(.success(imageData))
         } else {
-            photoCaptureCompletion?(.failure(NSError(domain: "PhotoError", code: -3, userInfo: [NSLocalizedDescriptionKey: "Failed to process photo data"])))
+            photoCaptureCompletion?(.failure(CameraErrors.photoProcessingError))
         }
     }
 }
