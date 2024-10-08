@@ -14,6 +14,7 @@
 		6FAE7ACB2CADA1CB00A1D1CE /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = 6FAE7ACA2CADA1CB00A1D1CE /* RxRelay */; };
 		6FAE7ACD2CADA1CB00A1D1CE /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 6FAE7ACC2CADA1CB00A1D1CE /* RxSwift */; };
 		6FAE7AD02CADA1DB00A1D1CE /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6FAE7ACF2CADA1DB00A1D1CE /* SnapKit */; };
+		6FEE9B002CB3BC11004B9A01 /* RxBlocking in Frameworks */ = {isa = PBXBuildFile; productRef = 6FEE9AFF2CB3BC11004B9A01 /* RxBlocking */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -27,7 +28,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		6F29A3BD2CAF7870005666A4 /* WasapTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WasapTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6FAE7AA52CAD9F5600A1D1CE /* Wasap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Wasap.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6FB475EA2CB0181700886498 /* WasapTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WasapTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -43,11 +43,6 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		6F29A3BE2CAF7870005666A4 /* WasapTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = WasapTests;
-			sourceTree = "<group>";
-		};
 		6FAE7AA72CAD9F5600A1D1CE /* Wasap */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -64,13 +59,6 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		6F29A3BA2CAF7870005666A4 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		6FAE7AA22CAD9F5600A1D1CE /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -89,6 +77,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6FEE9B002CB3BC11004B9A01 /* RxBlocking in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -100,6 +89,7 @@
 			children = (
 				6FAE7AA72CAD9F5600A1D1CE /* Wasap */,
 				6FB475EB2CB0181700886498 /* WasapTests */,
+				6FEE9AFE2CB3BC11004B9A01 /* Frameworks */,
 				6FAE7AA62CAD9F5600A1D1CE /* Products */,
 			);
 			sourceTree = "<group>";
@@ -113,32 +103,16 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		6FEE9AFE2CB3BC11004B9A01 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		6F29A3BC2CAF7870005666A4 /* WasapTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 6F29A3C32CAF7870005666A4 /* Build configuration list for PBXNativeTarget "WasapTests" */;
-			buildPhases = (
-				6F29A3B92CAF7870005666A4 /* Sources */,
-				6F29A3BA2CAF7870005666A4 /* Frameworks */,
-				6F29A3BB2CAF7870005666A4 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				6F29A3C22CAF7870005666A4 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				6F29A3BE2CAF7870005666A4 /* WasapTests */,
-			);
-			name = WasapTests;
-			packageProductDependencies = (
-			);
-			productName = WasapTests;
-			productReference = 6F29A3BD2CAF7870005666A4 /* WasapTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 		6FAE7AA42CAD9F5600A1D1CE /* Wasap */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6FAE7AB82CAD9F5700A1D1CE /* Build configuration list for PBXNativeTarget "Wasap" */;
@@ -186,6 +160,7 @@
 			);
 			name = WasapTests;
 			packageProductDependencies = (
+				6FEE9AFF2CB3BC11004B9A01 /* RxBlocking */,
 			);
 			productName = WasapTests;
 			productReference = 6FB475EA2CB0181700886498 /* WasapTests.xctest */;
@@ -201,10 +176,6 @@
 				LastSwiftUpdateCheck = 1600;
 				LastUpgradeCheck = 1600;
 				TargetAttributes = {
-					6F29A3BC2CAF7870005666A4 = {
-						CreatedOnToolsVersion = 16.0;
-						TestTargetID = 6FAE7AA42CAD9F5600A1D1CE;
-					};
 					6FAE7AA42CAD9F5600A1D1CE = {
 						CreatedOnToolsVersion = 16.0;
 					};
@@ -240,13 +211,6 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		6F29A3BB2CAF7870005666A4 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		6FAE7AA32CAD9F5600A1D1CE /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -264,13 +228,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		6F29A3B92CAF7870005666A4 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		6FAE7AA12CAD9F5600A1D1CE /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -296,44 +253,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		6F29A3C42CAF7870005666A4 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.teamGOD.WasapTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Wasap.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Wasap";
-			};
-			name = Debug;
-		};
-		6F29A3C52CAF7870005666A4 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.teamGOD.WasapTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Wasap.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Wasap";
-			};
-			name = Release;
-		};
 		6FAE7AB92CAD9F5700A1D1CE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -347,6 +266,7 @@
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 8U8S6CBZ9D;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Wasap/Global/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "와이파이를 잡기 위해 카메라 사용이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = "";
@@ -381,6 +301,7 @@
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 8U8S6CBZ9D;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Wasap/Global/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "와이파이를 잡기 위해 카메라 사용이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = "";
@@ -525,12 +446,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.teamGOD.WasapTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -542,12 +465,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.teamGOD.WasapTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -558,15 +483,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		6F29A3C32CAF7870005666A4 /* Build configuration list for PBXNativeTarget "WasapTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				6F29A3C42CAF7870005666A4 /* Debug */,
-				6F29A3C52CAF7870005666A4 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		6FAE7AA02CAD9F5600A1D1CE /* Build configuration list for PBXProject "Wasap" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -658,6 +574,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6FAE7ACE2CADA1DB00A1D1CE /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
+		};
+		6FEE9AFF2CB3BC11004B9A01 /* RxBlocking */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6FAE7AC72CADA1CB00A1D1CE /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxBlocking;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

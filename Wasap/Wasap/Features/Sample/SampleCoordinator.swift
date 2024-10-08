@@ -16,7 +16,7 @@ public class SampleCoordinator: NavigationCoordinator {
     }
 
     public func start() {
-        let viewController = ViewController() // SAMPLE입니다..!
+        let viewController = CameraViewController(cameraUseCase: CameraUseCase(repository: DefaultCameraRepository())) // SAMPLE입니다..!
         self.navigationController.pushViewController(viewController, animated: true)
     }
 }
