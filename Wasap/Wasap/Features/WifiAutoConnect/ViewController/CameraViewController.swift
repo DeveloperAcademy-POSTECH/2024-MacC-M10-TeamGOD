@@ -11,7 +11,6 @@ import RxSwift
 
 class CameraViewController: UIViewController {
     private let cameraUseCase: CameraUseCase
-    private var captureSession: AVCaptureSession?
     private var previewLayer: AVCaptureVideoPreviewLayer?
     private let disposeBag = DisposeBag()
 
@@ -35,10 +34,9 @@ class CameraViewController: UIViewController {
         setupCapturedImageView()
         setupTakePhotoButton()
 
-        cameraUseCase.startCameraPreview()
-            .observe(on: MainScheduler.instance)
-            .subscribe(onSuccess: { [weak self] session in
-                self?.captureSession = session
+        cameraUseCase.configureCamera()
+            .subscribe(onSuccess: { [weak self] _ in
+                print("Configure Camera Success!")
                 self?.setupPreviewLayer()
             }, onFailure: { error in
                 print("Error starting camera preview: \(error.localizedDescription)")
@@ -64,15 +62,16 @@ class CameraViewController: UIViewController {
     }
 
     private func setupPreviewLayer() {
-        guard let captureSession = captureSession else { return }
-        previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        previewLayer?.videoGravity = .resizeAspectFill
-        if let previewLayer = previewLayer {
-            previewContainerView.layer.addSublayer(previewLayer)
-        }
-        DispatchQueue.main.async {
-            captureSession.startRunning()
-        }
+        let preview = cameraUseCase.getCapturePreviewLayer()
+        preview.subscribe(onSuccess: { [weak self] previewLayer in
+            self?.previewContainerView.layer.addSublayer(previewLayer)
+            self?.previewLayer = previewLayer
+        }, onFailure: { error in
+            print(error)
+        })
+        .disposed(by: disposeBag)
+
+        cameraUseCase.startRunning()
     }
 
     private func setupCapturedImageView() {
@@ -111,8 +110,8 @@ class CameraViewController: UIViewController {
     @objc func didPressTakePhoto() {
         cameraUseCase.takePhoto()
             .observe(on: MainScheduler.instance)
-            .subscribe(onSuccess: { [weak self] imageData in
-                guard let self = self, let image = UIImage(data: imageData) else { return }
+            .subscribe(onSuccess: { [weak self] image in
+                guard let self = self else { return }
                 self.displayCapturedPhoto(image)
                 print("Photo captured successfully")
             }, onFailure: { error in
