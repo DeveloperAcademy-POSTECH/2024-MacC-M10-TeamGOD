@@ -32,13 +32,11 @@ public class WifiConnectViewController: RxBaseViewController<WifiConnectViewMode
 
     private func bind(_ viewModel: WifiConnectViewModel) {
         
-        wifiConnectView.ssidField.rx.text
-            .compactMap {$0}
+        wifiConnectView.ssidField.rx.text.orEmpty
             .bind(to: viewModel.ssidText)
             .disposed(by: disposeBag)
         
-        wifiConnectView.pwField.rx.text
-            .compactMap {$0}
+        wifiConnectView.pwField.rx.text.orEmpty
             .bind(to: viewModel.pwText)
             .disposed(by: disposeBag)
         
