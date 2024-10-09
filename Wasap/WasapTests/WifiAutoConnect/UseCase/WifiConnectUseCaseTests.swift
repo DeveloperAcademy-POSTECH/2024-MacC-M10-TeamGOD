@@ -91,6 +91,6 @@ struct WifiConnectUseCaseTests {
         
 
         // 결과 검증
-        try #require( result == nil )
+        try #require(result == nil)
     }
 }
