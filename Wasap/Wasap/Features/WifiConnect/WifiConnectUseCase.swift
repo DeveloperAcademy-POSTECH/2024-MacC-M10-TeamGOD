@@ -23,8 +23,9 @@ public class DefaultWiFiConnectUseCase: WiFiConnectUseCase {
     
     public func connectToWiFi(ssid: String, password: String) -> Single<Bool> {
         wifiConnectRepository.connectToWiFi(ssid: ssid, password: password)
+        // flatamap으로 비동기 처리하는 것이 맞을까?
             .map { WifiConnectDTO in
-                WifiConnectDTO.success
+                return WifiConnectDTO.isConnect
             }
             .catch { error in
                 return .just(false)
