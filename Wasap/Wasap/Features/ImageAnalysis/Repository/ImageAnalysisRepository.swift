@@ -121,7 +121,8 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
                 
                 // "PW"에 가장 가까운 Bounding Box(Password 값, 연두색) 탐색 - ID와 SSID value 박스는 제외
                 for pwBox in pwBoxes {
-                    if let closestBox = self.closestBoundingBox(from: pwBox, in: boxes.filter { box in box.1 != "ID" && box.1 != "PW" && finalBoxes.first(where: { finalBox in box.0 == finalBox.0 && finalBox.1 == .purple }) == nil }),
+                    if let closestBox = self.closestBoundingBox(from: pwBox, in: boxes.filter { box in
+                        box.1 != "ID" && box.1 != "PW" && finalBoxes.first(where: { finalBox in box.0 == finalBox.0 && finalBox.1 == .purple }) == nil }),
                        let index = boxes.firstIndex(where: { $0.0 == closestBox.0 }) {
                         finalBoxes[index].1 = .green
                         
