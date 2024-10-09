@@ -25,9 +25,13 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
     var passwordText: String = ""
     var boundingBoxes: [(CGRect, UIColor)] = []
     
-    // Single, throw로 바꾸기
     public func performOCR(from image: UIImage) -> Single<([(CGRect, UIColor)], String, String)> {
-        return Single<([(CGRect, UIColor)], String, String)>.create { single in
+        return Single.create { [weak self] single in
+            guard let self else {
+                single(.failure(ImageAnalysisError.ocrFailed("Self not found")))
+                return Disposables.create()
+            }
+            
             guard let cgImage = image.cgImage else {
                 single(.failure(ImageAnalysisError.invalidImage))
                 return Disposables.create()
