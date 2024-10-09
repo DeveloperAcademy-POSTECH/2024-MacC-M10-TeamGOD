@@ -7,37 +7,35 @@
 
 import RxSwift
 import Vision
-import UIKit
-
 
 public protocol ImageAnalysisRepository {
-    func performOCR(from image: UIImage) -> Single<([(CGRect, UIColor)], String, String)>
+    func performOCR(from imageData: Data) -> Single<([(CGRect, CGColor)], String, String)>
 }
-
 
 public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
     public init() {}
     
-    let idStrings: Set<String> = ["ID", "Id", "iD", "id", "WIFI", "Wifi", "WiFi", "wifi", "Wi-Fi", "Network", "Network", "NETWORK", "network", "ssid", "SSID", "와이파이", "네트워크", "I.D"]
+    let idStrings: Set<String> = ["ID", "Id", "iD", "id", "WIFI", "Wifi", "WiFi", "wifi", "Wi-Fi", "Network", "NETWORK", "network", "ssid", "SSID", "와이파이", "네트워크", "I.D"]
     let pwStrings: Set<String> = ["PW", "Pw", "pW", "pw", "pass", "Pass", "PASS", "password", "Password", "PASSWORD", "패스워드", "암호", "P.W"]
     
     var ssidText: String = ""
     var passwordText: String = ""
-    var boundingBoxes: [(CGRect, UIColor)] = []
+    var boundingBoxes: [(CGRect, CGColor)] = []
     
-    public func performOCR(from image: UIImage) -> Single<([(CGRect, UIColor)], String, String)> {
+    public func performOCR(from imageData: Data) -> Single<([(CGRect, CGColor)], String, String)> {
         return Single.create { [weak self] single in
             guard let self else {
                 single(.failure(ImageAnalysisError.ocrFailed("Self not found")))
                 return Disposables.create()
             }
             
-            guard let cgImage = image.cgImage else {
+            guard let cgImage = self.convertDataToCGImage(imageData) else {
                 single(.failure(ImageAnalysisError.invalidImage))
                 return Disposables.create()
             }
             
-            let orientation = self.convertOrientation(image.imageOrientation)
+            let orientation = self.extractOrientation(from: imageData)
+            
             let requestHandler = VNImageRequestHandler(cgImage: cgImage, orientation: orientation, options: [:])
             
             let request = VNRecognizeTextRequest { request, error in
@@ -110,13 +108,13 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
                     }
                 }
                 
-                var finalBoxes: [(CGRect, UIColor)] = boxes.map { ($0.0, .black) }
+                var finalBoxes: [(CGRect, CGColor)] = boxes.map { ($0.0, CGColor(red: 0, green: 0, blue: 0, alpha: 1)) }
                 
                 // "ID"에 가장 가까운 Bounding Box(SSID 값, 보라색) 탐색 - PW는 제외
                 for idBox in idBoxes {
                     if let closestBox = self.closestBoundingBox(from: idBox, in: boxes.filter { $0.1 != "ID" && $0.1 != "PW" }),
                        let index = boxes.firstIndex(where: { $0.0 == closestBox.0 }) {
-                        finalBoxes[index].1 = .purple
+                        finalBoxes[index].1 = CGColor(red: 0.5, green: 0, blue: 0.5, alpha: 1)
                         
                         self.ssidText = closestBox.1.replacingOccurrences(of: " ", with: "")
                         print("보라색박스(SSID 값 추정):\(self.ssidText)")
@@ -126,9 +124,9 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
                 // "PW"에 가장 가까운 Bounding Box(Password 값, 연두색) 탐색 - ID와 SSID value 박스는 제외
                 for pwBox in pwBoxes {
                     if let closestBox = self.closestBoundingBox(from: pwBox, in: boxes.filter { box in
-                        box.1 != "ID" && box.1 != "PW" && finalBoxes.first(where: { finalBox in box.0 == finalBox.0 && finalBox.1 == .purple }) == nil }),
+                        box.1 != "ID" && box.1 != "PW" && finalBoxes.first(where: { finalBox in box.0 == finalBox.0 && finalBox.1 == CGColor(red: 0.5, green: 0, blue: 0.5, alpha: 1) }) == nil }),
                        let index = boxes.firstIndex(where: { $0.0 == closestBox.0 }) {
-                        finalBoxes[index].1 = .green
+                        finalBoxes[index].1 = CGColor(red: 0, green: 1, blue: 0, alpha: 1)
                         
                         self.passwordText = closestBox.1.replacingOccurrences(of: " ", with: "")
                         print("연두색박스(Password 값 추정):\(self.passwordText)")
@@ -138,10 +136,10 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
                 // "ID"는 노란색박스, "PW"는 파란색박스로 지정
                 for (index, box) in boxes.enumerated() {
                     if box.1 == "ID" {
-                        finalBoxes[index].1 = .yellow
+                        finalBoxes[index].1 = CGColor(red: 1, green: 1, blue: 0, alpha: 1)
                         print("노란색박스(ID 키):\(box.1)")
                     } else if box.1 == "PW" {
-                        finalBoxes[index].1 = .blue
+                        finalBoxes[index].1 = CGColor(red: 0, green: 0, blue: 1, alpha: 1)
                         print("파란색박스(PW 키):\(box.1)")
                     }
                 }
@@ -164,6 +162,25 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
             
             return Disposables.create()
         }
+    }
+    
+    // 이미지 Data 타입 -> CGImage 타입 변환
+    private func convertDataToCGImage(_ data: Data) -> CGImage? {
+        guard let dataProvider = CGDataProvider(data: data as CFData) else { return nil }
+        return CGImage(jpegDataProviderSource: dataProvider, decode: nil, shouldInterpolate: true, intent: .defaultIntent)
+    }
+    
+    // 이미지 Data타입의 orientation 정보 추출
+    private func extractOrientation(from imageData: Data) -> CGImagePropertyOrientation {
+        guard let source = CGImageSourceCreateWithData(imageData as CFData, nil) else {
+            return .up
+        }
+        
+        let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as Dictionary?
+        if let orientationValue = properties?[kCGImagePropertyOrientation] as? UInt32 {
+            return CGImagePropertyOrientation(rawValue: orientationValue) ?? .up
+        }
+        return .up
     }
     
     private func splitBoundingBox(originalBox: CGRect, splitFactor: CGFloat) -> CGRect {
@@ -210,20 +227,6 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
         
         // 두 사각형의 대략적인 간격
         return sqrt(dx * dx + dy * dy)
-    }
-    
-    private func convertOrientation(_ uiOrientation: UIImage.Orientation) -> CGImagePropertyOrientation {
-        switch uiOrientation {
-        case .up: return .up
-        case .down: return .down
-        case .left: return .left
-        case .right: return .right
-        case .upMirrored: return .upMirrored
-        case .downMirrored: return .downMirrored
-        case .leftMirrored: return .leftMirrored
-        case .rightMirrored: return .rightMirrored
-        @unknown default: return .up
-        }
     }
 }
 

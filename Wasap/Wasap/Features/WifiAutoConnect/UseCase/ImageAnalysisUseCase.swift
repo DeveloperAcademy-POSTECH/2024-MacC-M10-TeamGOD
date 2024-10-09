@@ -9,7 +9,7 @@ import RxSwift
 import UIKit
 
 public protocol ImageAnalysisUseCase {
-    func performOCR(on image: UIImage) -> Single<([(CGRect, UIColor)], String, String)>
+    func performOCR(on image: UIImage) -> Single<([(CGRect, CGColor)], String, String)>
 }
 
 public class DefaultImageAnalysisUseCase: ImageAnalysisUseCase {
@@ -19,8 +19,12 @@ public class DefaultImageAnalysisUseCase: ImageAnalysisUseCase {
         self.imageAnalysisRepository = imageAnalysisRepository
     }
     
-    public func performOCR(on image: UIImage) -> Single<([(CGRect, UIColor)], String, String)> {
-        return imageAnalysisRepository.performOCR(from: image)
+    public func performOCR(on image: UIImage) -> Single<([(CGRect, CGColor)], String, String)> {
+        guard let imageData = image.jpegData(compressionQuality: 1.0) else {
+            return Single.error(ImageAnalysisError.invalidImage)
+        }
+        
+        return imageAnalysisRepository.performOCR(from: imageData)
             .catch { error in
                 print("OCR Error: \(error.localizedDescription)")
                 return .just(([], "", ""))
