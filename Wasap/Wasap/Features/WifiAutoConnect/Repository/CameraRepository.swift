@@ -35,6 +35,7 @@ class DefaultCameraRepository: NSObject, CameraRepository {
             self.previewLayer = previewLayer
         }
     }
+    
     private var stillImageOutput: AVCapturePhotoOutput?
     private var photoCaptureCompletion: ((Result<Data, Error>) -> Void)?
     var previewLayer: AVCaptureVideoPreviewLayer? = nil

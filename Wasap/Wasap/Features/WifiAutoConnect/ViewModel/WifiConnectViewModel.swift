@@ -44,19 +44,17 @@ public class WifiConnectViewModel: BaseViewModel {
         
         connectButtonTapped
             .withLatestFrom(Observable.combineLatest(ssidText, pwText))
-        
             .flatMapLatest { (ssid, password) in
                 return wifiConnectUseCase.connectToWiFi(ssid: ssid, password: password)
                     .asObservable()
                     .catch { error in
-                        // 에러가 발생하면 에러 메시지를 전달하고 false 반환
                         let errorMessage = "Connection failed: \(error.localizedDescription)"
                         iscompleteTextRelay.accept(errorMessage)
-                        return Observable.just(false) // 실패로 간주하여 false 반환
+                        return Observable.just(false)
                     }
             }
             .subscribe(onNext: { success in
-                let statusMessage = success ? "Successfully connected!" : "Failed to connect."
+                let statusMessage = success ? "연결 성공했습니다." : "연결 실패했습니다."
                 iscompleteTextRelay.accept(statusMessage)
             })
             .disposed(by: disposeBag)

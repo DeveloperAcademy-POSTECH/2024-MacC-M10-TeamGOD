@@ -7,39 +7,59 @@
 
 import RxSwift
 import NetworkExtension
+import SystemConfiguration.CaptiveNetwork
 import Foundation
 
-public protocol WiFiConnectRepository {
-    func connectToWiFi(ssid: String, password: String) -> Single<WifiConnectDTO>
+protocol WiFiConnectRepository {
+    func connectToWiFi(ssid: String, password: String) -> Single<Bool>
+    func isWiFiConnected() -> Bool
+    func getCurrentWiFiSSID() -> String?
 }
 
 public final class DefaultWifiConnectRepository: WiFiConnectRepository {
     
-    public func connectToWiFi(ssid: String, password: String) -> Single<WifiConnectDTO> {
-        
-        Single<WifiConnectDTO>.create { single in
-            
-            let config = NEHotspotConfiguration(ssid: ssid,passphrase: password,isWEP: false)
+    // Wi-Fi 연결 시도 함수
+    public func connectToWiFi(ssid: String, password: String) -> Single<Bool> {
+        Single<Bool>.create { single in
+            let config = NEHotspotConfiguration(ssid: ssid, passphrase: password, isWEP: false)
             config.joinOnce = true
             
-            // MARK: WIFI 연결
+            // MARK: WIFI 연결 시도
             NEHotspotConfigurationManager.shared.apply(config) { error in
-                // MARK: 연결 실패 / 연결 성공
-                let message: String
-                if let err = error {
-                    message = "Failed to connect: \(err.localizedDescription)"
-                    single(
-                        // failure 일 경우 크래시 발생
-                        .success(WifiConnectDTO(isConnect: false, message: message)))
+                if let error = error {
+                    print("Connection failed: \(error.localizedDescription)")
+                    single(.failure(error))
                 } else {
-                    message = "Successfully connected to \(ssid)"
-                    single(
-                        .success(WifiConnectDTO(isConnect: true, message: message)))
+                    if self.isWiFiConnected(), let currentSSID = self.getCurrentWiFiSSID(), currentSSID == ssid {
+                        print("Successfully connected to \(ssid)")
+                        single(.success(true))
+                    } else {
+                        print("Failed to connect to \(ssid)")
+                        single(.success(false))
+                    }
                 }
             }
-            // Disposable 생성 및 반환
-            // 메서드 반환의 경우 disposedBag 보다 create하는 것이 맞다.
             return Disposables.create()
         }
+    }
+
+    // 현재 Wi-Fi 연결 상태를 확인하는 함수
+    public func isWiFiConnected() -> Bool {
+        return getCurrentWiFiSSID() != nil
+    }
+
+    // 현재 연결된 Wi-Fi 네트워크의 SSID를 반환하는 함수
+    public func getCurrentWiFiSSID() -> String? {
+        var ssid: String?
+        
+        if let interfaces = CNCopySupportedInterfaces() as? [String] {
+            for interface in interfaces {
+                if let interfaceInfo = CNCopyCurrentNetworkInfo(interface as CFString) as NSDictionary? {
+                    ssid = interfaceInfo[kCNNetworkInfoKeySSID as String] as? String
+                    break
+                }
+            }
+        }
+        return ssid
     }
 }
