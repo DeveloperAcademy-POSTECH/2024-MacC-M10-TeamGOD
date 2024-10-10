@@ -10,7 +10,7 @@ import SnapKit
 
 public class WifiConnectViewController: RxBaseViewController<WifiConnectViewModel>{
     
-    private let wifiConnectView = WifiConnectView()
+    private let wifiConnectView = WifiReConnectView()
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,13 +40,13 @@ public class WifiConnectViewController: RxBaseViewController<WifiConnectViewMode
             .bind(to: viewModel.pwText)
             .disposed(by: disposeBag)
         
-        wifiConnectView.connectButton.rx.tap
-            .bind(to: viewModel.connectButtonTapped)
-            .disposed(by: disposeBag)
-        
-        wifiConnectView.resetButton.rx.tap
-            .bind(to: viewModel.resetButtonTapped)
-            .disposed(by: disposeBag)
+//        wifiConnectView.connectButton.rx.tap
+//            .bind(to: viewModel.connectButtonTapped)
+//            .disposed(by: disposeBag)
+//        
+//        wifiConnectView.resetButton.rx.tap
+//            .bind(to: viewModel.resetButtonTapped)
+//            .disposed(by: disposeBag)
         
         
         viewModel.newSsidText
@@ -62,11 +62,11 @@ public class WifiConnectViewController: RxBaseViewController<WifiConnectViewMode
             .disposed(by: disposeBag)
         
         
-        viewModel.completeText
-            .drive { [weak self] status in
-                self?.wifiConnectView.statusLabel.text = status
-            }
-            .disposed(by: disposeBag)
+//        viewModel.completeText
+//            .drive { [weak self] status in
+//                self?.wifiConnectView.statusLabel.text = status
+//            }
+//            .disposed(by: disposeBag)
     }
 }
 
