@@ -11,7 +11,7 @@ public struct Log {
     /// 단순 print
     public static func print(_ items: Any..., separator: String = " ", terminator: String = "\n") {
         let output = items.map { "\($0)" }.joined(separator: separator)
-        print("🪵 [\(getCurrentTime())] \(output)", terminator: terminator)
+        Swift.print("🪵 [\(getCurrentTime())] \(output)", terminator: terminator)
     }
 
     /// 상세 내용 출력 : debug

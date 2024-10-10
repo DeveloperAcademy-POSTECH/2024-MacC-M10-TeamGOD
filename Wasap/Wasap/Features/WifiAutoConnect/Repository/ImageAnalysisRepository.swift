@@ -82,7 +82,7 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
                                 boxes.append((remainingBox, remainingText))
                             }
                             
-                            print("원본텍스트:\(originalString), 분리된텍스트:'\(idText)' + '\(remainingText)'")
+                            Log.print("원본텍스트:\(originalString), 분리된텍스트:'\(idText)' + '\(remainingText)'")
                             
                         } else if self.pwStrings.contains(firstWord) {
                             // "PW" 부분을 분리하고 나머지 텍스트와 나눔
@@ -100,11 +100,11 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
                                 boxes.append((remainingBox, remainingText))
                             }
                             
-                            print("원본텍스트:\(originalString), 분리된텍스트:'\(pwText)' + '\(remainingText)'")
+                            Log.print("원본텍스트:\(originalString), 분리된텍스트:'\(pwText)' + '\(remainingText)'")
                             
                         } else {
                             boxes.append((boundingBox, originalString))
-                            print("원본텍스트:\(originalString), 기타텍스트:\(cleanedString)")
+                            Log.print("원본텍스트:\(originalString), 기타텍스트:\(cleanedString)")
                         }
                     }
                 }
@@ -118,7 +118,7 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
                         finalBoxes[index].1 = CGColor(red: 0.5, green: 0, blue: 0.5, alpha: 1)
                         
                         self.ssidText = closestBox.1.replacingOccurrences(of: " ", with: "")
-                        print("보라색박스(SSID 값 추정):\(self.ssidText)")
+                        Log.print("보라색박스(SSID 값 추정):\(self.ssidText)")
                     }
                 }
                 
@@ -130,7 +130,7 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
                         finalBoxes[index].1 = CGColor(red: 0, green: 1, blue: 0, alpha: 1)
                         
                         self.passwordText = closestBox.1.replacingOccurrences(of: " ", with: "")
-                        print("연두색박스(Password 값 추정):\(self.passwordText)")
+                        Log.print("연두색박스(Password 값 추정):\(self.passwordText)")
                     }
                 }
                 
@@ -138,10 +138,10 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
                 for (index, box) in boxes.enumerated() {
                     if box.1 == "ID" {
                         finalBoxes[index].1 = CGColor(red: 1, green: 1, blue: 0, alpha: 1)
-                        print("노란색박스(ID 키):\(box.1)")
+                        Log.print("노란색박스(ID 키):\(box.1)")
                     } else if box.1 == "PW" {
                         finalBoxes[index].1 = CGColor(red: 0, green: 0, blue: 1, alpha: 1)
-                        print("파란색박스(PW 키):\(box.1)")
+                        Log.print("파란색박스(PW 키):\(box.1)")
                     }
                 }
                 
