@@ -10,6 +10,7 @@ import UIKit
 
 public protocol ImageAnalysisUseCase {
     func performOCR(on image: UIImage) -> Single<([(CGRect, CGColor)], String, String)>
+    
 }
 
 public class DefaultImageAnalysisUseCase: ImageAnalysisUseCase {

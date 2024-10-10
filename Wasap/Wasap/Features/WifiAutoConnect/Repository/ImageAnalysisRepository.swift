@@ -10,6 +10,7 @@ import Vision
 
 public protocol ImageAnalysisRepository {
     func performOCR(from imageData: Data) -> Single<([(CGRect, CGColor)], String, String)>
+    
 }
 
 public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
