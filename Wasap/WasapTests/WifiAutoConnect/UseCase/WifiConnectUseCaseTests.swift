@@ -40,7 +40,7 @@ class MockWifiConnectRepository: WiFiConnectRepository {
         // 연결된 SSID를 반환하거나, 없으면 nil을 반환
         return ssid
     }
-
+    
     
     // Wi-Fi 연결하는 함수
     func connectToWiFi(ssid: String, password: String) -> Single<Bool> {
@@ -80,7 +80,6 @@ class MockWiFiConnectUseCase: WiFiConnectUseCase {
     }
 }
 
-
 // MARK: WIFI 연결 USECASE TEST
 struct WifiConnectUseCaseTests {
     var mockRepository: MockWifiConnectRepository!
@@ -91,42 +90,38 @@ struct WifiConnectUseCaseTests {
         useCase = MockWiFiConnectUseCase(repository: mockRepository)
     }
     
+    // 와이파이 자동 연결
     @Test
-    func testConnectToWiFiSuccess() throws {
-        // UseCase 실행
+    func testAutoConnectToWiFiSuccess() throws {
+        
+        // 옳바른 ssid, pw 일 경우
         let ssid: String = "ssid"
         let pw: String = "pw"
         
         let result : Bool? = try? useCase.connectToWiFi(ssid: ssid, password: pw).toBlocking().first()
         
         // 결과 검증
-        try #require( result == nil)
+        try #require( result == true)
     }
     
     @Test
-    func testConnectToWiFiFailure() throws {
-        // UseCase 실행
+    func testAutoConnectToWiFiFailure() throws {
+        
+        // 틀린 ssid, pw 일 경우
         let ssid: String = "ssid"
         let pw: String = "pw"
         
         let result : Bool? = try? useCase.connectToWiFi(ssid: ssid, password: pw).toBlocking().first()
         
-        
         // 결과 검증
-        try #require( result == nil )
+        try #require( result == false)
     }
-    @Test
+    
     // 연결된 네트워크 SSID를 반환 . nil 이 아닌 경우 네트워크 접속 확인
+    @Test
     func getCurrentWiFiSSIDSuccess() throws {
-        var ssid: String?
-        if let interfaces = CNCopySupportedInterfaces() as? [String] {
-            for interface in interfaces {
-                if let interfaceInfo = CNCopyCurrentNetworkInfo(interface as CFString) as NSDictionary? {
-                    ssid = interfaceInfo[kCNNetworkInfoKeySSID as String] as? String
-                    break
-                }
-            }
-        }
-        try #require( ssid == nil )
+        let ssid = mockRepository.getCurrentWiFiSSID()
+        // 결과 검증
+        try #require( ssid != nil )
     }
 }
