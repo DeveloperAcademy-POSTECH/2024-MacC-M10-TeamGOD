@@ -24,19 +24,9 @@ class MockWifiConnectRepository: WiFiConnectRepository {
     
     // 현재 연결된 Wi-Fi 네트워크의 SSID를 반환하는 함수
     func getCurrentWiFiSSID() -> String? {
-        var ssid: String?
         
-        // CNCopySupportedInterfaces()를 통해 사용 가능한 네트워크 인터페이스 목록을 가져옴
-        if let interfaces = CNCopySupportedInterfaces() as? [String] {
-            for interface in interfaces {
-                // 각 인터페이스에 대해 현재 연결된 네트워크 정보를 가져옴
-                if let interfaceInfo = CNCopyCurrentNetworkInfo(interface as CFString) as NSDictionary? {
-                    // 네트워크 정보에서 SSID(네트워크 이름)를 가져옴
-                    ssid = interfaceInfo[kCNNetworkInfoKeySSID as String] as? String
-                    break // 첫 번째로 발견한 SSID를 반환하기 위해 반복 종료
-                }
-            }
-        }
+        let ssid: String = "CorrectSSID"
+        
         // 연결된 SSID를 반환하거나, 없으면 nil을 반환
         return ssid
     }
@@ -44,24 +34,16 @@ class MockWifiConnectRepository: WiFiConnectRepository {
     
     // Wi-Fi 연결하는 함수
     func connectToWiFi(ssid: String, password: String) -> Single<Bool> {
-        Single<Bool>.create { single in
-            let config = NEHotspotConfiguration(ssid: ssid, passphrase: password, isWEP: false)
-            config.joinOnce = true
+        
+        let correctSSID: String = "CorrectSSID"
+        let correctPW : String = "CorrectPW"
+        
+        return Single<Bool>.create { single in
             
-            // MARK: WIFI 연결 시도
-            NEHotspotConfigurationManager.shared.apply(config) { error in
-                if let err = error {
-                    print("Connection failed: \(err.localizedDescription)")
-                    single(.failure(err))
-                } else {
-                    if let currentSSID = self.getCurrentWiFiSSID(), currentSSID == ssid {
-                        print("Successfully connected to \(ssid)")
-                        single(.success(true)) // 성공
-                    } else {
-                        print("Failed to connect to \(ssid)")
-                        single(.failure(WiFiConnectionErrors.failedToConnect(ssid)))
-                    }
-                }
+            if ssid == correctSSID && password == correctPW {
+                single(.success(true))
+            } else {
+                single(.success(false))
             }
             return Disposables.create()
         }
@@ -90,38 +72,33 @@ struct WifiConnectUseCaseTests {
         useCase = MockWiFiConnectUseCase(repository: mockRepository)
     }
     
-    // 와이파이 자동 연결
+    // MARK: 와이파이 자동 연결 성공
     @Test
     func testAutoConnectToWiFiSuccess() throws {
-        
-        // 옳바른 ssid, pw 일 경우
-        let ssid: String = "ssid"
-        let pw: String = "pw"
-        
+        let ssid: String = "CorrectSSID"
+        let pw: String = "CorrectPW"
         let result : Bool? = try? useCase.connectToWiFi(ssid: ssid, password: pw).toBlocking().first()
-        
         // 결과 검증
         try #require( result == true)
     }
     
+    // MARK: 와이파이 자동 연결 실패
     @Test
     func testAutoConnectToWiFiFailure() throws {
-        
         // 틀린 ssid, pw 일 경우
-        let ssid: String = "ssid"
-        let pw: String = "pw"
-        
+        let ssid: String = "WrongSSID"
+        let pw: String = "WrongPW"
         let result : Bool? = try? useCase.connectToWiFi(ssid: ssid, password: pw).toBlocking().first()
-        
         // 결과 검증
         try #require( result == false)
     }
     
-    // 연결된 네트워크 SSID를 반환 . nil 이 아닌 경우 네트워크 접속 확인
+    // MARK: 정보가 달라서 와이파이가 연결이 안됨.
     @Test
-    func getCurrentWiFiSSIDSuccess() throws {
-        let ssid = mockRepository.getCurrentWiFiSSID()
+    func testDifferentInformation() throws {
+        let targetSSID: String = "targetSSID"
+        let currentSSID = mockRepository.getCurrentWiFiSSID()
         // 결과 검증
-        try #require( ssid != nil )
+        try #require( targetSSID != currentSSID )
     }
 }
