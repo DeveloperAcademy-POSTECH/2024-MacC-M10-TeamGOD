@@ -26,16 +26,16 @@ public final class DefaultWifiConnectRepository: WiFiConnectRepository {
             
             // MARK: WIFI 연결 시도
             NEHotspotConfigurationManager.shared.apply(config) { error in
-                if let error = error {
-                    print("Connection failed: \(error.localizedDescription)")
-                    single(.failure(error))
+                if let err = error {
+                    print("Connection failed: \(err.localizedDescription)")
+                    single(.failure(err))
                 } else {
-                    if self.isWiFiConnected(), let currentSSID = self.getCurrentWiFiSSID(), currentSSID == ssid {
+                    if let currentSSID = self.getCurrentWiFiSSID(), currentSSID == ssid {
                         print("Successfully connected to \(ssid)")
-                        single(.success(true))
+                        single(.success(true)) // 성공
                     } else {
                         print("Failed to connect to \(ssid)")
-                        single(.success(false))
+                        single(.failure(WiFiConnectionErrors.failedToConnect(ssid)))
                     }
                 }
             }
