@@ -8,9 +8,9 @@ import UIKit
 import RxSwift
 import SnapKit
 
-public class WifiConnectViewController: RxBaseViewController<WifiConnectViewModel>{
+public class WifiReConnectViewController: RxBaseViewController<WifiConnectViewModel>{
     
-    private let wifiConnectView = WifiReConnectView()
+    private let wifiReConnectView = WifiReConnectView()
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -18,7 +18,7 @@ public class WifiConnectViewController: RxBaseViewController<WifiConnectViewMode
 
     public override func loadView() {
         super.loadView()
-        self.view = wifiConnectView
+        self.view = wifiReConnectView
     }
 
     override init(viewModel: WifiConnectViewModel) {
@@ -32,32 +32,32 @@ public class WifiConnectViewController: RxBaseViewController<WifiConnectViewMode
 
     private func bind(_ viewModel: WifiConnectViewModel) {
         
-        wifiConnectView.ssidField.rx.text.orEmpty
+        wifiReConnectView.ssidField.rx.text.orEmpty
             .bind(to: viewModel.ssidText)
             .disposed(by: disposeBag)
         
-        wifiConnectView.pwField.rx.text.orEmpty
+        wifiReConnectView.pwField.rx.text.orEmpty
             .bind(to: viewModel.pwText)
             .disposed(by: disposeBag)
         
-//        wifiConnectView.connectButton.rx.tap
-//            .bind(to: viewModel.connectButtonTapped)
-//            .disposed(by: disposeBag)
+        wifiReConnectView.reConnectButton.rx.tap
+            .bind(to: viewModel.reConnectButtonTapped)
+            .disposed(by: disposeBag)
 //        
 //        wifiConnectView.resetButton.rx.tap
 //            .bind(to: viewModel.resetButtonTapped)
 //            .disposed(by: disposeBag)
-        
+//        
         
         viewModel.newSsidText
             .drive { [weak self] newSsidText in
-                self?.wifiConnectView.ssidField.text = newSsidText
+                self?.wifiReConnectView.ssidField.text = newSsidText
             }
             .disposed(by: disposeBag)
         
         viewModel.newPwText
             .drive { [weak self] newPwText in
-                self?.wifiConnectView.pwField.text = newPwText
+                self?.wifiReConnectView.pwField.text = newPwText
             }
             .disposed(by: disposeBag)
         

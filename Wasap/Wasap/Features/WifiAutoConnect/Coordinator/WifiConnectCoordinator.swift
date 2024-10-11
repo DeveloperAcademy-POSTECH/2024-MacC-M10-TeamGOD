@@ -27,7 +27,7 @@ public class WifiConnectCoordinator: NavigationCoordinator {
         
         let viewModel = WifiConnectViewModel(wifiConnectUseCase: usecase, coordinatorController: self)
         
-        let viewController = WifiConnectViewController(viewModel: viewModel)
+        let viewController = WifiReConnectViewController(viewModel: viewModel)
         
         self.navigationController.pushViewController(viewController, animated: true)
     }
