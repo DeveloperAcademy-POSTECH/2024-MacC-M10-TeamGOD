@@ -23,14 +23,15 @@ final class CameraView: BaseView {
     private lazy var takePhotoButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Take Photo", for: .normal)
+        button.setTitleColor(.white, for: .normal)
         button.backgroundColor = .systemBlue
         button.layer.cornerRadius = 8
         return button
     }()
 
     override func layoutSubviews() {
-        previewLayer?.frame = previewContainerView.bounds
         super.layoutSubviews()
+        previewLayer?.frame = previewContainerView.bounds
     }
 
     func setViewHierarchy() {
