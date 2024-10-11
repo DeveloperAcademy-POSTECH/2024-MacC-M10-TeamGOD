@@ -16,7 +16,6 @@ import UIKit
 class MockCameraRepository: NSObject, CameraRepository {
     var captureSession: AVCaptureSession?
     private var stillImageOutput: AVCapturePhotoOutput?
-    var previewLayer: AVCaptureVideoPreviewLayer? { nil }
 
     // 카메라 프리뷰 설정
     func configureCamera() -> Single<AVCaptureSession> {
@@ -24,12 +23,6 @@ class MockCameraRepository: NSObject, CameraRepository {
             guard let self = self else { return Disposables.create() }
             let mockSession = AVCaptureSession()
             mockSession.sessionPreset = .photo
-
-            self.stillImageOutput = AVCapturePhotoOutput()
-            if mockSession.canAddOutput(self.stillImageOutput!) {
-                mockSession.addOutput(self.stillImageOutput!)
-            }
-
             self.captureSession = mockSession
             single(.success(mockSession))
 
@@ -61,12 +54,13 @@ class MockCameraRepository: NSObject, CameraRepository {
             self.captureSession?.stopRunning()
         }
     }
-}
 
-class MockAVCapturePhoto: AVCapturePhoto {
-    static var mockData: Data? = {
-        UIImage(systemName: "star")?.pngData()
-    }()
+    func getPreviewLayer() -> Single<AVCaptureVideoPreviewLayer> {
+        return Single.create {
+            $0(.failure(CameraErrors.previewLayerError))
+            return Disposables.create()
+        }
+    }
 }
 
 /// CameraUseCaseTests
@@ -93,7 +87,6 @@ struct CameraUseCaseTests {
     /// 사진 촬영 성공 테스트
     @Test
     func testTakePhotoSuccess() throws {
-        // camera preview 실행
         _ = try cameraUseCase.configureCamera().toBlocking().first()
 
         try testStartCameraPreviewSuccess()

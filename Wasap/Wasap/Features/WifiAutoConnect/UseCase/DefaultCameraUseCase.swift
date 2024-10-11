@@ -10,7 +10,7 @@ import UIKit
 import RxSwift
 import AVFoundation
 
-protocol CameraUseCase {
+public protocol CameraUseCase {
     func configureCamera() -> Single<Void>
     func takePhoto() -> Single<UIImage>
     func getCapturePreviewLayer() -> Single<AVCaptureVideoPreviewLayer>
@@ -41,14 +41,7 @@ final class DefaultCameraUseCase: CameraUseCase {
     }
 
     func getCapturePreviewLayer() -> Single<AVCaptureVideoPreviewLayer> {
-        Single.create { [weak self] single in
-            guard let previewLayer = self?.repository.previewLayer else {
-                single(.failure(CameraErrors.previewLayerError))
-                return Disposables.create()
-            }
-            single(.success(previewLayer))
-            return Disposables.create()
-        }
+        return repository.getPreviewLayer()
     }
 
     func startRunning() {

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6F342CDB2CB8D0680023C159 /* RxBlocking in Frameworks */ = {isa = PBXBuildFile; productRef = 6F342CDA2CB8D0680023C159 /* RxBlocking */; };
 		6FAE7AC22CADA1B600A1D1CE /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 6FAE7AC12CADA1B600A1D1CE /* Moya */; };
 		6FAE7AC42CADA1B600A1D1CE /* ReactiveMoya in Frameworks */ = {isa = PBXBuildFile; productRef = 6FAE7AC32CADA1B600A1D1CE /* ReactiveMoya */; };
 		6FAE7AC62CADA1B600A1D1CE /* RxMoya in Frameworks */ = {isa = PBXBuildFile; productRef = 6FAE7AC52CADA1B600A1D1CE /* RxMoya */; };
@@ -14,7 +15,6 @@
 		6FAE7ACB2CADA1CB00A1D1CE /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = 6FAE7ACA2CADA1CB00A1D1CE /* RxRelay */; };
 		6FAE7ACD2CADA1CB00A1D1CE /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 6FAE7ACC2CADA1CB00A1D1CE /* RxSwift */; };
 		6FAE7AD02CADA1DB00A1D1CE /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6FAE7ACF2CADA1DB00A1D1CE /* SnapKit */; };
-		6FEE9B002CB3BC11004B9A01 /* RxBlocking in Frameworks */ = {isa = PBXBuildFile; productRef = 6FEE9AFF2CB3BC11004B9A01 /* RxBlocking */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -26,6 +26,19 @@
 			remoteInfo = Wasap;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		6F342CD42CB8D02C0023C159 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		6FAE7AA52CAD9F5600A1D1CE /* Wasap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Wasap.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -77,7 +90,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6FEE9B002CB3BC11004B9A01 /* RxBlocking in Frameworks */,
+				6F342CDB2CB8D0680023C159 /* RxBlocking in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -149,6 +162,7 @@
 				6FB475E62CB0181700886498 /* Sources */,
 				6FB475E72CB0181700886498 /* Frameworks */,
 				6FB475E82CB0181700886498 /* Resources */,
+				6F342CD42CB8D02C0023C159 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -160,7 +174,7 @@
 			);
 			name = WasapTests;
 			packageProductDependencies = (
-				6FEE9AFF2CB3BC11004B9A01 /* RxBlocking */,
+				6F342CDA2CB8D0680023C159 /* RxBlocking */,
 			);
 			productName = WasapTests;
 			productReference = 6FB475EA2CB0181700886498 /* WasapTests.xctest */;
@@ -253,6 +267,130 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		6F342CDC2CB8D2370023C159 /* Test */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_SWIFT_FLAGS = "";
+				"OTHER_SWIFT_FLAGS[arch=*]" = "-D TEST";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Test;
+		};
+		6F342CDD2CB8D2370023C159 /* Test */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Wasap/Global/Wasap.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 8U8S6CBZ9D;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Wasap/Global/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "와이파이를 잡기 위해 카메라 사용이 필요합니다.";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = "";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.teamGOD.Wasap;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = Wasap_Development;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Test;
+		};
+		6F342CDE2CB8D2370023C159 /* Test */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				OTHER_SWIFT_FLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = com.teamGOD.WasapTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Wasap.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Wasap";
+			};
+			name = Test;
+		};
 		6FAE7AB92CAD9F5700A1D1CE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -453,10 +591,12 @@
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
+				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.teamGOD.WasapTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -475,6 +615,7 @@
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
+				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.teamGOD.WasapTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -493,6 +634,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6FAE7ABB2CAD9F5700A1D1CE /* Debug */,
+				6F342CDC2CB8D2370023C159 /* Test */,
 				6FAE7ABC2CAD9F5700A1D1CE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -502,6 +644,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6FAE7AB92CAD9F5700A1D1CE /* Debug */,
+				6F342CDD2CB8D2370023C159 /* Test */,
 				6FAE7ABA2CAD9F5700A1D1CE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -511,6 +654,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6FB475F12CB0181700886498 /* Debug */,
+				6F342CDE2CB8D2370023C159 /* Test */,
 				6FB475F22CB0181700886498 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -546,6 +690,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		6F342CDA2CB8D0680023C159 /* RxBlocking */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6FAE7AC72CADA1CB00A1D1CE /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxBlocking;
+		};
 		6FAE7AC12CADA1B600A1D1CE /* Moya */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 6FAE7AC02CADA1B600A1D1CE /* XCRemoteSwiftPackageReference "Moya" */;
@@ -580,11 +729,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6FAE7ACE2CADA1DB00A1D1CE /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
-		};
-		6FEE9AFF2CB3BC11004B9A01 /* RxBlocking */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 6FAE7AC72CADA1CB00A1D1CE /* XCRemoteSwiftPackageReference "RxSwift" */;
-			productName = RxBlocking;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -9,12 +9,13 @@ import RxSwift
 import AVFoundation
 
 protocol CameraRepository {
-    /// previewLayer : 프리뷰 레이어. 이 레이어를 뷰에서 활용하세요.
-    var previewLayer: AVCaptureVideoPreviewLayer? { get }
 
     /// configureCamera : 카메라의 초기 설정을 담당. Input과 Output을 지정함.
     /// configure과 previewLayer 세팅이 끝나면 startRunning() 함수로 시작하세요.
     func configureCamera() -> Single<AVCaptureSession>
+
+    /// getPreviewLayer : 프리뷰 레이어를 가져옵니다. 뷰에서 이 레이어를 활용하세요.
+    func getPreviewLayer() -> Single<AVCaptureVideoPreviewLayer>
 
     /// startRunning() : 카메라 프리뷰를 시작합니다. 캡쳐 대기를 합니다.
     func startRunning()
@@ -27,18 +28,10 @@ protocol CameraRepository {
 }
 
 class DefaultCameraRepository: NSObject, CameraRepository {
-    private var captureSession: AVCaptureSession? {
-        didSet {
-            guard let captureSession else { return }
-            let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-            previewLayer.videoGravity = .resizeAspectFill
-            self.previewLayer = previewLayer
-        }
-    }
+    private var captureSession: AVCaptureSession?
     
     private var stillImageOutput: AVCapturePhotoOutput?
     private var photoCaptureCompletion: ((Result<Data, Error>) -> Void)?
-    var previewLayer: AVCaptureVideoPreviewLayer? = nil
 
     func configureCamera() -> Single<AVCaptureSession> {
         return Single.create { [weak self] single in
@@ -71,6 +64,21 @@ class DefaultCameraRepository: NSObject, CameraRepository {
         }
     }
 
+    func getPreviewLayer() -> Single<AVCaptureVideoPreviewLayer> {
+        Single.create { [weak self] single in
+            guard let captureSession = self?.captureSession else {
+                Log.error("아이고.. configure camera를 먼저 해줘야 해요.")
+                single(.failure(CameraErrors.previewLayerError))
+                return Disposables.create()
+            }
+            let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+            previewLayer.videoGravity = .resizeAspectFill
+            single(.success(previewLayer))
+            return Disposables.create()
+        }
+
+    }
+
     func capturePhoto() -> Single<Data> {
         return Single.create { [weak self] single in
             guard let self else {
@@ -98,14 +106,15 @@ class DefaultCameraRepository: NSObject, CameraRepository {
     }
 
     func startRunning() {
-        DispatchQueue.main.async {
-            self.captureSession?.startRunning()
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            self?.captureSession?.startRunning()
+            Log.print("Camera started running")
         }
     }
 
     func stopRunning() {
-        DispatchQueue.main.async {
-            self.captureSession?.stopRunning()
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            self?.captureSession?.stopRunning()
         }
     }
 }
