@@ -14,7 +14,7 @@ public class WifiConnectViewModel: BaseViewModel {
     private weak var coordinatorController: WifiConnectCoordinator?
     
     // MARK: - Input
-    public let connectButtonTapped = PublishRelay<Void>()
+    public let reConnectButtonTapped = PublishRelay<Void>()
     public let resetButtonTapped = PublishRelay<Void>()
     public let ssidText = BehaviorRelay<String>(value: "")
     public let pwText = BehaviorRelay<String>(value: "")
@@ -42,7 +42,7 @@ public class WifiConnectViewModel: BaseViewModel {
         self.coordinatorController = coordinatorController
         super.init()
         
-        connectButtonTapped
+        reConnectButtonTapped
             .withLatestFrom(Observable.combineLatest(ssidText, pwText))
             .flatMapLatest { (ssid, password) in
                 return wifiConnectUseCase.connectToWiFi(ssid: ssid, password: password)

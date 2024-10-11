@@ -4,29 +4,32 @@
 //
 //  Created by 김상준 on 10/6/24.
 //
+
 import UIKit
 import SnapKit
 
-class WifiReConnectView: UIView {
+class WifiReConnectView: BaseView {
+    
+    lazy var backgroundView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .gray500
+        return view
+    }()
     
     lazy var iconImageView: UIImageView = {
         let imageView = UIImageView()
-        
-        // SF Symbol에서 느낌표가 포함된 아이콘을 설정 (느낌표 아이콘)
         imageView.image = UIImage(systemName: "exclamationmark.circle")
-        imageView.tintColor = .black // 아이콘 색상 설정
+        imageView.tintColor = .primary200
         imageView.contentMode = .scaleAspectFit
-        imageView.backgroundColor = .gray // 배경색 설정
         return imageView
     }()
     
     lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Retry"
-        label.textColor = .black
+        label.textColor = .primary200
         label.textAlignment = .left
-        label.font = UIFont.systemFont(ofSize: 26) // 텍스트 크기를 26으로 설정
-        label.backgroundColor = .yellow
+        label.font = UIFont.systemFont(ofSize: 26)
         return label
     }()
     
@@ -34,14 +37,14 @@ class WifiReConnectView: UIView {
         let stackView = UIStackView(arrangedSubviews: [iconImageView, titleLabel])
         stackView.axis = .horizontal
         stackView.alignment = .center
-        stackView.spacing = 0
+        stackView.spacing = 8 // 적절한 간격 부여
         return stackView
     }()
     
     lazy var subLabel: UILabel = {
         let label = UILabel()
         label.text = "잘못된 부분이 있나봐요!"
-        label.textColor = .black
+        label.textColor = .neutral400
         label.textAlignment = .left
         return label
     }()
@@ -56,21 +59,27 @@ class WifiReConnectView: UIView {
     lazy var photoImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.backgroundColor = .black
-        //        imageView.image = UIImage(named: "wifi")
+        imageView.backgroundColor = .gray500
+        imageView.layer.borderColor = UIColor.green200.cgColor
+        imageView.layer.borderWidth = 3.0
         return imageView
     }()
     
     lazy var ssidLabel: UILabel = {
         let label = UILabel()
         label.text = "와이파이 ID"
-        label.textColor = .black
-        label.textAlignment = .left
+        label.textColor = .neutral200
+        label.font = UIFont.systemFont(ofSize: 16)
         return label
     }()
     
     lazy var ssidField: UITextField = {
         let textField = UITextField()
         textField.placeholder = "Enter a number"
+        textField.backgroundColor = UIColor(red: 66/255, green: 66/255, blue: 70/255, alpha: 1)
+        textField.textColor = .white
+        textField.layer.cornerRadius = 16
+        textField.layer.masksToBounds = true
         textField.font = .preferredFont(forTextStyle: .headline)
         textField.returnKeyType = .done
         return textField
@@ -86,14 +95,18 @@ class WifiReConnectView: UIView {
     lazy var pwLabel: UILabel = {
         let label = UILabel()
         label.text = "비밀번호"
-        label.textColor = .black
-        label.textAlignment = .left
+        label.textColor = .neutral200
+        label.font = UIFont.systemFont(ofSize: 16)
         return label
     }()
     
     lazy var pwField: UITextField = {
         let textField = UITextField()
         textField.placeholder = "Enter a number"
+        textField.backgroundColor = UIColor(red: 66/255, green: 66/255, blue: 70/255, alpha: 1)
+        textField.textColor = .white
+        textField.layer.cornerRadius = 16
+        textField.layer.masksToBounds = true
         textField.font = .preferredFont(forTextStyle: .headline)
         textField.returnKeyType = .done
         return textField
@@ -110,8 +123,10 @@ class WifiReConnectView: UIView {
         let button = UIButton()
         button.setTitle("다시 연결하기", for: .normal)
         button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = .red
-        button.layer.cornerRadius = 10
+        button.backgroundColor = .clear
+        button.layer.cornerRadius = 25
+        button.layer.borderWidth = 1
+        button.layer.borderColor = UIColor.gray200.cgColor
         return button
     }()
     
@@ -126,13 +141,23 @@ class WifiReConnectView: UIView {
     }
     
     func setViewHierarchy() {
-        self.addSubViews(labelStackView,photoImageView,ssidStackView,pwStackView,reConnectButton)
+        self.addSubview(backgroundView)
+        
+        backgroundView.addSubview(labelStackView)
+        backgroundView.addSubview(photoImageView)
+        backgroundView.addSubview(ssidStackView)
+        backgroundView.addSubview(pwStackView)
+        backgroundView.addSubview(reConnectButton)
     }
     
     func setConstraints() {
         
-        iconImageView.snp.makeConstraints { make in
-            make.width.height.equalTo(26) // 아이콘 크기를 26으로 설정
+        backgroundView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+        
+        iconImageView.snp.makeConstraints {
+            $0.width.height.equalTo(26)
         }
         
         labelStackView.snp.makeConstraints {
@@ -142,22 +167,33 @@ class WifiReConnectView: UIView {
         
         photoImageView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(20)
-            $0.top.equalTo(titleStackView.snp.bottom).offset(49)
+            $0.top.equalTo(labelStackView.snp.bottom).offset(20)
             $0.height.equalTo(220)
         }
         
         ssidStackView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(20)
-            $0.top.equalTo(photoImageView.snp.bottom).offset(50)
+            $0.top.equalTo(photoImageView.snp.bottom).offset(30)
         }
+        
+        ssidField.snp.makeConstraints {
+            $0.height.equalTo(62)
+        }
+        
         pwStackView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(20)
-            $0.top.equalTo(ssidStackView.snp.bottom).offset(10)
+            $0.top.equalTo(ssidStackView.snp.bottom).offset(30)
         }
+        
+        pwField.snp.makeConstraints {
+            $0.height.equalTo(62)
+        }
+        
         reConnectButton.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.top.equalTo(pwStackView.snp.bottom).offset(62)
+            $0.top.equalTo(pwStackView.snp.bottom).offset(77)
             $0.width.equalTo(ssidStackView)
+            $0.height.equalTo(52)
         }
     }
 }

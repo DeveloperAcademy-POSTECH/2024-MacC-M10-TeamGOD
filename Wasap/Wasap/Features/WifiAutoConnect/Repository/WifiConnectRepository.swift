@@ -18,25 +18,33 @@ protocol WiFiConnectRepository {
 
 public final class DefaultWifiConnectRepository: WiFiConnectRepository {
     
-    // Wi-Fi 연결 시도 함수
+    // MARK: Wi-Fi 연결 시도 함수
     public func connectToWiFi(ssid: String, password: String) -> Single<Bool> {
         Single<Bool>.create { single in
             let config = NEHotspotConfiguration(ssid: ssid, passphrase: password, isWEP: false)
-            config.joinOnce = true
+            config.joinOnce = false
             
             // MARK: WIFI 연결 시도
             NEHotspotConfigurationManager.shared.apply(config) { error in
                 if let err = error {
                     print("Connection failed: \(err.localizedDescription)")
                     single(.failure(err))
-                } else {
+                }
+                else {
+                    // MARK: 다른 네트워크에 연결 되어 있는 경우, getCurrentWiFiSSID로 부터 받는 데이터가 있다.
+                    
+                    // MARK: 타이머 (연결 될때 까지 확인)
                     if let currentSSID = self.getCurrentWiFiSSID(), currentSSID == ssid {
                         print("Successfully connected to \(ssid)")
+                        print(self.getCurrentWiFiSSID())
                         single(.success(true)) // 성공
-                    } else {
+                    }
+                    // MARK: 연결 되어 있지 않은 경우, getCurrentWiFiSSID로 부터 받는 데이터가 없다.
+                    else {
                         print("Failed to connect to \(ssid)")
                         single(.failure(WiFiConnectionErrors.failedToConnect(ssid)))
                     }
+                    
                 }
             }
             return Disposables.create()
