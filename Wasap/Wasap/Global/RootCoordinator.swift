@@ -22,9 +22,17 @@ public class RootCoordinator: Coordinator {
     
 
     public func start() {
+        /*
         let wifiConnectCoordinator = WifiConnectCoordinator(navigationController: UINavigationController())
         start(childCoordinator: wifiConnectCoordinator)
         window?.rootViewController = wifiConnectCoordinator.navigationController
         window?.makeKeyAndVisible()
+        */
+        
+        let scanCoordinator = ScanCoordinator(navigationController: UINavigationController(), wifiAutoConnectDIContainer: appDIContainer.makeWifiAutoConnectDIContainer())
+        start(childCoordinator: scanCoordinator)
+        window?.rootViewController = scanCoordinator.navigationController
+        window?.makeKeyAndVisible()
+        
     }
 }
