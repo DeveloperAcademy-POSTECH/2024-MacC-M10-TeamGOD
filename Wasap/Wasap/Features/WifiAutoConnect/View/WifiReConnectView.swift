@@ -147,6 +147,26 @@ class WifiReConnectView: BaseView {
         return button
     }()
     
+    lazy var upButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("업", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = .green
+        button.layer.cornerRadius = 25
+        button.isHidden = true // 초기 값 히든
+        return button
+    }()
+    
+    lazy var downButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("다운", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = .green
+        button.isHidden = true // 초기 값 히든
+        button.layer.cornerRadius = 25
+        return button
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setViewHierarchy()
@@ -169,6 +189,9 @@ class WifiReConnectView: BaseView {
         backgroundView.addSubview(ssidStackView)
         backgroundView.addSubview(pwStackView)
         backgroundView.addSubview(reConnectButton)
+        
+        backgroundView.addSubview(upButton)
+        backgroundView.addSubview(downButton)
     }
     
     func setConstraints() {
@@ -192,19 +215,23 @@ class WifiReConnectView: BaseView {
             $0.top.equalTo(photoImageView.snp.bottom).offset(30)
         }
         
-        ssidField.snp.makeConstraints { $0.height.equalTo(62) }
-        
+        ssidField.snp.makeConstraints {
+            $0.height.equalTo(62)
+            $0.width.equalToSuperview()  // 고정 너비 설정
+        }
         pwStackView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(20)
             $0.top.equalTo(ssidStackView.snp.bottom).offset(30)
         }
         
-        pwField.snp.makeConstraints { $0.height.equalTo(62) }
+        pwField.snp.makeConstraints {
+            $0.height.equalTo(62)
+            $0.width.equalToSuperview()  // 고정 너비 설정
+        }
         
         reConnectButton.snp.makeConstraints {
             
             $0.centerX.equalToSuperview()
-//            $0.bottom.equalToSuperview().inset(84)
             reconnectButtonBottomConstraint = $0.bottom.equalToSuperview().inset(84).constraint
             $0.width.equalTo(ssidStackView)
             $0.height.equalTo(52)
@@ -234,7 +261,7 @@ class WifiReConnectView: BaseView {
             self.layoutIfNeeded() // 레이아웃 반영
         })
     }
-
+    
     @objc private func pwFieldSelected() {
         // SSID 필드와 라벨 스택뷰를 숨김
         ssidStackView.isHidden = true
@@ -249,8 +276,6 @@ class WifiReConnectView: BaseView {
             self.layoutIfNeeded() // 레이아웃 반영
         })
     }
-
-    
     
     private func setupKeyboardNotifications() {
         NotificationCenter.default.addObserver(self,selector: #selector(keyboardWillShow(_:)),
@@ -263,45 +288,60 @@ class WifiReConnectView: BaseView {
     @objc private func keyboardWillShow(_ notification: Notification) {
         guard let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
         let keyboardHeight = keyboardFrame.height
-
+        
+        upButton.isHidden = false
+        downButton.isHidden = false
+        let buttonWidthRatio = 3.0 / 5.0
+        
         // 버튼 위치를 키보드 위에 배치
         reConnectButton.snp.remakeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.trailing.equalToSuperview().inset(20)
             $0.bottom.equalToSuperview().inset(keyboardHeight - 50)
+            $0.width.equalToSuperview().multipliedBy(buttonWidthRatio).offset(-20)
+            $0.height.equalTo(52)
         }
-
+        
+        upButton.snp.remakeConstraints {
+            $0.leading.equalToSuperview().inset(20)
+            $0.bottom.equalToSuperview().inset(keyboardHeight - 50)
+            $0.width.equalTo(52)
+            $0.height.equalTo(52)
+        }
+        
+        downButton.snp.remakeConstraints {
+            $0.leading.equalTo(upButton.snp.trailing).offset(10)
+            $0.bottom.equalToSuperview().inset(keyboardHeight - 50)
+            $0.width.equalTo(52)
+            $0.height.equalTo(52)
+        }
+        
         // 애니메이션으로 전체 뷰를 위로 올림
         UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseOut, .beginFromCurrentState], animations: {
             self.layoutIfNeeded() // 레이아웃 즉시 반영
             self.transform = CGAffineTransform(translationX: 0, y: -keyboardHeight / 4)
         }, completion: nil)
     }
-
+    
     @objc private func keyboardWillHide(_ notification: Notification) {
         // 초기 상태로 복구
         resetViewState()
-
+        
         // 애니메이션으로 전체 뷰를 원래 위치로 복원
         UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseIn, .beginFromCurrentState], animations: {
             self.layoutIfNeeded() // 레이아웃 즉시 반영
             self.transform = CGAffineTransform.identity
         }, completion: nil)
     }
-
+    
     private func resetViewState() {
         // 모든 필드를 보이도록 설정하고 초기 상태로 복구
         labelStackView.isHidden = false
         ssidStackView.isHidden = false
         pwStackView.isHidden = false
         
-        // 애니메이션을 추가하여 복구 시 자연스럽게 전환
-        UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseInOut, .beginFromCurrentState], animations: {
-            self.setInitialConstraints() // 초기 제약 조건 복구
-            self.layoutIfNeeded() // 레이아웃 반영
-        })
-    }
-    
-    private func setInitialConstraints() {
+        upButton.isHidden = true
+        downButton.isHidden = true
+        
         // 초기 레이아웃 제약 조건 설정
         ssidStackView.snp.remakeConstraints {
             $0.leading.trailing.equalToSuperview().inset(20)
@@ -319,6 +359,11 @@ class WifiReConnectView: BaseView {
             $0.width.equalTo(ssidStackView)
             $0.height.equalTo(52)
         }
+        
+        // 애니메이션을 추가하여 복구 시 자연스럽게 전환
+        UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseInOut, .beginFromCurrentState], animations: {
+            self.layoutIfNeeded() // 레이아웃 반영
+        })
     }
     
     private func setupTapGesture() {
