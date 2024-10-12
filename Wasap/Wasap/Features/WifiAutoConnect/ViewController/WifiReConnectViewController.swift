@@ -40,9 +40,9 @@ public class WifiReConnectViewController: RxBaseViewController<WifiConnectViewMo
             .bind(to: viewModel.pwText)
             .disposed(by: disposeBag)
         
-        wifiReConnectView.reConnectButton.rx.tap
-            .bind(to: viewModel.reConnectButtonTapped)
-            .disposed(by: disposeBag)
+//        wifiReConnectView.reConnectButton.rx.tap
+//            .bind(to: viewModel.reConnectButtonTapped)
+//            .disposed(by: disposeBag)
 //        
 //        wifiConnectView.resetButton.rx.tap
 //            .bind(to: viewModel.resetButtonTapped)
