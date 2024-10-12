@@ -10,13 +10,13 @@ import NetworkExtension
 import SystemConfiguration.CaptiveNetwork
 import Foundation
 
-protocol WiFiConnectRepository {
+public protocol WiFiConnectRepository {
     func connectToWiFi(ssid: String, password: String) -> Single<Bool>
     func isWiFiConnected() -> Bool
     func getCurrentWiFiSSID() -> String?
 }
 
-public final class DefaultWifiConnectRepository: WiFiConnectRepository {
+public final class DefaultWiFiConnectRepository: WiFiConnectRepository {
     
     // Wi-Fi 연결 시도 함수
     public func connectToWiFi(ssid: String, password: String) -> Single<Bool> {

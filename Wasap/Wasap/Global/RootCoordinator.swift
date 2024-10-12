@@ -33,6 +33,5 @@ public class RootCoordinator: Coordinator {
         start(childCoordinator: scanCoordinator)
         window?.rootViewController = scanCoordinator.navigationController
         window?.makeKeyAndVisible()
-        
     }
 }

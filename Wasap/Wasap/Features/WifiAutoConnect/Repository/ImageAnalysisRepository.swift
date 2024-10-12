@@ -60,7 +60,7 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
                         let boundingBox = observation.boundingBox
                         
                         // 콜론(:) 제거
-                        let cleanedString = originalString.replacingOccurrences(of: "[:\\-]", with: "", options: .regularExpression)
+                        let cleanedString = originalString.replacingOccurrences(of: "[:\\-]", with: " ", options: .regularExpression)
                         
                         // 텍스트가 "ID" 또는 "PW"로 시작하는지 확인
                         let components = cleanedString.split(separator: " ", maxSplits: 1, omittingEmptySubsequences: true)

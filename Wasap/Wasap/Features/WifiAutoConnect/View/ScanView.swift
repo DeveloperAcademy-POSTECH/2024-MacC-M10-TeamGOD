@@ -36,7 +36,7 @@ class ScanView: BaseView {
     
     lazy var loadingAnimationComponent: UIView = {
         let animationComponent = UIView()
-        animationComponent.backgroundColor = .white
+        animationComponent.backgroundColor = .red
         return animationComponent
     }()
     

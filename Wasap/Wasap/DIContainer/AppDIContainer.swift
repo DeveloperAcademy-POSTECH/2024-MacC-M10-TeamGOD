@@ -23,12 +23,20 @@ final public class WifiAutoConnectDIContainer {
         return DefaultImageAnalysisRepository()
     }
     
+    public func makeWiFiConnectRepository() -> WiFiConnectRepository {
+        return DefaultWiFiConnectRepository()
+    }
+    
     public func makeImageAnalysisUseCase(_ repository: ImageAnalysisRepository) -> ImageAnalysisUseCase {
         return DefaultImageAnalysisUseCase(imageAnalysisRepository: repository)
     }
     
-    public func makeScanViewModel(_ useCase: ImageAnalysisUseCase, coordinatorcontroller: ScanCoordinatorController, image: UIImage) -> ScanViewModel {
-        return ScanViewModel(imageAnalysisUseCase: useCase, coordinatorController: coordinatorcontroller, previewImage: image)
+    public func makeWiFiConnectUseCase(_ repository: WiFiConnectRepository) -> WiFiConnectUseCase {
+        return DefaultWiFiConnectUseCase(repository: repository)
+    }
+    
+    public func makeScanViewModel(imageAnalysisUseCase: ImageAnalysisUseCase, wifiConnectUseCase: WiFiConnectUseCase, coordinatorcontroller: ScanCoordinatorController, image: UIImage) -> ScanViewModel {
+        return ScanViewModel(imageAnalysisUseCase: imageAnalysisUseCase, wifiConnectUseCase: wifiConnectUseCase, coordinatorController: coordinatorcontroller, previewImage: image)
     }
     
     public func makeScanViewController(_ viewModel: ScanViewModel) -> ScanViewController {

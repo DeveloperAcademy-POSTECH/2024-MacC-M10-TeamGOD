@@ -14,26 +14,26 @@ public class ScanViewModel: BaseViewModel {
     private weak var coordinatorController: ScanCoordinatorController?
     
     // MARK: - Input
-    // public let analyzeImageButtonTapped = PublishRelay<Void>()
-    // public let image: BehaviorRelay<UIImage>
     
     // MARK: - Output
-    // public var boundingBoxes: Driver<[(CGRect, CGColor)]>
+    public var updatedImage: Driver<UIImage>
     public var ssidText: Driver<String>
     public var passwordText: Driver<String>
-    public var updatedImage: Driver<UIImage>
+    public var isWiFiConnected: Driver<Bool>
     
-    public init(imageAnalysisUseCase: ImageAnalysisUseCase, coordinatorController: ScanCoordinatorController, previewImage: UIImage) {
-        // let boundingBoxesRelay = BehaviorRelay<[(CGRect, CGColor)]>(value: [])
-        // self.boundingBoxes = boundingBoxesRelay.asDriver(onErrorJustReturn: [])
+    public init(imageAnalysisUseCase: ImageAnalysisUseCase, wifiConnectUseCase: WiFiConnectUseCase, coordinatorController: ScanCoordinatorController, previewImage: UIImage) {
         
         let ssidRelay = BehaviorRelay<String>(value: "")
         self.ssidText = ssidRelay.asDriver(onErrorJustReturn: "")
+        
         let passwordRelay = BehaviorRelay<String>(value: "")
         self.passwordText = passwordRelay.asDriver(onErrorJustReturn: "")
         
         let updatedImageRelay = BehaviorRelay<UIImage?>(value: nil)
         self.updatedImage = updatedImageRelay.asDriver(onErrorJustReturn: nil).compactMap { $0 }
+        
+        let isWiFiConnectedRelay = BehaviorRelay<Bool>(value: false)
+        self.isWiFiConnected = isWiFiConnectedRelay.asDriver(onErrorJustReturn: false)
         
         self.coordinatorController = coordinatorController
         super.init()
@@ -42,13 +42,27 @@ public class ScanViewModel: BaseViewModel {
             .flatMapLatest { _ in
                 return imageAnalysisUseCase.performOCR(on: previewImage)
             }
-            .subscribe(onNext: { boundingBoxes, ssid, password in
-                // oundingBoxesRelay.accept(boundingBoxes)
+            .flatMapLatest { boundingBoxes, ssid, password in
                 ssidRelay.accept(ssid)
                 passwordRelay.accept(password)
                 updatedImageRelay.accept(self.drawBoundingBoxes(boundingBoxes, on: previewImage))
+                
+                if !ssid.isEmpty && !password.isEmpty {
+                    return wifiConnectUseCase.connectToWiFi(ssid: ssid, password: password)
+                        .asObservable()
+                        .catch { error in
+                            print("Connection failed: \(error.localizedDescription)")
+                            return .just(false)
+                        }
+                } else {
+                    print("누락 - 현재SSID:\(ssid), 현재Password:\(password)")
+                    return .just(false)
+                }
+            }
+            .subscribe(onNext: { succes in
+                isWiFiConnectedRelay.accept(succes)
             }, onError: { error in
-                print("OCR Error: \(error.localizedDescription)")
+                print("OCR 또는 Wi-Fi 연결 중 에러 발생: \(error.localizedDescription)")
             })
             .disposed(by: disposeBag)
     }

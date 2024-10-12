@@ -33,9 +33,13 @@ public class ScanCoordinator: NavigationCoordinator {
     
     public func start() {
         // ImageAnalysis Repository, UseCase, ViewModel, ViewController 생성
-        let repository = wifiAutoConnectDIContainer.makeImageAnalysisRepository()
-        let useCase = wifiAutoConnectDIContainer.makeImageAnalysisUseCase(repository)
-        let viewModel = wifiAutoConnectDIContainer.makeScanViewModel(useCase, coordinatorcontroller: self, image: previewImage)
+        let imageAnalysisRepository = wifiAutoConnectDIContainer.makeImageAnalysisRepository()
+        let imageAnalysisUseCase = wifiAutoConnectDIContainer.makeImageAnalysisUseCase(imageAnalysisRepository)
+        
+        let wifiConnectRepository = wifiAutoConnectDIContainer.makeWiFiConnectRepository()
+        let wifiConnectUseCase = wifiAutoConnectDIContainer.makeWiFiConnectUseCase(wifiConnectRepository)
+        
+        let viewModel = wifiAutoConnectDIContainer.makeScanViewModel(imageAnalysisUseCase: imageAnalysisUseCase, wifiConnectUseCase: wifiConnectUseCase, coordinatorcontroller: self, image: previewImage)
         let viewController = wifiAutoConnectDIContainer.makeScanViewController(viewModel)
         
         // ImageAnalysisViewController를 navagationController에 push
