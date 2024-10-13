@@ -39,7 +39,52 @@ public final class DefaultWiFiConnectRepository: WiFiConnectRepository {
                         print("getCurrentWiFiSSID: \(String(describing: currentSSID))")
                         single(.failure(WiFiConnectionErrors.failedToConnect(ssid)))
                     }
+                    
+                    /*
+                     var retryCount = 0
+                     
+                     self.checkSSID(ssid: ssid)
+                     .retry(when: { errorObservable in
+                     errorObservable
+                     .do(onNext: { _ in
+                     retryCount += 1
+                     print("Retrying SSID check (\(retryCount))")
+                     })
+                     .delay(.seconds(5), scheduler: MainScheduler.instance)
+                     })
+                     .take(10)
+                     .subscribe(onNext: { success in
+                     if success {
+                     print("Successfully connected to \(ssid)")
+                     single(.success(true)) // 성공
+                     } else {
+                     print("Failed to connect to \(ssid)")
+                     single(.failure(WiFiConnectionErrors.failedToConnect(ssid)))
+                     }
+                     }, onError: { error in
+                     print("SSID check failed with error: \(error)")
+                     single(.failure(WiFiConnectionErrors.failedToConnect(ssid)))
+                     })
+                     .disposed(by: DisposeBag())
+                     */
                 }
+            }
+            return Disposables.create()
+        }
+    }
+    
+    private func checkSSID(ssid: String) -> Observable<Bool> {
+        return Observable<Bool>.create { observer in
+            let currentSSID = self.getCurrentWiFiSSID()
+            if currentSSID == ssid {
+                print("Successfully connected to \(ssid)")
+                observer.onNext(true)
+                observer.onCompleted()
+            } else {
+                print("Failed to connect to \(ssid)")
+                print("getCurrentWiFiSSID: \(String(describing: currentSSID))")
+                observer.onNext(false)
+                observer.onCompleted()
             }
             return Disposables.create()
         }
