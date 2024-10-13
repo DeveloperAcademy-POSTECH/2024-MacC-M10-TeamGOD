@@ -69,4 +69,3 @@ public class WifiReConnectViewController: RxBaseViewController<WifiConnectViewMo
 //            .disposed(by: disposeBag)
     }
 }
-
