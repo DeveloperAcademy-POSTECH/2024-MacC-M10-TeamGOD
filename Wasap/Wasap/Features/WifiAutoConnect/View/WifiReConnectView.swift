@@ -9,6 +9,9 @@ import SnapKit
 
 class WifiReConnectView: BaseView {
     
+    private var selectedSSIDField : Bool = false
+    private var selectedPasswordField : Bool = false
+    
     private var reconnectButtonBottomConstraint: Constraint?
     
     lazy var backgroundView: UIView = {
@@ -154,6 +157,7 @@ class WifiReConnectView: BaseView {
         button.backgroundColor = .green
         button.layer.cornerRadius = 25
         button.isHidden = true // 초기 값 히든
+        button.addTarget(self, action: #selector(ssidFieldSelected), for: .touchUpInside)
         return button
     }()
     
@@ -164,6 +168,7 @@ class WifiReConnectView: BaseView {
         button.backgroundColor = .green
         button.isHidden = true // 초기 값 히든
         button.layer.cornerRadius = 25
+        button.addTarget(self, action: #selector(pwFieldSelected), for: .touchUpInside)
         return button
     }()
     
@@ -172,9 +177,7 @@ class WifiReConnectView: BaseView {
         setViewHierarchy()
         setConstraints()
         setupKeyboardNotifications()
-        setupTapGesture() // 터치 제스처 설정
-        
-        
+        setupTapGesture()
     }
     
     required init?(coder: NSCoder) {
@@ -217,7 +220,7 @@ class WifiReConnectView: BaseView {
         
         ssidField.snp.makeConstraints {
             $0.height.equalTo(62)
-            $0.width.equalToSuperview()  // 고정 너비 설정
+            $0.width.equalToSuperview()
         }
         pwStackView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(20)
@@ -230,10 +233,24 @@ class WifiReConnectView: BaseView {
         }
         
         reConnectButton.snp.makeConstraints {
+            $0.bottom.equalToSuperview().inset(84)
+            $0.trailing.equalToSuperview().inset(20)
+            $0.height.equalTo(52)
+            $0.width.equalTo(353)
+        }
+        
+        upButton.snp.makeConstraints {
+            $0.bottom.equalToSuperview().inset(84)
+            $0.leading.equalToSuperview().inset(20)
+            $0.width.equalTo(52)
+            $0.height.equalTo(52)
+        }
+        
+        downButton.snp.makeConstraints {
+            $0.bottom.equalToSuperview().inset(84)
+            $0.leading.equalTo(upButton.snp.trailing).offset(10)
             
-            $0.centerX.equalToSuperview()
-            reconnectButtonBottomConstraint = $0.bottom.equalToSuperview().inset(84).constraint
-            $0.width.equalTo(ssidStackView)
+            $0.width.equalTo(52)
             $0.height.equalTo(52)
         }
     }
@@ -251,31 +268,46 @@ class WifiReConnectView: BaseView {
         // 비밀번호 필드와 라벨 스택뷰를 숨김
         pwStackView.isHidden = true
         labelStackView.isHidden = true
-        
-        // 애니메이션을 통해 SSID 필드의 위치를 부드럽게 조정
-        UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseInOut, .beginFromCurrentState], animations: {
+//        
+//        selectedSSIDField = true
+//        selectedPasswordField = false
+
+        // 애니메이션으로 텍스트 필드 이동
+        UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseInOut], animations: { [self] in
             self.ssidStackView.snp.remakeConstraints {
                 $0.leading.trailing.equalToSuperview().inset(20)
-                $0.top.equalTo(self.photoImageView.snp.bottom).offset(30)
+                $0.top.equalTo(photoImageView.snp.bottom).offset(30)
             }
-            self.layoutIfNeeded() // 레이아웃 반영
+            self.layoutIfNeeded() // 레이아웃 즉시 반영
         })
     }
-    
+
     @objc private func pwFieldSelected() {
         // SSID 필드와 라벨 스택뷰를 숨김
         ssidStackView.isHidden = true
         labelStackView.isHidden = true
         
-        // 애니메이션을 통해 비밀번호 필드의 위치를 부드럽게 조정
-        UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseInOut, .beginFromCurrentState], animations: {
+//        selectedSSIDField = false
+//        selectedPasswordField = true
+
+        // 애니메이션으로 텍스트 필드 이동
+        UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseInOut], animations: { [self] in
             self.pwStackView.snp.remakeConstraints {
                 $0.leading.trailing.equalToSuperview().inset(20)
-                $0.top.equalTo(self.photoImageView.snp.bottom).offset(30)
+                $0.top.equalTo(photoImageView.snp.bottom).offset(30)
             }
-            self.layoutIfNeeded() // 레이아웃 반영
+            self.layoutIfNeeded() // 레이아웃 즉시 반영
         })
     }
+    
+    // 업 버튼 액션: 이전 필드로 이동 (SSID -> 비밀번호)
+        @objc private func buttonTapped() {
+            if (selectedSSIDField && !selectedPasswordField) {
+                pwField.becomeFirstResponder()
+            } else if (!selectedSSIDField && selectedPasswordField) {
+                ssidField.becomeFirstResponder()
+            }
+        }
     
     private func setupKeyboardNotifications() {
         NotificationCenter.default.addObserver(self,selector: #selector(keyboardWillShow(_:)),
@@ -291,47 +323,62 @@ class WifiReConnectView: BaseView {
         
         upButton.isHidden = false
         downButton.isHidden = false
-        let buttonWidthRatio = 3.0 / 5.0
+        
+        upButton.alpha = 0
+        downButton.alpha = 0
+        reConnectButton.alpha = 0
         
         // 버튼 위치를 키보드 위에 배치
-        reConnectButton.snp.remakeConstraints {
-            $0.trailing.equalToSuperview().inset(20)
-            $0.bottom.equalToSuperview().inset(keyboardHeight - 50)
-            $0.width.equalToSuperview().multipliedBy(buttonWidthRatio).offset(-20)
-            $0.height.equalTo(52)
-        }
-        
         upButton.snp.remakeConstraints {
-            $0.leading.equalToSuperview().inset(20)
+            $0.leading.equalToSuperview().offset(20)
             $0.bottom.equalToSuperview().inset(keyboardHeight - 50)
             $0.width.equalTo(52)
             $0.height.equalTo(52)
         }
-        
         downButton.snp.remakeConstraints {
             $0.leading.equalTo(upButton.snp.trailing).offset(10)
             $0.bottom.equalToSuperview().inset(keyboardHeight - 50)
             $0.width.equalTo(52)
             $0.height.equalTo(52)
         }
+        reConnectButton.snp.remakeConstraints {
+            $0.leading.equalTo(downButton.snp.trailing).offset(10)
+            $0.bottom.equalToSuperview().inset(keyboardHeight - 50)
+            $0.width.equalTo(353) // 동일한 너비 설정
+            $0.height.equalTo(52)
+        }
         
-        // 애니메이션으로 전체 뷰를 위로 올림
-        UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseOut, .beginFromCurrentState], animations: {
-            self.layoutIfNeeded() // 레이아웃 즉시 반영
+        // 애니메이션으로 뷰와 버튼을 자연스럽게 표시
+        UIView.animate(withDuration: 0.5, delay: 0, options: [.curveEaseInOut], animations: {
+            self.upButton.alpha = 1
+            self.downButton.alpha = 1
+            self.reConnectButton.alpha = 1
+            
+            self.layoutIfNeeded() // 레이아웃을 즉시 반영
             self.transform = CGAffineTransform(translationX: 0, y: -keyboardHeight / 4)
         }, completion: nil)
     }
     
     @objc private func keyboardWillHide(_ notification: Notification) {
-        // 초기 상태로 복구
+        // 모든 필드와 스택 뷰를 다시 표시
+        ssidStackView.isHidden = false
+        labelStackView.isHidden = false
+
+        // 애니메이션으로 SSID 필드를 부드럽게 표시
+        ssidStackView.alpha = 0  // 처음에 투명하게 설정
         resetViewState()
-        
-        // 애니메이션으로 전체 뷰를 원래 위치로 복원
-        UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseIn, .beginFromCurrentState], animations: {
-            self.layoutIfNeeded() // 레이아웃 즉시 반영
+        UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseInOut], animations: {
+            self.ssidStackView.alpha = 1  // 페이드 인
+            self.ssidStackView.snp.remakeConstraints {
+                $0.leading.trailing.equalToSuperview().inset(20)
+                $0.top.equalTo(self.photoImageView.snp.bottom).offset(30)
+            }
+            self.layoutIfNeeded()  // 레이아웃 즉시 반영
             self.transform = CGAffineTransform.identity
         }, completion: nil)
     }
+
+    
     
     private func resetViewState() {
         // 모든 필드를 보이도록 설정하고 초기 상태로 복구
