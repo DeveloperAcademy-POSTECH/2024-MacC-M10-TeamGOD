@@ -30,11 +30,13 @@ public final class DefaultWiFiConnectRepository: WiFiConnectRepository {
                     print("Connection failed: \(err.localizedDescription)")
                     single(.failure(err))
                 } else {
-                    if let currentSSID = self.getCurrentWiFiSSID(), currentSSID == ssid {
+                    let currentSSID = self.getCurrentWiFiSSID()
+                    if currentSSID == ssid {
                         print("Successfully connected to \(ssid)")
                         single(.success(true)) // 성공
                     } else {
                         print("Failed to connect to \(ssid)")
+                        print("getCurrentWiFiSSID: \(String(describing: currentSSID))")
                         single(.failure(WiFiConnectionErrors.failedToConnect(ssid)))
                     }
                 }
@@ -42,12 +44,12 @@ public final class DefaultWiFiConnectRepository: WiFiConnectRepository {
             return Disposables.create()
         }
     }
-
+    
     // 현재 Wi-Fi 연결 상태를 확인하는 함수
     public func isWiFiConnected() -> Bool {
         return getCurrentWiFiSSID() != nil
     }
-
+    
     // 현재 연결된 Wi-Fi 네트워크의 SSID를 반환하는 함수
     public func getCurrentWiFiSSID() -> String? {
         var ssid: String?

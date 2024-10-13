@@ -72,9 +72,9 @@ public class ScanViewModel: BaseViewModel {
         let imageSize = image.size
         UIGraphicsBeginImageContextWithOptions(imageSize, false, 0)
         let context = UIGraphicsGetCurrentContext()
-
+        
         image.draw(at: .zero)
-
+        
         for (box, color) in boxes {
             let rect = CGRect(
                 x: box.origin.x * imageSize.width,
@@ -86,10 +86,10 @@ public class ScanViewModel: BaseViewModel {
             context?.setLineWidth(2.0)
             context?.stroke(rect)
         }
-
+        
         let newImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-
+        
         return newImage
     }
 }

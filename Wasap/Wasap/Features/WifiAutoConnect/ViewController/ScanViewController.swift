@@ -14,7 +14,6 @@ public class ScanViewController: RxBaseViewController<ScanViewModel>, UIImagePic
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        viewModel.viewDidLoad.accept(())
     }
     
     public override func loadView() {
