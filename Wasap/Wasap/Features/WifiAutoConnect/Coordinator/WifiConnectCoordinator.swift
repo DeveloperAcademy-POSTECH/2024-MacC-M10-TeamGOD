@@ -21,7 +21,7 @@ public class WifiConnectCoordinator: NavigationCoordinator {
     }
 
     public func start() {
-        let repository = DefaultWifiConnectRepository()
+        let repository = DefaultWiFiConnectRepository()
         
         let usecase = DefaultWiFiConnectUseCase(repository: repository)
         
