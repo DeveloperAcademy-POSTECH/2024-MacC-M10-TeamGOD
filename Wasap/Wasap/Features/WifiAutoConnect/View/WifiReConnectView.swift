@@ -9,10 +9,8 @@ import SnapKit
 
 class WifiReConnectView: BaseView {
     
-    private var selectedSSIDField : Bool = false
-    private var selectedPasswordField : Bool = false
-    
-    private var reconnectButtonBottomConstraint: Constraint?
+    let ssid : String = "KT_GIGA_5G_B67C"
+    let pw : String  = "dd08ff7107"
     
     lazy var backgroundView: UIView = {
         let view = UIView()
@@ -79,18 +77,14 @@ class WifiReConnectView: BaseView {
     
     lazy var ssidField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Enter a number"
+        textField.text = ssid
         textField.backgroundColor = UIColor(red: 66/255, green: 66/255, blue: 70/255, alpha: 1)
         textField.textColor = .white
-        textField.leftViewMode = .always
-        textField.layer.cornerRadius = 16
-        textField.layer.masksToBounds = true
         textField.font = .preferredFont(forTextStyle: .headline)
         textField.returnKeyType = .done
-        
-        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 80, height: textField.frame.height))
-        textField.leftView = paddingView
-        textField.leftViewMode = .always
+        textField.layer.cornerRadius = 16
+        textField.layer.masksToBounds = true
+        textField.textAlignment = .center
         
         textField.addTarget(self, action: #selector(ssidFieldSelected), for: .editingDidBegin)
         
@@ -114,18 +108,14 @@ class WifiReConnectView: BaseView {
     
     lazy var pwField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Enter a number"
+        textField.text = pw
         textField.backgroundColor = UIColor(red: 66/255, green: 66/255, blue: 70/255, alpha: 1)
         textField.textColor = .white
-        textField.leftViewMode = .always
-        textField.layer.cornerRadius = 16
-        textField.layer.masksToBounds = true
         textField.font = .preferredFont(forTextStyle: .headline)
         textField.returnKeyType = .done
-        
-        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 80, height: textField.frame.height))
-        textField.leftView = paddingView
-        textField.leftViewMode = .always
+        textField.layer.cornerRadius = 16
+        textField.layer.masksToBounds = true
+        textField.textAlignment = .center
         
         textField.addTarget(self, action: #selector(pwFieldSelected), for: .editingDidBegin)
         
@@ -150,28 +140,6 @@ class WifiReConnectView: BaseView {
         return button
     }()
     
-    lazy var upButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("업", for: .normal)
-        button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = .green
-        button.layer.cornerRadius = 25
-        button.isHidden = true // 초기 값 히든
-        button.addTarget(self, action: #selector(ssidFieldSelected), for: .touchUpInside)
-        return button
-    }()
-    
-    lazy var downButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("다운", for: .normal)
-        button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = .green
-        button.isHidden = true // 초기 값 히든
-        button.layer.cornerRadius = 25
-        button.addTarget(self, action: #selector(pwFieldSelected), for: .touchUpInside)
-        return button
-    }()
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setViewHierarchy()
@@ -186,15 +154,9 @@ class WifiReConnectView: BaseView {
     
     func setViewHierarchy() {
         self.addSubview(backgroundView)
-        
-        backgroundView.addSubview(labelStackView)
-        backgroundView.addSubview(photoImageView)
-        backgroundView.addSubview(ssidStackView)
-        backgroundView.addSubview(pwStackView)
-        backgroundView.addSubview(reConnectButton)
-        
-        backgroundView.addSubview(upButton)
-        backgroundView.addSubview(downButton)
+        backgroundView.addSubViews(labelStackView,photoImageView,
+                                   ssidStackView,pwStackView,
+                                   reConnectButton)
     }
     
     func setConstraints() {
@@ -209,13 +171,13 @@ class WifiReConnectView: BaseView {
         
         photoImageView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(20)
-            $0.top.equalTo(labelStackView.snp.bottom).offset(20)
+            $0.top.equalTo(labelStackView.snp.bottom).offset(53)
             $0.height.equalTo(220)
         }
         
         ssidStackView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(20)
-            $0.top.equalTo(photoImageView.snp.bottom).offset(30)
+            $0.top.equalTo(photoImageView.snp.bottom).offset(53)
         }
         
         ssidField.snp.makeConstraints {
@@ -224,35 +186,28 @@ class WifiReConnectView: BaseView {
         }
         pwStackView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(20)
-            $0.top.equalTo(ssidStackView.snp.bottom).offset(30)
+            $0.top.equalTo(ssidStackView.snp.bottom).offset(16)
         }
         
         pwField.snp.makeConstraints {
             $0.height.equalTo(62)
-            $0.width.equalToSuperview()  // 고정 너비 설정
+            $0.width.equalToSuperview()
         }
         
         reConnectButton.snp.makeConstraints {
-            $0.bottom.equalToSuperview().inset(84)
+            $0.top.equalTo(pwStackView.snp.bottom).offset(53)
             $0.trailing.equalToSuperview().inset(20)
             $0.height.equalTo(52)
             $0.width.equalTo(353)
         }
-        
-        upButton.snp.makeConstraints {
-            $0.bottom.equalToSuperview().inset(84)
-            $0.leading.equalToSuperview().inset(20)
-            $0.width.equalTo(52)
-            $0.height.equalTo(52)
-        }
-        
-        downButton.snp.makeConstraints {
-            $0.bottom.equalToSuperview().inset(84)
-            $0.leading.equalTo(upButton.snp.trailing).offset(10)
-            
-            $0.width.equalTo(52)
-            $0.height.equalTo(52)
-        }
+    }
+    
+    
+    // 레이아웃이 완료된 후 초기 값을 설정
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        ssidField.text = ssid
+        pwField.text = pw
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -265,49 +220,29 @@ class WifiReConnectView: BaseView {
     }
     
     @objc private func ssidFieldSelected() {
-        // 비밀번호 필드와 라벨 스택뷰를 숨김
-        pwStackView.isHidden = true
-        labelStackView.isHidden = true
-//        
-//        selectedSSIDField = true
-//        selectedPasswordField = false
-
-        // 애니메이션으로 텍스트 필드 이동
-        UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseInOut], animations: { [self] in
-            self.ssidStackView.snp.remakeConstraints {
-                $0.leading.trailing.equalToSuperview().inset(20)
-                $0.top.equalTo(photoImageView.snp.bottom).offset(30)
-            }
-            self.layoutIfNeeded() // 레이아웃 즉시 반영
-        })
-    }
-
-    @objc private func pwFieldSelected() {
-        // SSID 필드와 라벨 스택뷰를 숨김
-        ssidStackView.isHidden = true
-        labelStackView.isHidden = true
+        ssidLabel.textColor = .green200
+        ssidField.textColor = .green200
+        ssidField.layer.borderColor = UIColor.green200.cgColor
+        ssidField.layer.borderWidth = 1
         
-//        selectedSSIDField = false
-//        selectedPasswordField = true
-
-        // 애니메이션으로 텍스트 필드 이동
-        UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseInOut], animations: { [self] in
-            self.pwStackView.snp.remakeConstraints {
-                $0.leading.trailing.equalToSuperview().inset(20)
-                $0.top.equalTo(photoImageView.snp.bottom).offset(30)
-            }
-            self.layoutIfNeeded() // 레이아웃 즉시 반영
-        })
+        pwLabel.textColor = .neutral200
+        pwField.textColor = .neutral200
+        pwField.layer.borderColor = UIColor.neutral200.cgColor
+        pwField.layer.borderWidth = 0
     }
     
-    // 업 버튼 액션: 이전 필드로 이동 (SSID -> 비밀번호)
-        @objc private func buttonTapped() {
-            if (selectedSSIDField && !selectedPasswordField) {
-                pwField.becomeFirstResponder()
-            } else if (!selectedSSIDField && selectedPasswordField) {
-                ssidField.becomeFirstResponder()
-            }
-        }
+    @objc private func pwFieldSelected() {
+        pwLabel.textColor = .green200
+        pwField.textColor = .green200
+        pwField.layer.borderColor = UIColor.green200.cgColor
+        pwField.layer.borderWidth = 1
+        
+        ssidLabel.textColor = .neutral200
+        ssidField.textColor = .neutral200
+        ssidField.layer.borderColor = UIColor.neutral200.cgColor
+        ssidField.layer.borderWidth = 0
+        
+    }
     
     private func setupKeyboardNotifications() {
         NotificationCenter.default.addObserver(self,selector: #selector(keyboardWillShow(_:)),
@@ -321,96 +256,36 @@ class WifiReConnectView: BaseView {
         guard let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
         let keyboardHeight = keyboardFrame.height
         
-        upButton.isHidden = false
-        downButton.isHidden = false
-        
-        upButton.alpha = 0
-        downButton.alpha = 0
-        reConnectButton.alpha = 0
-        
-        // 버튼 위치를 키보드 위에 배치
-        upButton.snp.remakeConstraints {
-            $0.leading.equalToSuperview().offset(20)
-            $0.bottom.equalToSuperview().inset(keyboardHeight - 50)
-            $0.width.equalTo(52)
-            $0.height.equalTo(52)
-        }
-        downButton.snp.remakeConstraints {
-            $0.leading.equalTo(upButton.snp.trailing).offset(10)
-            $0.bottom.equalToSuperview().inset(keyboardHeight - 50)
-            $0.width.equalTo(52)
-            $0.height.equalTo(52)
-        }
-        reConnectButton.snp.remakeConstraints {
-            $0.leading.equalTo(downButton.snp.trailing).offset(10)
-            $0.bottom.equalToSuperview().inset(keyboardHeight - 50)
-            $0.width.equalTo(353) // 동일한 너비 설정
-            $0.height.equalTo(52)
-        }
-        
-        // 애니메이션으로 뷰와 버튼을 자연스럽게 표시
         UIView.animate(withDuration: 0.5, delay: 0, options: [.curveEaseInOut], animations: {
-            self.upButton.alpha = 1
-            self.downButton.alpha = 1
-            self.reConnectButton.alpha = 1
-            
+            self.labelStackView.alpha = 0
             self.layoutIfNeeded() // 레이아웃을 즉시 반영
-            self.transform = CGAffineTransform(translationX: 0, y: -keyboardHeight / 4)
-        }, completion: nil)
+            self.transform = CGAffineTransform(translationX: 0, y: -keyboardHeight / 2)
+        }, completion: { _ in
+            self.labelStackView.isHidden = true
+        })
     }
     
     @objc private func keyboardWillHide(_ notification: Notification) {
-        // 모든 필드와 스택 뷰를 다시 표시
-        ssidStackView.isHidden = false
-        labelStackView.isHidden = false
-
-        // 애니메이션으로 SSID 필드를 부드럽게 표시
-        ssidStackView.alpha = 0  // 처음에 투명하게 설정
         resetViewState()
+        // 올라간 화면 원상 복구
         UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseInOut], animations: {
-            self.ssidStackView.alpha = 1  // 페이드 인
-            self.ssidStackView.snp.remakeConstraints {
-                $0.leading.trailing.equalToSuperview().inset(20)
-                $0.top.equalTo(self.photoImageView.snp.bottom).offset(30)
-            }
-            self.layoutIfNeeded()  // 레이아웃 즉시 반영
             self.transform = CGAffineTransform.identity
         }, completion: nil)
     }
-
-    
     
     private func resetViewState() {
-        // 모든 필드를 보이도록 설정하고 초기 상태로 복구
+        labelStackView.alpha = 1
         labelStackView.isHidden = false
-        ssidStackView.isHidden = false
-        pwStackView.isHidden = false
         
-        upButton.isHidden = true
-        downButton.isHidden = true
+        ssidLabel.textColor = .neutral200
+        ssidField.textColor = .neutral200
+        ssidField.layer.borderColor = UIColor.neutral200.cgColor
+        ssidField.layer.borderWidth = 0
         
-        // 초기 레이아웃 제약 조건 설정
-        ssidStackView.snp.remakeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(20)
-            $0.top.equalTo(photoImageView.snp.bottom).offset(30)
-        }
-        
-        pwStackView.snp.remakeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(20)
-            $0.top.equalTo(ssidStackView.snp.bottom).offset(30)
-        }
-        
-        reConnectButton.snp.remakeConstraints {
-            $0.centerX.equalToSuperview()
-            $0.bottom.equalToSuperview().inset(84)
-            $0.width.equalTo(ssidStackView)
-            $0.height.equalTo(52)
-        }
-        
-        // 애니메이션을 추가하여 복구 시 자연스럽게 전환
-        UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseInOut, .beginFromCurrentState], animations: {
-            self.layoutIfNeeded() // 레이아웃 반영
-        })
+        pwLabel.textColor = .neutral200
+        pwField.textColor = .neutral200
+        pwField.layer.borderColor = UIColor.neutral200.cgColor
+        pwField.layer.borderWidth = 0
     }
     
     private func setupTapGesture() {
