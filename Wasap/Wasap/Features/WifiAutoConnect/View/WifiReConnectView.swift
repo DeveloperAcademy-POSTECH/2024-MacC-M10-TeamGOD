@@ -9,9 +9,6 @@ import SnapKit
 
 class WifiReConnectView: BaseView {
     
-    let ssid : String = "KT_GIGA_5G_B67C"
-    let pw : String  = "dd08ff7107"
-    
     lazy var backgroundView: UIView = {
         let view = UIView()
         view.backgroundColor = .gray500
@@ -77,15 +74,16 @@ class WifiReConnectView: BaseView {
     
     lazy var ssidField: UITextField = {
         let textField = UITextField()
-        textField.text = ssid
-        textField.backgroundColor = UIColor(red: 66/255, green: 66/255, blue: 70/255, alpha: 1)
         textField.textColor = .white
+        
+        textField.backgroundColor = UIColor(red: 66/255, green: 66/255, blue: 70/255, alpha: 1)
         textField.font = .preferredFont(forTextStyle: .headline)
         textField.returnKeyType = .done
         textField.layer.cornerRadius = 16
         textField.layer.masksToBounds = true
         textField.textAlignment = .center
         
+        textField.addTarget(self, action: #selector(textFieldValueChanged), for: .editingChanged)
         textField.addTarget(self, action: #selector(ssidFieldSelected), for: .editingDidBegin)
         
         return textField
@@ -108,7 +106,6 @@ class WifiReConnectView: BaseView {
     
     lazy var pwField: UITextField = {
         let textField = UITextField()
-        textField.text = pw
         textField.backgroundColor = UIColor(red: 66/255, green: 66/255, blue: 70/255, alpha: 1)
         textField.textColor = .white
         textField.font = .preferredFont(forTextStyle: .headline)
@@ -117,6 +114,7 @@ class WifiReConnectView: BaseView {
         textField.layer.masksToBounds = true
         textField.textAlignment = .center
         
+        textField.addTarget(self, action: #selector(textFieldValueChanged), for: .editingChanged)
         textField.addTarget(self, action: #selector(pwFieldSelected), for: .editingDidBegin)
         
         return textField
@@ -202,14 +200,6 @@ class WifiReConnectView: BaseView {
         }
     }
     
-    
-    // 레이아웃이 완료된 후 초기 값을 설정
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        ssidField.text = ssid
-        pwField.text = pw
-    }
-    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder() // 키보드 숨기기
         resetViewState() // 초기 상태로 복구
@@ -218,6 +208,21 @@ class WifiReConnectView: BaseView {
         }
         return true
     }
+    
+    @objc private func textFieldValueChanged() {
+        // ssidField 또는 pwField 값이 변경되었는지 확인
+        let ssid : String = "KT_GIGA_5G_B67C"
+        let pw : String  = "dd08ff7107"
+        
+        if ssidField.text != ssid || pwField.text != pw {
+            reConnectButton.backgroundColor = .green200  // 값이 변경되면 버튼 색 변경
+            reConnectButton.setTitle("다시 연결하기", for: .normal)
+            reConnectButton.setTitleColor(.black, for: .normal)
+        } else {
+            reConnectButton.backgroundColor = .clear  // 원래 색상으로 복원
+        }
+    }
+    
     
     @objc private func ssidFieldSelected() {
         ssidLabel.textColor = .green200
