@@ -32,16 +32,3 @@ public class WifiConnectCoordinator: NavigationCoordinator {
         self.navigationController.pushViewController(viewController, animated: true)
     }
 }
-
-extension WifiConnectCoordinator: WifiConnectCoordinatorController {
-    public func performTransition(to flow: Flow) {
-        switch flow {
-        case .detail:
-            let coordinator = WifiConnectCoordinator(navigationController: self.navigationController)
-            start(childCoordinator: coordinator)
-            Log.debug("Detail Flow!")
-        }
-    }
-    
-
-}

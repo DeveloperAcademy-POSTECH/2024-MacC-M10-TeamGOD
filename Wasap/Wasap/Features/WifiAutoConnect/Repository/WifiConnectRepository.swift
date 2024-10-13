@@ -10,8 +10,11 @@ import NetworkExtension
 
 
 protocol WiFiConnectRepository {
+    // 와이파이 연결을 시도합니다. 그리고 성공 여부를 반환합니다.
     func connectToWiFi(ssid: String, password: String) -> Single<Bool>
+    // 와이파이에 연결된 상태인지 확인합니다.
     func isWiFiConnectedcheck() -> Single<Bool>
+    // 연결된 와이파이 SSID 를 반환합니다.
     func getCurrentWiFiSSID() -> Single<String?>
 }
 class DefaultWiFiConnectRepository: WiFiConnectRepository {

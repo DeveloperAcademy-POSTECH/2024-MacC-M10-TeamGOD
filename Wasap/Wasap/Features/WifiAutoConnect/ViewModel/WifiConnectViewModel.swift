@@ -59,12 +59,8 @@ public class WifiConnectViewModel: BaseViewModel {
                 
                 if success {
                     self.iscompleteTextRelay.accept("연결 성공했습니다.")
-                    // 성공 시 화면 전환
-//                    self.coordinatorController?.navigationController
                 } else {
                     self.iscompleteTextRelay.accept("연결에 실패했습니다.")
-                    // 실패 시 원래 화면에 머무름
-//                    self.coordinatorController?.navigateToRetryView()
                 }
             })
             .disposed(by: disposeBag)
