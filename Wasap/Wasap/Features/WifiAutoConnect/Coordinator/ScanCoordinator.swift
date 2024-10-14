@@ -15,7 +15,7 @@ public class ScanCoordinator: NavigationCoordinator {
     public var childCoordinators: [any Coordinator] = []
     public let navigationController: UINavigationController
     let wifiAutoConnectDIContainer: WifiAutoConnectDIContainer
-    let previewImage: UIImage = .init(named: "previewTestImage")!
+    let previewImage: UIImage = .init(named: "previewTestImage2")!
     
     private weak var scanViewController: ScanViewController?
     
