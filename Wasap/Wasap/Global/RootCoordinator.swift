@@ -22,9 +22,9 @@ public class RootCoordinator: Coordinator {
     
 
     public func start() {
-        let wifiConnectCoordinator = WifiConnectCoordinator(navigationController: UINavigationController())
-        start(childCoordinator: wifiConnectCoordinator)
-        window?.rootViewController = wifiConnectCoordinator.navigationController
+        let coordinator = GoToSettingCoordinator(navigationController: UINavigationController())
+        start(childCoordinator: coordinator)
+        window?.rootViewController = coordinator.navigationController
         window?.makeKeyAndVisible()
     }
 }
