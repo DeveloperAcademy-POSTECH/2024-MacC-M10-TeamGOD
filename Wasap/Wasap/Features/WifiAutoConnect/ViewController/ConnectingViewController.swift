@@ -32,8 +32,18 @@ public class ConnectingViewController: RxBaseViewController<ConnectingViewModel>
     
     private func bind(_ viewModel: ConnectingViewModel) {
         // 뷰 -> 뷰모델
+        connectingView.quitButton.rx.tap
+            .bind(to: viewModel.quitButtonTapped)
+            .disposed(by: disposeBag)
         
         // 뷰모델 -> 뷰
-
+        viewModel.isWiFiConnected
+            .drive { [weak self] _ in
+                self?.connectingView.mainStatusLabel.text = "Done!"
+                self?.connectingView.subStatusLabel.text = "연결 완료!"
+                self?.connectingView.doneSignIcon.isHidden = false
+                self?.connectingView.quitButton.isHidden = false
+            }
+            .disposed(by: disposeBag)
     }
 }

@@ -49,7 +49,7 @@ public class ScanViewModel: BaseViewModel {
                 passwordRelay.accept(password)
                 updatedImageRelay.accept(self.drawBoundingBoxes(boundingBoxes, on: previewImage))
                 
-                return Observable<Int>.timer(.seconds(3), scheduler: MainScheduler.instance)
+                return Observable<Int>.timer(.seconds(2), scheduler: MainScheduler.instance)
                     .flatMap { _ -> Observable<Bool> in
                         
                         if !ssid.isEmpty && !password.isEmpty {
@@ -71,19 +71,23 @@ public class ScanViewModel: BaseViewModel {
                         }
                     }
             }
-            .do(onNext: { [weak self] _ in
+            .do(onNext: { [weak self] success in
                 guard let self = self else { return }
                 
                 print("이 부분에 도달했습니다.")
-                if self.coordinatorController == nil {
-                    print("Error: coordinatorController is nil")
+                if success {
+                    if self.coordinatorController == nil {
+                        print("Error: coordinatorController is nil")
+                    } else {
+                        print("뷰 전환")
+                        self.coordinatorController?.performTransition(to: .connecting)
+                    }
                 } else {
-                    print("뷰 전환")
-                    self.coordinatorController?.performTransition(to: .connecting)
+                    print("빠꾸!!")
                 }
             })
-            .subscribe(onNext: { succes in
-                isWiFiConnectedRelay.accept(succes)
+            .subscribe(onNext: { success in
+                isWiFiConnectedRelay.accept(success)
             }, onError: { error in
                 print("OCR 또는 Wi-Fi 연결 중 에러 발생: \(error.localizedDescription)")
             })
