@@ -40,7 +40,7 @@ class ConnectingView: BaseView {
     
     func setViewHierarchy() {
         self.addSubview(backgroundView)
-        self.addSubViews(mainStatusLabel, subStatusLabel, loadingAnimation)
+        self.addSubViews(loadingAnimation, mainStatusLabel, subStatusLabel)
         
     }
     
@@ -50,20 +50,16 @@ class ConnectingView: BaseView {
         mainStatusLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.top.equalToSuperview().offset(359)
-            $0.width.equalTo(91)
-            $0.height.equalTo(36)
         }
         
         subStatusLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.top.equalTo(mainStatusLabel.snp.bottom).offset(6)
-            $0.width.equalTo(51)
-            $0.height.equalTo(22)
         }
         
         loadingAnimation.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.top.equalTo(subStatusLabel.snp.bottom).offset(134)
+            $0.top.equalTo(subStatusLabel.snp.bottom).offset(-230)
         }
     }
 }

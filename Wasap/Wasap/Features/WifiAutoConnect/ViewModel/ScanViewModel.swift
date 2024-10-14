@@ -43,15 +43,24 @@ public class ScanViewModel: BaseViewModel {
                 return imageAnalysisUseCase.performOCR(on: previewImage)
             }
             .flatMapLatest { boundingBoxes, ssid, password in
+                print("OCR 후 SSID: \(ssid), Password: \(password)")
+                
                 ssidRelay.accept(ssid)
                 passwordRelay.accept(password)
                 updatedImageRelay.accept(self.drawBoundingBoxes(boundingBoxes, on: previewImage))
                 
                 return Observable<Int>.timer(.seconds(3), scheduler: MainScheduler.instance)
                     .flatMap { _ -> Observable<Bool> in
+                        
                         if !ssid.isEmpty && !password.isEmpty {
+                            print("Wi-Fi 연결 시도: SSID = \(ssid), Password = \(password)")
                             return wifiConnectUseCase.connectToWiFi(ssid: ssid, password: password)
                                 .asObservable()
+                                .do(onNext: { success in
+                                    print("Wi-Fi 연결 성공 여부: \(success)")
+                                }, onError: { error in
+                                    print("Wi-Fi 연결 중 에러 발생: \(error.localizedDescription)")
+                                })
                                 .catch { error in
                                     print("Connection failed: \(error.localizedDescription)")
                                     return .just(false)
@@ -63,7 +72,15 @@ public class ScanViewModel: BaseViewModel {
                     }
             }
             .do(onNext: { [weak self] _ in
-                self?.coordinatorController?.performTransition(to: .connecting)
+                guard let self = self else { return }
+                
+                print("이 부분에 도달했습니다.")
+                if self.coordinatorController == nil {
+                    print("Error: coordinatorController is nil")
+                } else {
+                    print("뷰 전환")
+                    self.coordinatorController?.performTransition(to: .connecting)
+                }
             })
             .subscribe(onNext: { succes in
                 isWiFiConnectedRelay.accept(succes)
