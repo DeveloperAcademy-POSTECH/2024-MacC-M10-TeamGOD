@@ -7,8 +7,15 @@
 
 import UIKit
 import SnapKit
+import Lottie
 
 class ScanView: BaseView {
+    lazy var backgroundView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .gray500
+        return view
+    }()
+    
     lazy var previewView: UIImageView = {
         let previewView = UIImageView()
         previewView.contentMode = .scaleAspectFit
@@ -34,17 +41,15 @@ class ScanView: BaseView {
         return label
     }()
     
-    lazy var loadingAnimationComponent: UIView = {
-        let animationComponent = UIView()
-        animationComponent.backgroundColor = .red
-        return animationComponent
-    }()
     
     func setViewHierarchy() {
-        self.addSubViews(previewView, wifiSymbolImage, titleLabel, loadingLabel, loadingAnimationComponent)
+        self.addSubview(backgroundView)
+        self.addSubViews(previewView, wifiSymbolImage, titleLabel, loadingLabel)
     }
     
     func setConstraints() {
+        backgroundView.snp.makeConstraints { $0.edges.equalToSuperview() }
+        
         previewView.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.top.equalTo(safeAreaLayoutGuide).offset(84)
@@ -68,12 +73,6 @@ class ScanView: BaseView {
             $0.centerX.equalToSuperview()
             $0.top.equalTo(titleLabel.snp.bottom).offset(15)
         }
-        
-        loadingAnimationComponent.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
-            $0.top.equalTo(loadingLabel.snp.bottom).offset(7)
-            $0.width.equalTo(242)
-            $0.height.equalTo(242)
-        }
+
     }
 }

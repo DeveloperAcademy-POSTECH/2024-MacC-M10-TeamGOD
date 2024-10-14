@@ -47,18 +47,24 @@ public class ScanViewModel: BaseViewModel {
                 passwordRelay.accept(password)
                 updatedImageRelay.accept(self.drawBoundingBoxes(boundingBoxes, on: previewImage))
                 
-                if !ssid.isEmpty && !password.isEmpty {
-                    return wifiConnectUseCase.connectToWiFi(ssid: ssid, password: password)
-                        .asObservable()
-                        .catch { error in
-                            print("Connection failed: \(error.localizedDescription)")
+                return Observable<Int>.timer(.seconds(3), scheduler: MainScheduler.instance)
+                    .flatMap { _ -> Observable<Bool> in
+                        if !ssid.isEmpty && !password.isEmpty {
+                            return wifiConnectUseCase.connectToWiFi(ssid: ssid, password: password)
+                                .asObservable()
+                                .catch { error in
+                                    print("Connection failed: \(error.localizedDescription)")
+                                    return .just(false)
+                                }
+                        } else {
+                            print("누락 - 현재SSID:\(ssid), 현재Password:\(password)")
                             return .just(false)
                         }
-                } else {
-                    print("누락 - 현재SSID:\(ssid), 현재Password:\(password)")
-                    return .just(false)
-                }
+                    }
             }
+            .do(onNext: { [weak self] _ in
+                self?.coordinatorController?.performTransition(to: .connecting)
+            })
             .subscribe(onNext: { succes in
                 isWiFiConnectedRelay.accept(succes)
             }, onError: { error in

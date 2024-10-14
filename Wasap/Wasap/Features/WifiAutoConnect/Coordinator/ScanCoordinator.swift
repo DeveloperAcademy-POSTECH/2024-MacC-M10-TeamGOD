@@ -17,8 +17,6 @@ public class ScanCoordinator: NavigationCoordinator {
     let wifiAutoConnectDIContainer: WifiAutoConnectDIContainer
     let previewImage: UIImage = .init(named: "previewTestImage2")!
     
-    private weak var scanViewController: ScanViewController?
-    
     public init(navigationController: UINavigationController, wifiAutoConnectDIContainer: WifiAutoConnectDIContainer/*, previewImage: UIImage*/) {
         self.navigationController = navigationController
         self.wifiAutoConnectDIContainer = wifiAutoConnectDIContainer
@@ -27,12 +25,12 @@ public class ScanCoordinator: NavigationCoordinator {
     }
     
     public enum Flow {
-        case detail(imageData: Data)
         // case previewImage(UIImage)
+        case connecting
     }
     
     public func start() {
-        // ImageAnalysis Repository, UseCase, ViewModel, ViewController 생성
+        // Repository, UseCase, ViewModel, ViewController 생성
         let imageAnalysisRepository = wifiAutoConnectDIContainer.makeImageAnalysisRepository()
         let imageAnalysisUseCase = wifiAutoConnectDIContainer.makeImageAnalysisUseCase(imageAnalysisRepository)
         
@@ -42,19 +40,19 @@ public class ScanCoordinator: NavigationCoordinator {
         let viewModel = wifiAutoConnectDIContainer.makeScanViewModel(imageAnalysisUseCase: imageAnalysisUseCase, wifiConnectUseCase: wifiConnectUseCase, coordinatorcontroller: self, image: previewImage)
         let viewController = wifiAutoConnectDIContainer.makeScanViewController(viewModel)
         
-        // ImageAnalysisViewController를 navagationController에 push
+        // ScanViewController를 navagationController에 push
         self.navigationController.pushViewController(viewController, animated: true)
-        
-        self.scanViewController = viewController
     }
 }
 
 extension ScanCoordinator: ScanCoordinatorController {
     public func performTransition(to flow: Flow) {
         switch flow {
-        case .detail:
-            print("Performing transition to detail flow")
-        // case .previewImage(UIImage)
+        case .connecting:
+            let coordinator = ConnectingCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: self.wifiAutoConnectDIContainer)
+            start(childCoordinator: coordinator)
+            
+            // case .previewImage(UIImage)
         }
     }
 }

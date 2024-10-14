@@ -25,6 +25,16 @@ enum Gradients {
         gradient.opacity = 0.22
         return gradient
     }
+    
+    static var gradientBackground3: CAGradientLayer {
+        let gradient = CAGradientLayer()
+        gradient.colors = [UIColor.green300.cgColor, UIColor.green200.cgColor, UIColor.silver200.cgColor]
+        gradient.locations = [0.0, 0.6, 1.0]
+        gradient.startPoint = CGPoint(x: 0.5, y: 0.0)
+        gradient.endPoint = CGPoint(x: 0.5, y: 1.0)
+        gradient.opacity = 1.0
+        return gradient
+    }
 }
 
 
@@ -50,6 +60,7 @@ enum Gradients {
 class GradientBackgroundView: UIView, CAAnimationDelegate {
 
     override func draw(_ rect: CGRect) {
+        /*
         let gradient1 = Gradients.gradientBackground1
         gradient1.frame = self.bounds
 
@@ -59,11 +70,19 @@ class GradientBackgroundView: UIView, CAAnimationDelegate {
 
         self.layer.addSublayer(gradient1)
         self.layer.addSublayer(gradient2)
+        */
+        
+        let gradient = Gradients.gradientBackground3
+        gradient.frame = self.bounds
+        
+        self.layer.addSublayer(gradient)
     }
 
     override func layoutSubviews() {
         super.layoutSubviews()
-
+        
+        /*
         self.backgroundColor = UIColor.gray500
+        */
     }
 }

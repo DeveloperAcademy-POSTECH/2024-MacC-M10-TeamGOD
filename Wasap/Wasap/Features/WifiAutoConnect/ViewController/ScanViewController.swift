@@ -5,9 +5,9 @@
 //  Created by Chang Jonghyeon on 10/10/24.
 //
 
-import UIKit
 import RxSwift
 import RxCocoa
+import UIKit
 
 public class ScanViewController: RxBaseViewController<ScanViewModel>, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     private let scanView = ScanView()

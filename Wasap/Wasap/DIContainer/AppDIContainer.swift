@@ -19,12 +19,20 @@ final public class AppDIContainer {
 }
 
 final public class WifiAutoConnectDIContainer {
+    private var wifiConnectRepository: WiFiConnectRepository?
+    
     public func makeImageAnalysisRepository() -> ImageAnalysisRepository {
         return DefaultImageAnalysisRepository()
     }
     
     public func makeWiFiConnectRepository() -> WiFiConnectRepository {
-        return DefaultWiFiConnectRepository()
+            let newRepository = DefaultWiFiConnectRepository()
+            self.wifiConnectRepository = newRepository
+            return newRepository
+    }
+    
+    public func getWiFiConnectRepository() -> WiFiConnectRepository? {
+        return self.wifiConnectRepository
     }
     
     public func makeImageAnalysisUseCase(_ repository: ImageAnalysisRepository) -> ImageAnalysisUseCase {
@@ -41,5 +49,13 @@ final public class WifiAutoConnectDIContainer {
     
     public func makeScanViewController(_ viewModel: ScanViewModel) -> ScanViewController {
         return ScanViewController(viewModel: viewModel)
+    }
+    
+    public func makeConnectingViewModel(wifiConnectUseCase: WiFiConnectUseCase, coordinatorcontroller: ConnectingCoordinatorController) -> ConnectingViewModel {
+        return ConnectingViewModel(wifiConnectUseCase: wifiConnectUseCase, coordinatorController: coordinatorcontroller)
+    }
+    
+    public func makeConnectingViewController(_ viewModel: ConnectingViewModel) -> ConnectingViewController {
+        return ConnectingViewController(viewModel: viewModel)
     }
 }
