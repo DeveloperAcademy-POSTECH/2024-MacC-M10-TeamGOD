@@ -159,14 +159,17 @@ class GoToSettingView: BaseView {
         return textView
     }()
     
-    lazy var reConnectButton: UIButton = {
+    lazy var settingBtn: UIButton = {
         let button = UIButton()
         button.setTitle("설정에서 연결하기", for: .normal)
         button.setTitleColor(.black, for: .normal)
         button.backgroundColor = .green200
         button.layer.cornerRadius = 25
         button.layer.borderWidth = 1
-        button.layer.borderColor = UIColor.gray200.cgColor
+        button.layer.borderColor = UIColor.green200.cgColor
+        
+        button.addTarget(self, action: #selector(openWiFiSettings), for: .touchUpInside)
+        button.addTarget(self, action: #selector(copyPassword), for: .touchUpInside)
         return button
     }()
     
@@ -186,7 +189,7 @@ class GoToSettingView: BaseView {
         self.addSubview(backgroundView)
         backgroundView.addSubViews(labelStackView,photoImageView,
                                    ssidStackView,pwStackView,
-                                   reConnectButton,infoLabel)
+                                   settingBtn,infoLabel)
     }
     
     func setConstraints() {
@@ -229,7 +232,7 @@ class GoToSettingView: BaseView {
             $0.top.equalTo(pwStackView.snp.bottom).offset(16)
         }
         
-        reConnectButton.snp.makeConstraints {
+        settingBtn.snp.makeConstraints {
             $0.top.equalTo(infoLabel.snp.bottom).offset(33)
             $0.trailing.equalToSuperview().inset(20)
             $0.height.equalTo(52)
@@ -237,14 +240,11 @@ class GoToSettingView: BaseView {
         }
     }
     
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder() // 키보드 숨기기
-        resetViewState() // 초기 상태로 복구
-        UIView.animate(withDuration: 0.3) {
-            self.layoutIfNeeded()
+    // Done 버튼을 눌렀을 때 키보드를 내리기 위해 호출
+        func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+            textField.resignFirstResponder()
+            return true
         }
-        return true
-    }
     
     @objc private func textFieldValueChanged() {
         // ssidField 또는 pwField 값이 변경되었는지 확인
@@ -252,14 +252,13 @@ class GoToSettingView: BaseView {
         let pw : String  = "dd08ff7107"
         
         if ssidField.text != ssid || pwField.text != pw {
-            reConnectButton.backgroundColor = .green200  // 값이 변경되면 버튼 색 변경
-            reConnectButton.setTitle("다시 연결하기", for: .normal)
-            reConnectButton.setTitleColor(.black, for: .normal)
+            settingBtn.backgroundColor = .green200  // 값이 변경되면 버튼 색 변경
+            settingBtn.setTitle("다시 연결하기", for: .normal)
+            settingBtn.setTitleColor(.black, for: .normal)
         } else {
-            reConnectButton.backgroundColor = .clear  // 원래 색상으로 복원
+            settingBtn.backgroundColor = .clear  // 원래 색상으로 복원
         }
     }
-    
     
     @objc private func ssidFieldSelected() {
         ssidLabel.textColor = .green200
@@ -339,6 +338,26 @@ class GoToSettingView: BaseView {
         self.endEditing(true) // 키보드 숨기기
         resetViewState() // 초기 상태로 복구
     }
+    
+    @objc func openWiFiSettings() {
+            if let wifiSettingsURL = URL(string: "App-Prefs:root=WIFI") {
+                if UIApplication.shared.canOpenURL(wifiSettingsURL) {
+                    UIApplication.shared.open(wifiSettingsURL, options: [:], completionHandler: nil)
+                } else {
+                    print("Wi-Fi 설정을 열 수 없습니다.")
+                }
+            }
+        }
+    
+    @objc func copyPassword() {
+            guard let password = pwField.text, !password.isEmpty else {
+                print("비밀번호가 없습니다.")
+                return
+            }
+            
+            UIPasteboard.general.string = password
+            print("비밀번호가 복사되었습니다: \(password)")
+        }
     
     deinit {
         NotificationCenter.default.removeObserver(self)
