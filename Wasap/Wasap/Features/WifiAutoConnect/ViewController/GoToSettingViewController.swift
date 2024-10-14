@@ -15,7 +15,6 @@ public class GoToSettingViewController: RxBaseViewController<GoToSettingViewMode
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .red
     }
     
     public override func loadView() {
