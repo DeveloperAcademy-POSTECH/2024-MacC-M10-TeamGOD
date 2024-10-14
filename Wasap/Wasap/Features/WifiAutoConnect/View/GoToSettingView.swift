@@ -168,7 +168,7 @@ class GoToSettingView: BaseView {
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.green200.cgColor
         
-        button.addTarget(self, action: #selector(openWiFiSettings), for: .touchUpInside)
+        button.addTarget(self, action: #selector(openSettings), for: .touchUpInside)
         button.addTarget(self, action: #selector(copyPassword), for: .touchUpInside)
         return button
     }()
@@ -241,10 +241,10 @@ class GoToSettingView: BaseView {
     }
     
     // Done 버튼을 눌렀을 때 키보드를 내리기 위해 호출
-        func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-            textField.resignFirstResponder()
-            return true
-        }
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
     
     @objc private func textFieldValueChanged() {
         // ssidField 또는 pwField 값이 변경되었는지 확인
@@ -339,25 +339,25 @@ class GoToSettingView: BaseView {
         resetViewState() // 초기 상태로 복구
     }
     
-    @objc func openWiFiSettings() {
-            if let wifiSettingsURL = URL(string: "App-Prefs:root=WIFI") {
-                if UIApplication.shared.canOpenURL(wifiSettingsURL) {
-                    UIApplication.shared.open(wifiSettingsURL, options: [:], completionHandler: nil)
-                } else {
-                    print("Wi-Fi 설정을 열 수 없습니다.")
-                }
+    @objc func openSettings() {
+        if let settingsURL = URL(string: "App-Prefs:") {
+            if UIApplication.shared.canOpenURL(settingsURL) {
+                UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
+            } else {
+                print("설정 앱을 열 수 없습니다.")
             }
         }
+    }
     
     @objc func copyPassword() {
-            guard let password = pwField.text, !password.isEmpty else {
-                print("비밀번호가 없습니다.")
-                return
-            }
-            
-            UIPasteboard.general.string = password
-            print("비밀번호가 복사되었습니다: \(password)")
+        guard let password = pwField.text, !password.isEmpty else {
+            print("비밀번호가 없습니다.")
+            return
         }
+        
+        UIPasteboard.general.string = password
+        print("비밀번호가 복사되었습니다: \(password)")
+    }
     
     deinit {
         NotificationCenter.default.removeObserver(self)
