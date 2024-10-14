@@ -85,8 +85,7 @@ class GoToSettingView: BaseView {
         textField.layer.masksToBounds = true
         textField.textAlignment = .center
         
-        textField.addTarget(self, action: #selector(textFieldValueChanged), for: .editingChanged)
-        textField.addTarget(self, action: #selector(ssidFieldSelected), for: .editingDidBegin)
+       
         
         return textField
     }()
@@ -116,8 +115,7 @@ class GoToSettingView: BaseView {
         textField.layer.masksToBounds = true
         textField.textAlignment = .center
         
-        textField.addTarget(self, action: #selector(textFieldValueChanged), for: .editingChanged)
-        textField.addTarget(self, action: #selector(pwFieldSelected), for: .editingDidBegin)
+        
         
         return textField
     }()
@@ -167,9 +165,6 @@ class GoToSettingView: BaseView {
         button.layer.cornerRadius = 25
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.green200.cgColor
-        
-        button.addTarget(self, action: #selector(openSettings), for: .touchUpInside)
-        button.addTarget(self, action: #selector(copyPassword), for: .touchUpInside)
         return button
     }()
     
@@ -240,50 +235,7 @@ class GoToSettingView: BaseView {
         }
     }
     
-    // Done 버튼을 눌렀을 때 키보드를 내리기 위해 호출
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        return true
-    }
     
-    @objc private func textFieldValueChanged() {
-        // ssidField 또는 pwField 값이 변경되었는지 확인
-        let ssid : String = "KT_GIGA_5G_B67C"
-        let pw : String  = "dd08ff7107"
-        
-        if ssidField.text != ssid || pwField.text != pw {
-            settingBtn.backgroundColor = .green200  // 값이 변경되면 버튼 색 변경
-            settingBtn.setTitle("다시 연결하기", for: .normal)
-            settingBtn.setTitleColor(.black, for: .normal)
-        } else {
-            settingBtn.backgroundColor = .clear  // 원래 색상으로 복원
-        }
-    }
-    
-    @objc private func ssidFieldSelected() {
-        ssidLabel.textColor = .green200
-        ssidField.textColor = .green200
-        ssidField.layer.borderColor = UIColor.green200.cgColor
-        ssidField.layer.borderWidth = 1
-        
-        pwLabel.textColor = .neutral200
-        pwField.textColor = .neutral200
-        pwField.layer.borderColor = UIColor.neutral200.cgColor
-        pwField.layer.borderWidth = 0
-    }
-    
-    @objc private func pwFieldSelected() {
-        pwLabel.textColor = .green200
-        pwField.textColor = .green200
-        pwField.layer.borderColor = UIColor.green200.cgColor
-        pwField.layer.borderWidth = 1
-        
-        ssidLabel.textColor = .neutral200
-        ssidField.textColor = .neutral200
-        ssidField.layer.borderColor = UIColor.neutral200.cgColor
-        ssidField.layer.borderWidth = 0
-        
-    }
     
     private func setupKeyboardNotifications() {
         NotificationCenter.default.addObserver(self,selector: #selector(keyboardWillShow(_:)),
@@ -314,6 +266,11 @@ class GoToSettingView: BaseView {
         }, completion: nil)
     }
     
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
     private func resetViewState() {
         labelStackView.alpha = 1
         labelStackView.isHidden = false
@@ -338,27 +295,6 @@ class GoToSettingView: BaseView {
         self.endEditing(true) // 키보드 숨기기
         resetViewState() // 초기 상태로 복구
     }
-    
-    @objc func openSettings() {
-        if let settingsURL = URL(string: "App-Prefs:") {
-            if UIApplication.shared.canOpenURL(settingsURL) {
-                UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
-            } else {
-                print("설정 앱을 열 수 없습니다.")
-            }
-        }
-    }
-    
-    @objc func copyPassword() {
-        guard let password = pwField.text, !password.isEmpty else {
-            print("비밀번호가 없습니다.")
-            return
-        }
-        
-        UIPasteboard.general.string = password
-        print("비밀번호가 복사되었습니다: \(password)")
-    }
-    
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
