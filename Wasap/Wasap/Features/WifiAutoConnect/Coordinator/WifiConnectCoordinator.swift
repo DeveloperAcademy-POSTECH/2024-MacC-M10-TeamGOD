@@ -19,7 +19,7 @@ public class WifiConnectCoordinator: NavigationCoordinator {
     public enum Flow {
         case detail
     }
-
+    
     public func start() {
         let repository = DefaultWiFiConnectRepository()
         
@@ -30,5 +30,15 @@ public class WifiConnectCoordinator: NavigationCoordinator {
         let viewController = WifiReConnectViewController(viewModel: viewModel)
         
         self.navigationController.pushViewController(viewController, animated: true)
+    }
+}
+
+extension WifiConnectCoordinator: WifiConnectTranslater {
+    func perfromTransition(_ flow: WifiConnectCoordinator.Flow) {
+        switch flow {
+        case .detail:
+            navigationController.pushViewController(
+                CameraViewController(cameraUseCase: DefaultCameraUseCase(repository: CameraRepository.self as! CameraRepository)), animated: true)
+        }
     }
 }
