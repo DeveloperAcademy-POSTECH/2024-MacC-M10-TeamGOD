@@ -61,8 +61,14 @@ public class WifiConnectViewModel: BaseViewModel {
                     self.iscompleteTextRelay.accept("연결 성공했습니다.")
                 } else {
                     self.iscompleteTextRelay.accept("연결에 실패했습니다.")
+                    
+                    
                 }
             })
             .disposed(by: disposeBag)
     }
+}
+
+protocol WifiConnectTranslater {
+    func perfromTransition(_ flow: WifiConnectCoordinator.Flow)
 }

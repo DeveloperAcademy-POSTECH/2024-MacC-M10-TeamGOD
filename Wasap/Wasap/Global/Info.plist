@@ -3,7 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>UIApplicationSceneManifest</key>
+    
 	<dict>
+        
 		<key>UIApplicationSupportsMultipleScenes</key>
 		<false/>
 		<key>UISceneConfigurations</key>
