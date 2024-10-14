@@ -27,7 +27,6 @@ public class WifiConnectViewModel: BaseViewModel {
     
     public init(wifiConnectUseCase: WiFiConnectUseCase, coordinatorController: WifiConnectCoordinator) {
         
-        
         self.isLoading = isLoadingRelay.asDriver()
         self.completeText = iscompleteTextRelay.asDriver(onErrorJustReturn: "")
         

@@ -8,6 +8,7 @@
 import UIKit
 import AVFoundation
 import RxSwift
+import CoreLocation
 
 class CameraViewController: UIViewController {
     private let cameraUseCase: DefaultCameraUseCase
@@ -21,6 +22,7 @@ class CameraViewController: UIViewController {
     init(cameraUseCase: DefaultCameraUseCase) {
         self.cameraUseCase = cameraUseCase
         super.init(nibName: nil, bundle: nil)
+        
     }
 
     required init?(coder: NSCoder) {
@@ -29,6 +31,8 @@ class CameraViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
 
         setupPreviewContainerView()
         setupCapturedImageView()
