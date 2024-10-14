@@ -7,10 +7,12 @@
 import UIKit
 import RxSwift
 import SnapKit
+import CoreLocation
 
 public class WifiReConnectViewController: RxBaseViewController<WifiConnectViewModel>{
     
     private let wifiReConnectView = WifiReConnectView()
+    
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,3 +55,5 @@ public class WifiReConnectViewController: RxBaseViewController<WifiConnectViewMo
             .disposed(by: disposeBag)
     }
 }
+
+
