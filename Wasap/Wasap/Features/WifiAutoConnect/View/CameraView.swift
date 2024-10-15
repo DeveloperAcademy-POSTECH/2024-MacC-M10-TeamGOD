@@ -50,16 +50,6 @@ final class CameraView: BaseView {
         return imageView
     }()
 
-    // ----------
-    public lazy var capturedImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.clipsToBounds = true;
-        imageView.contentMode = .scaleAspectFit;
-        imageView.isHidden = false
-        return imageView
-    }()
-    // ----------
-
     public lazy var takePhotoButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(UIImage(systemName: "inset.filled.circle"), for: .normal)
@@ -156,7 +146,7 @@ final class CameraView: BaseView {
     }
 
     func setViewHierarchy() {
-        self.addSubViews(previewContainerView, opaqueBackgroundView, wasapLabel, wifiIcon, capturedImageView, takePhotoButton, zoomControlButton, zoomSliderStack)
+        self.addSubViews(previewContainerView, opaqueBackgroundView, wasapLabel, wifiIcon, takePhotoButton, zoomControlButton, zoomSliderStack)
     }
 
     func setConstraints() {
@@ -176,10 +166,6 @@ final class CameraView: BaseView {
         wifiIcon.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.top.equalToSuperview().offset(superViewHeight * 0.3)
-        }
-
-        capturedImageView.snp.makeConstraints {
-            $0.edges.equalTo(safeAreaLayoutGuide)
         }
 
         takePhotoButton.snp.makeConstraints {

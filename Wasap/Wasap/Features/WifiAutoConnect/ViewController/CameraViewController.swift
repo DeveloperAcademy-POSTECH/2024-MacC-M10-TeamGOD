@@ -65,14 +65,6 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
             .bind(to: viewModel.shutterButtonDidTapWithMask)
             .disposed(by: disposeBag)
 
-        //--------
-
-        viewModel.imageResult
-            .drive { [weak self] image in
-                self?.cameraView.capturedImageView.image = image
-            }
-            .disposed(by: disposeBag)
-        //--------
     }
 
 }
