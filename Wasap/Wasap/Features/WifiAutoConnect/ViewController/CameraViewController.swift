@@ -8,6 +8,7 @@
 import UIKit
 import AVFoundation
 import RxSwift
+import CoreLocation
 
 public class CameraViewController: RxBaseViewController<CameraViewModel> {
     private let cameraView = CameraView()
@@ -23,6 +24,7 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
 
     public override func loadView() {
         self.view = cameraView
+
     }
 
     private func bind(_ viewModel: CameraViewModel) {

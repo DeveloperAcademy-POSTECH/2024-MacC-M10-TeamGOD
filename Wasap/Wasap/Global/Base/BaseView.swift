@@ -29,7 +29,6 @@ open class BaseViewClass: UIView {
 
     private func setLayouts() {
         guard let baseView = self as? BaseView else { return }
-
         baseView.setViewHierarchy()
         baseView.setConstraints()
     }

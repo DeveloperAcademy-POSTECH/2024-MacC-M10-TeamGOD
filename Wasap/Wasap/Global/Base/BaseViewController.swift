@@ -15,6 +15,7 @@ public class RxBaseViewController<VM: BaseViewModelProtocol>: UIViewController {
 
     public init(viewModel: VM) {
         self.viewModel = viewModel
+        
         super.init(nibName: nil, bundle: nil)
         _bind(viewModel)
 

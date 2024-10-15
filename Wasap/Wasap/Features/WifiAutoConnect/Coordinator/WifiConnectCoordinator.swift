@@ -19,29 +19,26 @@ public class WifiConnectCoordinator: NavigationCoordinator {
     public enum Flow {
         case detail
     }
-
+    
     public func start() {
-        let repository = DefaultWifiConnectRepository()
+        let repository = DefaultWiFiConnectRepository()
         
         let usecase = DefaultWiFiConnectUseCase(repository: repository)
         
         let viewModel = WifiConnectViewModel(wifiConnectUseCase: usecase, coordinatorController: self)
         
-        let viewController = WifiConnectViewController(viewModel: viewModel)
+        let viewController = WifiReConnectViewController(viewModel: viewModel)
         
         self.navigationController.pushViewController(viewController, animated: true)
     }
 }
 
-extension WifiConnectCoordinator: WifiConnectCoordinatorController {
-    public func performTransition(to flow: Flow) {
+extension WifiConnectCoordinator: WifiConnectTranslater {
+    func perfromTransition(_ flow: WifiConnectCoordinator.Flow) {
         switch flow {
         case .detail:
-            let coordinator = WifiConnectCoordinator(navigationController: self.navigationController)
-            start(childCoordinator: coordinator)
-            Log.debug("Detail Flow!")
+            navigationController.pushViewController(
+                CameraViewController(cameraUseCase: DefaultCameraUseCase(repository: CameraRepository.self as! CameraRepository)), animated: true)
         }
     }
-    
-
 }

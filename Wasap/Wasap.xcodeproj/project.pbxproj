@@ -405,6 +405,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Wasap/Global/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "와이파이를 잡기 위해 카메라 사용이 필요합니다.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "와이파이 SSID를 추출하기 위해 필요합니다";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = "";
@@ -440,6 +441,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Wasap/Global/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "와이파이를 잡기 위해 카메라 사용이 필요합니다.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "와이파이 SSID를 추출하기 위해 필요합니다";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = "";
