@@ -22,10 +22,8 @@ public class WifiConnectViewModel: BaseViewModel {
 
 
     public init(wifiConnectUseCase: WiFiConnectUseCase,coordinatorController: WifiConnectCoordinatorController) {
-
         self.coordinatorController = coordinatorController
         super.init()
-
         // MARK: 다시 와이파이 연결
 
         cameraButtonTapped
@@ -37,10 +35,9 @@ public class WifiConnectViewModel: BaseViewModel {
 
         reConnectButtonTapped
             .withLatestFrom(Observable.combineLatest(ssidText, pwText))
-            .subscribe(onNext: { ssid, pw in
-                self.coordinatorController?.performTransition(
-                    to: .connecting(ssid: ssid, password: pw)
-                )
+            .subscribe(onNext: { ssid, password in
+                print(ssid, password)
+                self.coordinatorController?.performTransition(to: .connecting(ssid: ssid, password: password))
                 print("hello")
             })
             .disposed(by: disposeBag)
