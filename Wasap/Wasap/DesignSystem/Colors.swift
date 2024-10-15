@@ -58,7 +58,7 @@ extension UIColor {
     class var cameraShutter: UIColor { UIColor.gray50 }
 
     class var cameraZoomEnabled: UIColor { UIColor.gray50 }
-    class var cameraZoomDisabled: UIColor { UIColor.gray400 }
+    class var cameraZoomDisabled: UIColor { UIColor.gray500 }
 
     class var cameraFrame: UIColor { UIColor.gray500.withAlphaComponent(0.8) }
     class var cameraFrameGreen: UIColor { UIColor.green200 }

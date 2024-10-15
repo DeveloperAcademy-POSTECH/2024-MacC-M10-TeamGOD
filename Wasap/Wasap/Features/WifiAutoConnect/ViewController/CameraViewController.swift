@@ -54,8 +54,7 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
             .disposed(by: disposeBag)
 
         cameraView.takePhotoButton.rx.tap
-            .compactMap { [weak self] _ in self?.cameraView.maskRect
-            }
+            .compactMap { [weak self] _ in self?.cameraView.maskRect }
             .bind(to: viewModel.shutterButtonDidTapWithMask)
             .disposed(by: disposeBag)
 

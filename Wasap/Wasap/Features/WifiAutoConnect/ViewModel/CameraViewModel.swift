@@ -61,6 +61,16 @@ public class CameraViewModel: BaseViewModel {
             }
             .disposed(by: disposeBag)
 
+        viewDidAppear
+            .bind(to: isCameraConfigured)
+            .disposed(by: disposeBag)
+
+        viewDidDisappear
+            .withUnretained(self)
+            .subscribe { owner, _ in
+                owner.cameraUseCase.stopRunning()
+            }
+            .disposed(by: disposeBag)
 
         isCameraConfigured
             .withUnretained(self)
@@ -96,7 +106,7 @@ public class CameraViewModel: BaseViewModel {
             }
             .disposed(by: disposeBag)
 
-        zoomValue
+        Observable.combineLatest(zoomValue, zoomControlButtonDidTap)
             .debounce(.seconds(3), scheduler: MainScheduler.instance)
             .map { _ in false }
             .bind(to: isZoomControlButtonHiddenRelay)
