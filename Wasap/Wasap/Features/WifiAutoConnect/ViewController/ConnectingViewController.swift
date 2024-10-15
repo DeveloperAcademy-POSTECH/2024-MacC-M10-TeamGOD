@@ -48,6 +48,7 @@ public class ConnectingViewController: RxBaseViewController<ConnectingViewModel>
             .disposed(by: disposeBag)
         
         viewModel.isWiFiConnected
+            .filter { $0 }
             .drive { [weak self] _ in
                 self?.connectingView.mainStatusLabel.text = "Done!"
                 self?.connectingView.subStatusLabel.text = "연결 완료!"
