@@ -93,7 +93,7 @@ final class DefaultCameraUseCase: CameraUseCase {
 
         // 좌표공간이 바뀐거 주의
         let newWidth = originalRect.width * Dimension.Mask.height
-        let newHeight = originalRect.height * Dimension.Mask.height
+        let newHeight = originalRect.height * Dimension.Mask.width
 
         let modifiedRect = CGRect(
             x: newOriginX,
