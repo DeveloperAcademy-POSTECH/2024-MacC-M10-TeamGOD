@@ -70,6 +70,8 @@ class ConnectingView: BaseView {
         quitButton.snp.makeConstraints {
             $0.top.equalToSuperview().offset(71)
             $0.trailing.equalToSuperview().offset(-20)
+            $0.width.equalTo(26)
+            $0.height.equalTo(26)
         }
         
         statusStackView.snp.makeConstraints {

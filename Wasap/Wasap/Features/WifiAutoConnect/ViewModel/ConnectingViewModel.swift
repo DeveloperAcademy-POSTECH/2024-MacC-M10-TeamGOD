@@ -39,7 +39,7 @@ public class ConnectingViewModel: BaseViewModel {
             .withUnretained(self)
             .subscribe(onNext: { _ in
                 Log.debug("quit Button Tapped")
-                print("닫아닫아!")
+                print("닫아!닫으라고!닫아!!!!")
             })
             .disposed(by: disposeBag)
     }

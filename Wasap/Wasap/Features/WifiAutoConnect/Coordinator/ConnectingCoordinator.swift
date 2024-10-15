@@ -35,6 +35,7 @@ public class ConnectingCoordinator: NavigationCoordinator {
         let viewModel = wifiAutoConnectDIContainer.makeConnectingViewModel(wifiConnectUseCase: wifiConnectUseCase, coordinatorcontroller: self)
         let viewController = wifiAutoConnectDIContainer.makeConnectingViewController(viewModel)
         
+        self.navigationController.setNavigationBarHidden(true, animated: false)
         self.navigationController.pushViewController(viewController, animated: true)
     }
 }

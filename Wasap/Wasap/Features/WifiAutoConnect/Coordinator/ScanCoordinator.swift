@@ -15,7 +15,7 @@ public class ScanCoordinator: NavigationCoordinator {
     public var childCoordinators: [any Coordinator] = []
     public let navigationController: UINavigationController
     let wifiAutoConnectDIContainer: WifiAutoConnectDIContainer
-    let previewImage: UIImage = .init(named: "previewTestImage1")!
+    let previewImage: UIImage = .init(named: "previewTestImage3")!
     
     public init(navigationController: UINavigationController, wifiAutoConnectDIContainer: WifiAutoConnectDIContainer/*, previewImage: UIImage*/) {
         self.navigationController = navigationController
@@ -41,6 +41,7 @@ public class ScanCoordinator: NavigationCoordinator {
         let viewController = wifiAutoConnectDIContainer.makeScanViewController(viewModel)
         
         // ScanViewController를 navagationController에 push
+        self.navigationController.setNavigationBarHidden(true, animated: false)
         self.navigationController.pushViewController(viewController, animated: true)
     }
 }
