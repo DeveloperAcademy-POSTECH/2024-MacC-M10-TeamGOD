@@ -54,7 +54,8 @@ public class ConnectingViewModel: BaseViewModel {
         self.quitButtonTapped
             .withUnretained(self)
             .subscribe(onNext: { _ in
-                Log.debug("Quit Button Tapped")
+                self.coordinatorController?.performTransition(to: .last(ssid: ssid, password: password))
+                print("hello")
             })
             .disposed(by: disposeBag)
     }

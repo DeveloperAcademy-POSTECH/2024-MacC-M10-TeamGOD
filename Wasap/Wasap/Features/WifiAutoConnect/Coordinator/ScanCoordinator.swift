@@ -37,7 +37,6 @@ public class ScanCoordinator: NavigationCoordinator {
         let viewController = wifiAutoConnectDIContainer.makeScanViewController(viewModel)
         
         // ScanViewController를 navagationController에 push
-        self.navigationController.setNavigationBarHidden(true, animated: false)
         self.navigationController.pushViewController(viewController, animated: true)
     }
 }

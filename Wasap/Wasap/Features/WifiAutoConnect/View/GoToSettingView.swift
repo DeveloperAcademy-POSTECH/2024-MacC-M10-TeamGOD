@@ -20,7 +20,7 @@ class GoToSettingView: BaseView {
     // MARK: NAVIGATION BAR BTN
     lazy var xButton : UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(named: "QuitButton"), for: .normal)
+        button.setImage(UIImage(named: "GoCameraButton"), for: .normal)
         return button
     }()
     
@@ -217,9 +217,5 @@ class GoToSettingView: BaseView {
             $0.height.equalTo(52)
             $0.width.equalTo(353)
         }
-    }
-    
-    deinit {
-        NotificationCenter.default.removeObserver(self)
     }
 }
