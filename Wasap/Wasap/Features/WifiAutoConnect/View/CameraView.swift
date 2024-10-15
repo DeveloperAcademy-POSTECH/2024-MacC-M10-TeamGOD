@@ -14,21 +14,26 @@ final class CameraView: BaseView {
     private var superViewWidth: CGFloat {
         self.frame.size.width
     }
+
     private var superViewHeight: CGFloat {
         self.frame.size.height
     }
+
     private var maskRect: CGRect {
         CGRect(origin: CGPoint(x: superViewWidth * 0.1, y: superViewHeight * 0.35), size: CGSize(width: superViewWidth * 0.8, height: superViewHeight * 0.3))
     }
+
     public lazy var previewContainerView: UIView = {
         UIView()
     }()
+
     private lazy var capturedImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.isHidden = true
         return imageView
     }()
+
     private lazy var takePhotoButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(UIImage(systemName: "inset.filled.circle"), for: .normal)
@@ -49,11 +54,33 @@ final class CameraView: BaseView {
         return button
     }()
 
-    public lazy var zoomSliderView: UISlider = {
-        let slider = CustomSlider()
+    private lazy var zoomSliderStack: UIStackView = {
 
+        let minusImage = UIImageView(image: UIImage(systemName: "minus"))
+        minusImage.contentMode = .scaleAspectFit
+        minusImage.tintColor = .white
+
+        let plusImage = UIImageView(image: UIImage(systemName: "plus"))
+        plusImage.contentMode = .scaleAspectFit
+        plusImage.tintColor = .white
+
+        let stackView = UIStackView(arrangedSubviews: [
+            minusImage,
+            zoomSlider,
+            plusImage,
+        ])
+
+        stackView.axis = .horizontal
+        stackView.spacing = 8
+
+        return stackView
+    }()
+
+    public lazy var zoomSlider: UISlider = {
+        let slider = CustomSlider()
         return slider
     }()
+
 
     private lazy var opaqueBackgroundView: UIView = {
         let view = UIView()
@@ -90,7 +117,7 @@ final class CameraView: BaseView {
     }
 
     func setViewHierarchy() {
-        self.addSubViews(previewContainerView, opaqueBackgroundView, capturedImageView, takePhotoButton, zoomControlButton, zoomSliderView)
+        self.addSubViews(previewContainerView, opaqueBackgroundView, capturedImageView, takePhotoButton, zoomControlButton, zoomSliderStack)
     }
 
     func setConstraints() {
@@ -118,7 +145,7 @@ final class CameraView: BaseView {
             $0.width.height.equalTo(50)
         }
 
-        zoomSliderView.snp.makeConstraints {
+        zoomSliderStack.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.bottom.equalTo(zoomControlButton.snp.top).offset(-16)
             $0.width.equalToSuperview().multipliedBy(0.8)
@@ -128,7 +155,7 @@ final class CameraView: BaseView {
     }
 
     @objc private func showZoomSliderView() {
-        zoomSliderView.isHidden.toggle()
+        zoomSlider.isHidden.toggle()
     }
 }
 
@@ -137,21 +164,25 @@ protocol CustomSliderDelegate: NSObject {
     func sliderChanged(_ newValue: Int, sender: Any)
 }
 extension CustomSliderDelegate {
-    // make this delegate func optional
     func sliderChanged(_ newValue: Int, sender: Any) {}
 }
 
 class CustomSlider: UISlider {
+    let generator = UISelectionFeedbackGenerator()
     var delegate: CustomSliderDelegate?
     var stepCount: Int
+    var currentStep: Int {
+        valueToStep(self.value)
+    }
+
     init(stepCount: Int = 50) {
         self.stepCount = stepCount
         super.init(frame: .zero)
-        let thunbImage = UIGraphicsImageRenderer(size: CGSize(width: 4, height: 70)).image { context in
+        let thumbImage = UIGraphicsImageRenderer(size: CGSize(width: 4, height: 60)).image { context in
             UIColor.white.setFill()
-            context.fill(CGRect(x: 0, y: 0, width: 4, height: 70))
+            context.fill(CGRect(x: 0, y: 0, width: 4, height: 60))
         }
-        self.setThumbImage(thunbImage, for: .normal)
+        self.setThumbImage(thumbImage, for: .normal)
         self.minimumValue = 1.0
         self.maximumValue = 10.0
         self.value = 1.0
@@ -224,9 +255,11 @@ class CustomSlider: UISlider {
         UIColor.white.setStroke()
         pth.stroke()
 
+        guard valueToStep + 1 < stepCount else { return }
+
         pth = UIBezierPath()
 
-        for i in valueToStep+1...stepCount {
+        for i in valueToStep + 1...stepCount {
             if i%5 != 0 {
                 pt.y += tickHeight * 0.25
                 pth.move(to: pt)
@@ -245,8 +278,10 @@ class CustomSlider: UISlider {
     override func setValue(_ value: Float, animated: Bool) {
         // don't allow value outside range of min and max values
         let newVal: Float = min(max(minimumValue, value), maximumValue)
+        if self.currentStep != valueToStep(value) {
+            playHapticFeedback()
+        }
         super.setValue(newVal, animated: animated)
-
         // we need to trigger draw() when the value changes
         setNeedsDisplay()
         let steps: Float = Float(stepCount)
@@ -264,5 +299,13 @@ class CustomSlider: UISlider {
             // we need to trigger draw() when the bounds changes
             setNeedsDisplay()
         }
+    }
+
+    private func valueToStep(_ value: Float) -> Int {
+        Int((Double(value - self.minimumValue) / Double(self.maximumValue - self.minimumValue)) * Double(self.stepCount))
+    }
+
+    private func playHapticFeedback() {
+        generator.selectionChanged()
     }
 }
