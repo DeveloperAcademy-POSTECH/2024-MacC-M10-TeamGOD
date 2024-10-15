@@ -53,6 +53,13 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
             .bind(to: viewModel.zoomValue)
             .disposed(by: disposeBag)
 
+        cameraView.zoomSlider.rx.currentSteppedValue
+            .map { String(Int($0)) + "x" }
+            .subscribe { [weak self] in
+                self?.cameraView.zoomControlButton.setTitle($0, for: .normal)
+            }
+            .disposed(by: disposeBag)
+
         cameraView.takePhotoButton.rx.tap
             .compactMap { [weak self] _ in self?.cameraView.maskRect }
             .bind(to: viewModel.shutterButtonDidTapWithMask)
