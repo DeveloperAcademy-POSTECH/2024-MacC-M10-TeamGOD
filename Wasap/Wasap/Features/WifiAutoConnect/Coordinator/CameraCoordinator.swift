@@ -16,7 +16,7 @@ public class CameraCoordinator: NavigationCoordinator {
     }
 
     public enum Flow {
-        case analysis(imageData: Data)
+        case analysis(imageData: UIImage)
     }
 
     public func start() {
@@ -34,7 +34,7 @@ extension CameraCoordinator: CameraCoordinatorController {
     public func performTransition(to flow: Flow) {
         switch flow {
         case .analysis(let imageData):
-            print("analysis view!")
+            print("analysis view! : \(imageData)")
 //            let coordinator = AnalysisCoordinator(imageData: imageData)
 //            start(childCoordinator: coordinator)
         }

@@ -52,6 +52,21 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
             .map { CGFloat($0) }
             .bind(to: viewModel.zoomValue)
             .disposed(by: disposeBag)
+
+        cameraView.takePhotoButton.rx.tap
+            .compactMap { [weak self] _ in self?.cameraView.maskRect
+            }
+            .bind(to: viewModel.shutterButtonDidTapWithMask)
+            .disposed(by: disposeBag)
+
+        //--------
+
+        viewModel.imageResult
+            .drive { [weak self] image in
+                self?.cameraView.capturedImageView.image = image
+            }
+            .disposed(by: disposeBag)
+        //--------
     }
 
 }

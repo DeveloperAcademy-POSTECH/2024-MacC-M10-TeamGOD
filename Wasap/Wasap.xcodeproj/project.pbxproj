@@ -15,7 +15,6 @@
 		6FAE7ACB2CADA1CB00A1D1CE /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = 6FAE7ACA2CADA1CB00A1D1CE /* RxRelay */; };
 		6FAE7ACD2CADA1CB00A1D1CE /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 6FAE7ACC2CADA1CB00A1D1CE /* RxSwift */; };
 		6FAE7AD02CADA1DB00A1D1CE /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6FAE7ACF2CADA1DB00A1D1CE /* SnapKit */; };
-		6FEE9B002CB3BC11004B9A01 /* RxBlocking in Frameworks */ = {isa = PBXBuildFile; productRef = 6FEE9AFF2CB3BC11004B9A01 /* RxBlocking */; };
 		BFEBE0372CBD08F7005E6616 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = BFEBE0362CBD08F7005E6616 /* Lottie */; };
 /* End PBXBuildFile section */
 
@@ -744,11 +743,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6FAE7ACE2CADA1DB00A1D1CE /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
-		};
-		6FEE9AFF2CB3BC11004B9A01 /* RxBlocking */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 6FAE7AC72CADA1CB00A1D1CE /* XCRemoteSwiftPackageReference "RxSwift" */;
-			productName = RxBlocking;
 		};
 		BFEBE0362CBD08F7005E6616 /* Lottie */ = {
 			isa = XCSwiftPackageProductDependency;
