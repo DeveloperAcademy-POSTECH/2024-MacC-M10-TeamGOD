@@ -16,22 +16,15 @@ public class RootCoordinator: Coordinator {
         self.window = window
         self.appDIContainer = appDIContainer
     }
+
     public enum Flow {
-        case detail
+
     }
-    
 
     public func start() {
-        /*
-        let wifiConnectCoordinator = WifiConnectCoordinator(navigationController: UINavigationController())
-        start(childCoordinator: wifiConnectCoordinator)
-        window?.rootViewController = wifiConnectCoordinator.navigationController
-        window?.makeKeyAndVisible()
-        */
-        
-        let scanCoordinator = ScanCoordinator(navigationController: UINavigationController(), wifiAutoConnectDIContainer: appDIContainer.makeWifiAutoConnectDIContainer())
-        start(childCoordinator: scanCoordinator)
-        window?.rootViewController = scanCoordinator.navigationController
+        let cameraCoordinator = CameraCoordinator(navigationController: UINavigationController())
+        start(childCoordinator: cameraCoordinator)
+        window?.rootViewController = cameraCoordinator.navigationController
         window?.makeKeyAndVisible()
     }
 }

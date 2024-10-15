@@ -19,6 +19,9 @@ enum WiFiConnectionErrors: Error {
         case .alreadyConnected(let ssid):
             return "이미 \(ssid)에 연결되어 있습니다."
         }
+        
+        
     }
+    
 }
 

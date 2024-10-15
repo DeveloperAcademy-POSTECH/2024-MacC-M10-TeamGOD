@@ -10,12 +10,13 @@ import UIKit
 import RxSwift
 import AVFoundation
 
-protocol CameraUseCase {
+public protocol CameraUseCase {
     func configureCamera() -> Single<Void>
     func takePhoto() -> Single<UIImage>
     func getCapturePreviewLayer() -> Single<AVCaptureVideoPreviewLayer>
-    func startRunning()
+    func startRunning() -> Single<Void>
     func stopRunning()
+    func zoom(_ factor: CGFloat)
 }
 
 final class DefaultCameraUseCase: CameraUseCase {
@@ -26,6 +27,7 @@ final class DefaultCameraUseCase: CameraUseCase {
     }
 
     func configureCamera() -> Single<Void> {
+        Log.debug("Configure camera")
         return repository.configureCamera()
             .map { _ in () }
     }
@@ -41,21 +43,20 @@ final class DefaultCameraUseCase: CameraUseCase {
     }
 
     func getCapturePreviewLayer() -> Single<AVCaptureVideoPreviewLayer> {
-        Single.create { [weak self] single in
-            guard let previewLayer = self?.repository.previewLayer else {
-                single(.failure(CameraErrors.previewLayerError))
-                return Disposables.create()
-            }
-            single(.success(previewLayer))
-            return Disposables.create()
-        }
+        Log.debug("Get Capture Preview Layer")
+        return repository.getPreviewLayer()
     }
 
-    func startRunning() {
-        repository.startRunning()
+    func startRunning() -> Single<Void> {
+        Log.debug("Start Running")
+        return repository.startRunning()
     }
 
     func stopRunning() {
         repository.stopRunning()
+    }
+
+    func zoom(_ factor: CGFloat) {
+        repository.zoom(factor)
     }
 }

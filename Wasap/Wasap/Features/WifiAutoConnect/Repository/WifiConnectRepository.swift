@@ -16,7 +16,7 @@ public protocol WiFiConnectRepository {
     func isWiFiConnectedcheck() -> Single<Bool>
     // 연결된 와이파이 SSID 를 반환합니다.
     func getCurrentWiFiSSID() -> Single<String?>
-    
+
     var wifiConnectionStatus: Observable<Bool> { get }
 }
 
@@ -28,9 +28,10 @@ class DefaultWiFiConnectRepository: WiFiConnectRepository {
         return wifiConnectionStatusSubject.asObservable()
     }
     
-    // Wi-Fi 연결 시도 함수
+    // MARK: - Wi-Fi 연결 시도
     public func connectToWiFi(ssid: String, password: String) -> Single<Bool> {
-        Single<Bool>.create { single in
+
+        return Single<Bool>.create { single in
             let config = NEHotspotConfiguration(ssid: ssid,
                                                 passphrase: password,
                                                 isWEP: false)
@@ -69,6 +70,7 @@ class DefaultWiFiConnectRepository: WiFiConnectRepository {
                         }
                     })
                     .disposed(by: self.disposeBag)
+
                 }
             }
             return Disposables.create()

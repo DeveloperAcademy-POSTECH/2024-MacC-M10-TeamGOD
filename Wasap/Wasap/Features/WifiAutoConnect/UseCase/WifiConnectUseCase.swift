@@ -28,3 +28,4 @@ final class DefaultWiFiConnectUseCase: WiFiConnectUseCase {
         return repository.wifiConnectionStatus
     }
 }
+
