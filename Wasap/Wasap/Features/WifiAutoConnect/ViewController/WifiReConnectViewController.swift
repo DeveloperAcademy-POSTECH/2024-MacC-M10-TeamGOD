@@ -53,23 +53,18 @@ public class WifiReConnectViewController: RxBaseViewController<WifiConnectViewMo
             .bind(to: viewModel.cameraButtonTapped)
             .disposed(by: disposeBag)
 
-//        
-////        viewModel.completeText
-////            .drive {  status in
-////                print(status)
-//////                self?.wifiReConnectView.statusLabel.text = status
-////            }
-//            .disposed(by: disposeBag)
     }
-    private func setupActions() {
-        wifiReConnectView.cameraButton.addTarget(self, action: #selector(CameraButtonTapped), for: .touchUpInside)
-    }
-    
+
     private func setupNavigationBar() {
         navigationItem.rightBarButtonItem = wifiReConnectView.barItem
         navigationItem.rightBarButtonItem?.customView?.frame = CGRect(x: 0, y: 300, width: 26, height: 26)
     }
-    
+
+    private func setupActions() {
+        wifiReConnectView.cameraButton.addTarget(self, action: #selector(CameraButtonTapped), for: .touchUpInside)
+    }
+
+
     @objc private func CameraButtonTapped() {
         // 버튼 클릭 시 처리할 로직
         print("Camera button tapped")

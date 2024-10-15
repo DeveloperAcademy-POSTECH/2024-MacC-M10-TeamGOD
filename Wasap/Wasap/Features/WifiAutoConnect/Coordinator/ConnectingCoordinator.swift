@@ -29,7 +29,7 @@ public class ConnectingCoordinator: NavigationCoordinator {
     }
     
     public enum Flow {
-        case detail
+        case last(ssid : String, password : String)
     }
     
     public func start() {
@@ -47,8 +47,9 @@ public class ConnectingCoordinator: NavigationCoordinator {
 extension ConnectingCoordinator: ConnectingCoordinatorController {
     public func performTransition(to flow: Flow) {
         switch flow {
-        case .detail:
-            print("Performing transition to detail flow")
+        case .last(ssid: let ssid, password: let password):
+            let coordinator = GoToSettingCoordinator(navigationController: self.navigationController, ssid: ssid, password: password)
+            start(childCoordinator: coordinator)
         }
     }
 }

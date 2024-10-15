@@ -57,3 +57,7 @@ public protocol WifiConnectCoordinatorController: AnyObject {
 public protocol CameraCoordinatorController: AnyObject {
     func performTransition(to flow: CameraCoordinator.Flow)
 }
+
+public protocol GoToSettingCoordinatorController: AnyObject {
+    func performTransition(to flow: GoToSettingCoordinator.Flow)
+}
