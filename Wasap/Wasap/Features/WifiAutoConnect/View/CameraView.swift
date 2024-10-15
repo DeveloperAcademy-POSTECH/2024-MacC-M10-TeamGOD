@@ -59,23 +59,34 @@ final class CameraView: BaseView {
 
     public lazy var zoomControlButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(systemName: "plus.magnifyingglass"), for: .normal)
+        button.setTitle("1x", for: .normal)
+        button.layer.cornerRadius = 23
+        button.layer.borderColor = UIColor.white.cgColor
+        button.layer.borderWidth = 2
         button.tintColor = .white
         button.backgroundColor = .clear
         return button
     }()
 
-    public lazy var zoomSliderStack: UIStackView = {
+    private lazy var minusImage: UIImageView = {
         let minusImage = UIImageView(image: UIImage(systemName: "minus"))
-        minusImage.contentMode = .scaleAspectFit
         minusImage.sizeToFit()
+        minusImage.contentMode = .scaleAspectFit
         minusImage.tintColor = .white
 
+        return minusImage
+    }()
+
+    private lazy var plusImage: UIImageView = {
         let plusImage = UIImageView(image: UIImage(systemName: "plus"))
-        plusImage.contentMode = .scaleAspectFit
         plusImage.sizeToFit()
+        plusImage.contentMode = .scaleAspectFit
         plusImage.tintColor = .white
 
+        return plusImage
+    }()
+
+    public lazy var zoomSliderStack: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [
             minusImage,
             zoomSlider,
@@ -83,11 +94,10 @@ final class CameraView: BaseView {
         ])
 
         stackView.axis = .horizontal
-        stackView.spacing = 16
+        stackView.spacing = 0
+        stackView.alignment = .center
         stackView.backgroundColor = .cameraZoomDisabled
         stackView.layer.cornerRadius = 16
-        stackView.layoutMargins = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
-        stackView.isLayoutMarginsRelativeArrangement = true
 
         return stackView
     }()
@@ -96,7 +106,6 @@ final class CameraView: BaseView {
         let slider = CustomSlider()
         return slider
     }()
-
 
     private lazy var opaqueBackgroundView: UIView = {
         let view = UIView()
@@ -157,8 +166,16 @@ final class CameraView: BaseView {
 
         zoomControlButton.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.bottom.equalTo(takePhotoButton.snp.top).offset(-16)
+            $0.bottom.equalTo(takePhotoButton.snp.top).offset(-52)
             $0.width.height.equalTo(46)
+        }
+
+        minusImage.snp.makeConstraints {
+            $0.width.equalTo(56)
+        }
+
+        plusImage.snp.makeConstraints {
+            $0.width.equalTo(56)
         }
 
         zoomSliderStack.snp.makeConstraints {
