@@ -16,11 +16,14 @@ public class WifiReConnectViewController: RxBaseViewController<WifiConnectViewMo
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        setupNavigationBar()
+        setupActions()
     }
     
     public override func loadView() {
         super.loadView()
         self.view = wifiReConnectView
+        
     }
     
     override init(viewModel: WifiConnectViewModel) {
@@ -53,6 +56,20 @@ public class WifiReConnectViewController: RxBaseViewController<WifiConnectViewMo
 //                self?.wifiReConnectView.statusLabel.text = status
             }
             .disposed(by: disposeBag)
+    }
+    private func setupActions() {
+        wifiReConnectView.cameraButton.addTarget(self, action: #selector(CameraButtonTapped), for: .touchUpInside)
+    }
+    
+    private func setupNavigationBar() {
+        navigationItem.rightBarButtonItem = wifiReConnectView.barItem
+        navigationItem.rightBarButtonItem?.customView?.frame = CGRect(x: 0, y: 300, width: 26, height: 26)
+    }
+    
+    @objc private func CameraButtonTapped() {
+        // 버튼 클릭 시 처리할 로직
+        print("Camera button tapped")
+        dismiss(animated: true, completion: nil) // 현재 화면 닫기
     }
 }
 

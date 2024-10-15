@@ -8,6 +8,7 @@
 import Foundation
 
 protocol GoToSettingRepository {
+    
 }
 
 class DefaultGoToSettingRepository:GoToSettingRepository {
