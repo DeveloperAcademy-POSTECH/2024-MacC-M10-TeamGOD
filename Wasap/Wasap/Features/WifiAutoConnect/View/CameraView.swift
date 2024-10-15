@@ -9,6 +9,15 @@ import UIKit
 import SnapKit
 import AVFoundation
 
+enum Dimension {
+    enum Mask {
+        static let leftPadding: CGFloat = 0.1
+        static let topPadding: CGFloat = 0.35
+        static let width: CGFloat = 0.8
+        static let height: CGFloat = 0.3
+    }
+}
+
 final class CameraView: BaseView {
     var previewLayer: AVCaptureVideoPreviewLayer?
     private var superViewWidth: CGFloat {
@@ -19,22 +28,26 @@ final class CameraView: BaseView {
         self.frame.size.height
     }
 
-    private var maskRect: CGRect {
-        CGRect(origin: CGPoint(x: superViewWidth * 0.1, y: superViewHeight * 0.35), size: CGSize(width: superViewWidth * 0.8, height: superViewHeight * 0.3))
+    public var maskRect: CGRect {
+        CGRect(origin: CGPoint(x: superViewWidth * Dimension.Mask.leftPadding, y: superViewHeight * Dimension.Mask.topPadding), size: CGSize(width: superViewWidth * Dimension.Mask.width, height: superViewHeight * Dimension.Mask.height))
     }
 
     public lazy var previewContainerView: UIView = {
         UIView()
     }()
 
-    private lazy var capturedImageView: UIImageView = {
+    // ----------
+    public lazy var capturedImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit
-        imageView.isHidden = true
+        imageView.clipsToBounds = true;
+        imageView.contentMode = .scaleAspectFit;
+        imageView.isHidden = false
+        imageView.backgroundColor = .brown.withAlphaComponent(0.5)
         return imageView
     }()
+    // ----------
 
-    private lazy var takePhotoButton: UIButton = {
+    public lazy var takePhotoButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(UIImage(systemName: "inset.filled.circle"), for: .normal)
         button.tintColor = .white

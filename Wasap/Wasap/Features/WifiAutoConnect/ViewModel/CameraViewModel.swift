@@ -8,6 +8,7 @@
 import RxSwift
 import RxCocoa
 import AVFoundation
+import UIKit
 
 public class CameraViewModel: BaseViewModel {
     // MARK: - Coordinator
@@ -19,10 +20,13 @@ public class CameraViewModel: BaseViewModel {
     // MARK: - Input
     public var zoomValue = BehaviorRelay<CGFloat>(value: 1.0)
     public var zoomControlButtonDidTap = PublishRelay<Void>()
+    public var shutterButtonDidTapWithMask = PublishRelay<CGRect>()
 
     // MARK: - Output
     public var previewLayer: Driver<AVCaptureVideoPreviewLayer>
     public var isZoomControlButtonHidden: Driver<Bool>
+
+    public var imageResult: Driver<UIImage>
 
     // MARK: - Properties
     private var isCameraRunning = BehaviorRelay<Bool>(value: false)
@@ -35,6 +39,11 @@ public class CameraViewModel: BaseViewModel {
 
         let isZoomControlButtonHiddenRelay = BehaviorRelay<Bool>(value: false)
         self.isZoomControlButtonHidden = isZoomControlButtonHiddenRelay.asDriver(onErrorDriveWith: .empty())
+
+        // -------
+        let imageResultRelay = PublishRelay<UIImage>()
+        self.imageResult = imageResultRelay.asDriver(onErrorDriveWith: .empty())
+        // -------
 
         super.init()
         let isCameraConfigured = PublishRelay<Void>()
@@ -96,6 +105,21 @@ public class CameraViewModel: BaseViewModel {
         zoomControlButtonDidTap
             .map { _ in true }
             .bind(to: isZoomControlButtonHiddenRelay)
+            .disposed(by: disposeBag)
+
+        shutterButtonDidTapWithMask
+            .withUnretained(self)
+            .flatMapLatest { owner, rect -> Single<UIImage> in
+                owner.cameraUseCase.takePhoto(cropRect: rect)
+            }
+            .withUnretained(self)
+            .subscribe { owner, image in
+                owner.coordinatorController?.performTransition(to: .analysis(imageData: image))
+
+                // -------
+                imageResultRelay.accept(image)
+                // -------
+            }
             .disposed(by: disposeBag)
     }
 }

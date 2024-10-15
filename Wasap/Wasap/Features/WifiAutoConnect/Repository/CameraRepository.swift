@@ -16,6 +16,7 @@ protocol CameraRepository {
 
     /// getPreviewLayer : 프리뷰 레이어를 가져옵니다. 뷰에서 이 레이어를 활용하세요.
     func getPreviewLayer() -> Single<AVCaptureVideoPreviewLayer>
+    func getPreviewLayer() -> AVCaptureVideoPreviewLayer?
 
     /// startRunning() : 카메라 프리뷰를 시작합니다. 시작되면 이벤트를 넘깁니다.
     func startRunning() -> Single<Void>
@@ -38,16 +39,44 @@ protocol CameraRepository {
 
 class DefaultCameraRepository: NSObject, CameraRepository {
     private var captureSession: AVCaptureSession?
-    
+    private var previewLayer: AVCaptureVideoPreviewLayer?
+
     private var stillImageOutput: AVCapturePhotoOutput?
     private var photoCaptureCompletion: ((Result<Data, Error>) -> Void)?
 
+    func requestAuthorization() -> Single<Void> {
+        return Single.create { single in
+            let status = AVCaptureDevice.authorizationStatus(for: .video)
+            if status == .authorized {
+                Log.print("Auth Success!")
+                single(.success(()))
+            } else if status == .notDetermined {
+                AVCaptureDevice.requestAccess(for: .video) { isAuthorized in
+                    if isAuthorized {
+                        Log.print("Auth Success!")
+                        single(.success(()))
+                    } else {
+                        Log.error("Auth Failure!")
+                        single(.failure(CameraErrors.notAuthorized))
+                    }
+                }
+            } else {
+                Log.error("Auth Failure!")
+                single(.failure(CameraErrors.notAuthorized))
+            }
+            return Disposables.create()
+        }
+    }
+
     func configureCamera() -> Single<AVCaptureSession> {
-        return Single.create { [weak self] single in
+        let configureStream = Single<AVCaptureSession>.create { [weak self] single in
             let session = AVCaptureSession()
+            session.beginConfiguration()
+
             session.sessionPreset = .photo
 
             guard let backCamera = AVCaptureDevice.default(for: .video) else {
+                session.commitConfiguration()
                 single(.failure(CameraErrors.cameraNotFound))
                 return Disposables.create()
             }
@@ -62,15 +91,20 @@ class DefaultCameraRepository: NSObject, CameraRepository {
                 }
 
                 self?.captureSession = session
+                session.commitConfiguration()
                 single(.success(session))
             } catch {
+                session.commitConfiguration()
                 single(.failure(CameraErrors.captureDeviceError))
             }
 
-            return Disposables.create {
-                session.stopRunning()
-            }
+            return Disposables.create()
         }
+
+        return requestAuthorization()
+            .flatMap { _ in
+                configureStream
+            }
     }
 
     func getPreviewLayer() -> Single<AVCaptureVideoPreviewLayer> {
@@ -82,10 +116,15 @@ class DefaultCameraRepository: NSObject, CameraRepository {
             }
             let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
             previewLayer.videoGravity = .resizeAspectFill
+            self?.previewLayer = previewLayer
             single(.success(previewLayer))
             return Disposables.create()
         }
 
+    }
+
+    func getPreviewLayer() -> AVCaptureVideoPreviewLayer? {
+        return previewLayer
     }
 
     func capturePhoto() -> Single<Data> {
@@ -129,6 +168,9 @@ class DefaultCameraRepository: NSObject, CameraRepository {
 
             DispatchQueue.global(qos: .userInitiated).async { [weak self] in
                 self?.captureSession?.startRunning()
+                DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 10) {
+                    single(.failure(CameraErrors.unknown))
+                }
             }
 
             return Disposables.create {

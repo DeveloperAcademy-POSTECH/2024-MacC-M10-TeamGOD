@@ -6,6 +6,7 @@
 //
 
 enum CameraErrors: Error {
+    case notAuthorized
     case cameraNotFound
     case unknown
     case captureDeviceError
@@ -16,6 +17,8 @@ enum CameraErrors: Error {
 
     var localizedDescription: String {
         switch self {
+        case .notAuthorized:
+            return "Not authorized"
         case .cameraNotFound:
             return "Camera not found"
         case .unknown:
