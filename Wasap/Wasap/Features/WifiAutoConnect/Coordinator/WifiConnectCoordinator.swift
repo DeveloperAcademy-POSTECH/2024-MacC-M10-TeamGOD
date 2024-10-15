@@ -11,33 +11,48 @@ import UIKit
 public class WifiConnectCoordinator: NavigationCoordinator {
     public var childCoordinators: [any Coordinator] = []
     public let navigationController: UINavigationController
-    
-    public init(navigationController: UINavigationController) {
+
+    let ssid : String
+    let password: String
+
+    public init(navigationController: UINavigationController, ssid: String, password: String) {
         self.navigationController = navigationController
+        self.ssid = ssid
+        self.password = password
     }
     
     public enum Flow {
-        case detail
+        case connecting(ssid : String, password: String)
+        case camera
     }
-    
+
     public func start() {
         let repository = DefaultWiFiConnectRepository()
-        
         let usecase = DefaultWiFiConnectUseCase(repository: repository)
-        
         let viewModel = WifiConnectViewModel(wifiConnectUseCase: usecase, coordinatorController: self)
-        
         let viewController = WifiReConnectViewController(viewModel: viewModel)
         
         self.navigationController.pushViewController(viewController, animated: true)
     }
 }
 
-extension WifiConnectCoordinator: WifiConnectTranslater {
-    func perfromTransition(_ flow: WifiConnectCoordinator.Flow) {
+extension WifiConnectCoordinator: WifiConnectCoordinatorController {
+    public func performTransition(to flow: Flow) {
         switch flow {
-        case .detail:
-            break
+//        case .connecting(let ssid, let password):
+//            let coordinator = ConnectingCoordinator(
+//                navigationController: self.navigationController,
+//                wifiAutoConnectDIContainer: self.wifiAutoConnectDIContainer)
+//            start(childCoordinator: coordinator)
+        case .camera:
+            print("Camara View")
+            let coordinator = CameraCoordinator(navigationController: self.navigationController)
+            start(childCoordinator: coordinator)
+
+        case .connecting(ssid: let ssid, password: let password):
+            print("Connecting View")
         }
+
     }
 }
+
