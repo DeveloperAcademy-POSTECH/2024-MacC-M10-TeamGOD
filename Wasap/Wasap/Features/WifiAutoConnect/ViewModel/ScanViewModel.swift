@@ -51,9 +51,10 @@ public class ScanViewModel: BaseViewModel {
                 
                 return Observable<Int>.timer(.seconds(2), scheduler: MainScheduler.instance)
                     .flatMap { _ -> Observable<Bool> in
-                        
                         if !ssid.isEmpty && !password.isEmpty {
                             print("Wi-Fi 연결 시도: SSID = \(ssid), Password = \(password)")
+                            self.coordinatorController?.performTransition(to: .connecting)
+                            
                             return wifiConnectUseCase.connectToWiFi(ssid: ssid, password: password)
                                 .asObservable()
                                 .do(onNext: { success in
@@ -71,23 +72,8 @@ public class ScanViewModel: BaseViewModel {
                         }
                     }
             }
-            .do(onNext: { [weak self] success in
-                guard let self = self else { return }
-                
-                print("이 부분에 도달했습니다.")
-                if success {
-                    if self.coordinatorController == nil {
-                        print("Error: coordinatorController is nil")
-                    } else {
-                        print("뷰 전환")
-                        self.coordinatorController?.performTransition(to: .connecting)
-                    }
-                } else {
-                    print("빠꾸!!")
-                }
-            })
             .subscribe(onNext: { success in
-                isWiFiConnectedRelay.accept(success)
+
             }, onError: { error in
                 print("OCR 또는 Wi-Fi 연결 중 에러 발생: \(error.localizedDescription)")
             })

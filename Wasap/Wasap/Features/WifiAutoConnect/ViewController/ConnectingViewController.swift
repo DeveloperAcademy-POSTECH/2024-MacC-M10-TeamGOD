@@ -37,6 +37,16 @@ public class ConnectingViewController: RxBaseViewController<ConnectingViewModel>
             .disposed(by: disposeBag)
         
         // 뷰모델 -> 뷰
+        viewModel.isLoading
+            .filter { $0 }
+            .drive { [weak self] _ in
+                self?.connectingView.mainStatusLabel.text = "ASAP!"
+                self?.connectingView.subStatusLabel.text = "연결중"
+                self?.connectingView.doneSignIcon.isHidden = true
+                self?.connectingView.quitButton.isHidden = true
+            }
+            .disposed(by: disposeBag)
+        
         viewModel.isWiFiConnected
             .drive { [weak self] _ in
                 self?.connectingView.mainStatusLabel.text = "Done!"

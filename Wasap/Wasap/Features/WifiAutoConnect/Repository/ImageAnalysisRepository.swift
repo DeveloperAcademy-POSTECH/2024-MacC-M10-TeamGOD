@@ -17,7 +17,7 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
     public init() {}
     
     let idStrings: Set<String> = ["ID", "Id", "iD", "id", "WIFI", "Wifi", "WiFi", "wifi", "Wi-Fi", "Network", "NETWORK", "network", "ssid", "SSID", "와이파이", "네트워크", "I.D", "1D"]
-    let pwStrings: Set<String> = ["PW", "Pw", "pW", "pw", "pass", "Pass", "PASS", "password", "Password", "PASSWORD", "패스워드", "암호", "P.W", "PV"]
+    let pwStrings: Set<String> = ["PW", "Pw", "pW", "pw", "pass", "Pass", "PASS", "password", "Password", "PASSWORD", "패스워드", "암호", "P.W", "PV", "P/W"]
     
     var ssidText: String = ""
     var passwordText: String = ""

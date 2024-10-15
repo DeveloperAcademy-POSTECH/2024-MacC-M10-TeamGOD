@@ -18,19 +18,31 @@ public class ConnectingViewModel: BaseViewModel {
     
     // MARK: - Output
     public var isWiFiConnected: Driver<Bool>
+    public var isLoading: Driver<Bool>
     
     public init(wifiConnectUseCase: WiFiConnectUseCase, coordinatorController: ConnectingCoordinatorController) {
         
         let isWiFiConnectedRelay = BehaviorRelay<Bool>(value: false)
         self.isWiFiConnected = isWiFiConnectedRelay.asDriver(onErrorJustReturn: false)
         
+        let isLoadingRelay = BehaviorRelay<Bool>(value: false)
+        self.isLoading = isLoadingRelay.asDriver(onErrorJustReturn: false)
+        
         self.coordinatorController = coordinatorController
         super.init()
         
-        wifiConnectUseCase.observeWiFiConnection()
+        self.viewDidLoad
+            .flatMapLatest { _ in
+                isLoadingRelay.accept(true)
+                return wifiConnectUseCase.observeWiFiConnection()
+            }
             .subscribe(onNext: { success in
-                isWiFiConnectedRelay.accept(success)
+                isLoadingRelay.accept(false)
+                if success {
+                    isWiFiConnectedRelay.accept(success)
+                }
             }, onError: { error in
+                isLoadingRelay.accept(false)
                 print("Wi-Fi 연결 중 에러 발생: \(error.localizedDescription)")
             })
             .disposed(by: disposeBag)
