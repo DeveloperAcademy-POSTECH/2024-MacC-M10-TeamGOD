@@ -36,6 +36,20 @@ final class CameraView: BaseView {
         UIView()
     }()
 
+    private var wasapLabel: UILabel = {
+        let label = UILabel()
+        label.text = "WASAP!"
+        label.font = .systemFont(ofSize: 26, weight: .bold)
+        label.textColor = .white
+        return label
+    }()
+
+    private var wifiIcon: UIImageView = {
+        let imageView = UIImageView(image: UIImage(systemName: "wifi"))
+        imageView.tintColor = .green200
+        return imageView
+    }()
+
     // ----------
     public lazy var capturedImageView: UIImageView = {
         let imageView = UIImageView()
@@ -142,7 +156,7 @@ final class CameraView: BaseView {
     }
 
     func setViewHierarchy() {
-        self.addSubViews(previewContainerView, opaqueBackgroundView, capturedImageView, takePhotoButton, zoomControlButton, zoomSliderStack)
+        self.addSubViews(previewContainerView, opaqueBackgroundView, wasapLabel, wifiIcon, capturedImageView, takePhotoButton, zoomControlButton, zoomSliderStack)
     }
 
     func setConstraints() {
@@ -152,6 +166,16 @@ final class CameraView: BaseView {
 
         opaqueBackgroundView.snp.makeConstraints {
             $0.edges.equalToSuperview()
+        }
+
+        wasapLabel.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.top.equalTo(safeAreaLayoutGuide).offset(32)
+        }
+
+        wifiIcon.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.top.equalToSuperview().offset(superViewHeight * 0.3)
         }
 
         capturedImageView.snp.makeConstraints {
