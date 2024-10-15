@@ -26,8 +26,6 @@ public class CameraViewModel: BaseViewModel {
     public var previewLayer: Driver<AVCaptureVideoPreviewLayer>
     public var isZoomControlButtonHidden: Driver<Bool>
 
-    public var imageResult: Driver<UIImage>
-
     // MARK: - Properties
     private var isCameraRunning = BehaviorRelay<Bool>(value: false)
 
@@ -39,11 +37,6 @@ public class CameraViewModel: BaseViewModel {
 
         let isZoomControlButtonHiddenRelay = BehaviorRelay<Bool>(value: false)
         self.isZoomControlButtonHidden = isZoomControlButtonHiddenRelay.asDriver(onErrorDriveWith: .empty())
-
-        // -------
-        let imageResultRelay = PublishRelay<UIImage>()
-        self.imageResult = imageResultRelay.asDriver(onErrorDriveWith: .empty())
-        // -------
 
         super.init()
         let isCameraConfigured = PublishRelay<Void>()
@@ -125,10 +118,6 @@ public class CameraViewModel: BaseViewModel {
             .withUnretained(self)
             .subscribe { owner, image in
                 owner.coordinatorController?.performTransition(to: .analysis(imageData: image))
-
-                // -------
-                imageResultRelay.accept(image)
-                // -------
             }
             .disposed(by: disposeBag)
     }
