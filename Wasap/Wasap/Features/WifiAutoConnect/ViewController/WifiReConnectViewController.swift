@@ -48,14 +48,18 @@ public class WifiReConnectViewController: RxBaseViewController<WifiConnectViewMo
         wifiReConnectView.reConnectButton.rx.tap
             .bind(to: viewModel.reConnectButtonTapped)
             .disposed(by: disposeBag)
-        
-        
-        viewModel.completeText
-            .drive {  status in
-                print(status)
-//                self?.wifiReConnectView.statusLabel.text = status
-            }
+
+        wifiReConnectView.cameraButton.rx.tap
+            .bind(to: viewModel.cameraButtonTapped)
             .disposed(by: disposeBag)
+
+//        
+////        viewModel.completeText
+////            .drive {  status in
+////                print(status)
+//////                self?.wifiReConnectView.statusLabel.text = status
+////            }
+//            .disposed(by: disposeBag)
     }
     private func setupActions() {
         wifiReConnectView.cameraButton.addTarget(self, action: #selector(CameraButtonTapped), for: .touchUpInside)
