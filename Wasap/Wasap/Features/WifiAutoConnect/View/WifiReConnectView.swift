@@ -66,7 +66,7 @@ class WifiReConnectView: BaseView {
     
     lazy var photoImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.backgroundColor = .black
+        imageView.image = UIImage(named: "RetryViewPhoto")
         imageView.layer.borderColor = UIColor.green200.cgColor
         imageView.layer.borderWidth = 2.0
         return imageView

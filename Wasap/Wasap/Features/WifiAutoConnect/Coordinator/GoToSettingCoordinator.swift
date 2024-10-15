@@ -14,11 +14,13 @@ public class GoToSettingCoordinator: NavigationCoordinator {
 
     let ssid : String
     let password : String
+    let imageData : UIImage
 
-    public init(navigationController: UINavigationController, ssid : String, password : String) {
+    public init(navigationController: UINavigationController,imageData : UIImage, ssid : String, password : String) {
         self.navigationController = navigationController
         self.ssid = ssid
         self.password = password
+        self.imageData = imageData
     }
     
     public enum Flow {
@@ -32,12 +34,12 @@ public class GoToSettingCoordinator: NavigationCoordinator {
         
         let viewModel = GoToSettingViewModel(
             gotoSettingUseCase: usecase,
-            coordinatorController: self,
+            coordinatorController: self, imageData: imageData,
             ssid: ssid, password: password)
 
         let viewController = GoToSettingViewController(viewModel: viewModel)
 
-        self.navigationController.setNavigationBarHidden(false, animated: false)
+
         self.navigationController.pushViewController(viewController, animated: true)
     }
 }

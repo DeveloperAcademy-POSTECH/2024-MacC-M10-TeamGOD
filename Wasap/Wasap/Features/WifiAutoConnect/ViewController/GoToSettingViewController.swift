@@ -55,6 +55,12 @@ public class GoToSettingViewController: RxBaseViewController<GoToSettingViewMode
             .drive(goToSettingView.pwFieldLabel.rx.text)
             .disposed(by: disposeBag)
 
+        viewModel.updatedImageDriver
+            .drive { [weak self] image in
+                self?.goToSettingView.photoImageView.image = image
+            }
+            .disposed(by: disposeBag)
+
     }
 
     private func setupNavigationBar() {

@@ -16,27 +16,29 @@ public class ConnectingCoordinator: NavigationCoordinator {
     public let navigationController: UINavigationController
     let wifiAutoConnectDIContainer: WifiAutoConnectDIContainer
 
+    let imageData: UIImage
     let ssid: String?
     let password: String?
 
     private weak var connectingViewController: ConnectingViewController?
     
-    public init(navigationController: UINavigationController, wifiAutoConnectDIContainer: WifiAutoConnectDIContainer, ssid: String?, password: String?) {
+    public init(navigationController: UINavigationController, wifiAutoConnectDIContainer: WifiAutoConnectDIContainer,imageData: UIImage, ssid: String?, password: String?) {
         self.navigationController = navigationController
         self.wifiAutoConnectDIContainer = wifiAutoConnectDIContainer
         self.ssid = ssid
         self.password = password
+        self.imageData = imageData
     }
     
     public enum Flow {
-        case last(ssid : String, password : String)
+        case last(imageData: UIImage,ssid : String, password : String)
     }
     
     public func start() {
         let wifiConnectRepository = wifiAutoConnectDIContainer.makeWiFiConnectRepository()
         let wifiConnectUseCase = wifiAutoConnectDIContainer.makeWiFiConnectUseCase(wifiConnectRepository)
         
-        let viewModel = wifiAutoConnectDIContainer.makeConnectingViewModel(wifiConnectUseCase: wifiConnectUseCase, coordinatorcontroller: self, ssid: ssid ?? "", password: password ?? "")
+        let viewModel = wifiAutoConnectDIContainer.makeConnectingViewModel(wifiConnectUseCase: wifiConnectUseCase, coordinatorcontroller: self, imageData: imageData, ssid: ssid ?? "", password: password ?? "")
         let viewController = wifiAutoConnectDIContainer.makeConnectingViewController(viewModel)
         
         self.navigationController.setNavigationBarHidden(true, animated: false)
@@ -47,8 +49,8 @@ public class ConnectingCoordinator: NavigationCoordinator {
 extension ConnectingCoordinator: ConnectingCoordinatorController {
     public func performTransition(to flow: Flow) {
         switch flow {
-        case .last(ssid: let ssid, password: let password):
-            let coordinator = GoToSettingCoordinator(navigationController: self.navigationController, ssid: ssid, password: password)
+        case .last(let imageData,ssid: let ssid, password: let password):
+            let coordinator = GoToSettingCoordinator(navigationController: self.navigationController, imageData: imageData, ssid: ssid, password: password)
             start(childCoordinator: coordinator)
         }
     }

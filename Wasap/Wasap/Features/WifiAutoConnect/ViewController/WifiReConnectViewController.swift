@@ -53,6 +53,12 @@ public class WifiReConnectViewController: RxBaseViewController<WifiConnectViewMo
             .bind(to: viewModel.cameraButtonTapped)
             .disposed(by: disposeBag)
 
+        viewModel.updatedImageDriver
+            .drive { [weak self] image in
+                self?.wifiReConnectView.photoImageView.image = image
+            }
+            .disposed(by: disposeBag)
+
     }
 
     private func setupNavigationBar() {

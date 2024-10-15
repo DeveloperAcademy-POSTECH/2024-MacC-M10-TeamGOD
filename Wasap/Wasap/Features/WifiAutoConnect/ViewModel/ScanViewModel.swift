@@ -58,7 +58,7 @@ public class ScanViewModel: BaseViewModel {
         ocrResult
             .subscribe { _, ssid, password in
                 print("OCR 후 SSID: \(ssid), Password: \(password)")
-                self.coordinatorController?.performTransition(to: .connecting(ssid: ssid, password: password))
+                self.coordinatorController?.performTransition(to: .connecting( imageData: previewImage,ssid: ssid, password: password))
             }
             .disposed(by: disposeBag)
     }
