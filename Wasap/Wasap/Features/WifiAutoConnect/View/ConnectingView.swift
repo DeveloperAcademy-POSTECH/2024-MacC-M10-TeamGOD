@@ -53,7 +53,7 @@ class ConnectingView: BaseView {
     }()
     
     lazy var loadingAnimation: LottieAnimationView = {
-        let animation = LottieAnimationView(name: "finding")
+        let animation = LottieAnimationView(name: "processing")
         animation.loopMode = .loop
         animation.play()
         return animation
@@ -86,7 +86,7 @@ class ConnectingView: BaseView {
         
         loadingAnimation.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.top.equalTo(statusStackView.snp.bottom).offset(-230)
+            $0.bottom.equalToSuperview()
         }
     }
 }
