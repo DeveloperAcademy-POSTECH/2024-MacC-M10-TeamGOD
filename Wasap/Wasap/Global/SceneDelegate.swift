@@ -14,11 +14,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     let appDIConainter = AppDIContainer(apiClient: DefaultAPIClient())
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+#if !TEST
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
         self.coordinator = RootCoordinator(window: window, appDIContainer: appDIConainter)
         self.coordinator?.start()
+#endif
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
