@@ -39,18 +39,14 @@ public class WifiConnectCoordinator: NavigationCoordinator {
 extension WifiConnectCoordinator: WifiConnectCoordinatorController {
     public func performTransition(to flow: Flow) {
         switch flow {
-//        case .connecting(let ssid, let password):
-//            let coordinator = ConnectingCoordinator(
-//                navigationController: self.navigationController,
-//                wifiAutoConnectDIContainer: self.wifiAutoConnectDIContainer)
-//            start(childCoordinator: coordinator)
         case .camera:
             print("Camara View")
             let coordinator = CameraCoordinator(navigationController: self.navigationController)
             start(childCoordinator: coordinator)
 
-        case .connecting(ssid: let ssid, password: let password):
-            print("Connecting View")
+        case .connecting(let ssid, let password):
+            let coordinator = ConnectingCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: WifiAutoConnectDIContainer(), ssid: ssid, password: password)
+            start(childCoordinator: coordinator)
         }
 
     }
