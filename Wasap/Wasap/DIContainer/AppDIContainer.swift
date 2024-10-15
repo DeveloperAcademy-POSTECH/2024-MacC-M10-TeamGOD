@@ -12,49 +12,42 @@ final public class AppDIContainer {
     init(apiClient: APIClient) {
         self.apiClient = apiClient
     }
-    
+
     public func makeWifiAutoConnectDIContainer() -> WifiAutoConnectDIContainer {
         return WifiAutoConnectDIContainer()
     }
 }
 
 final public class WifiAutoConnectDIContainer {
-    private var wifiConnectRepository: WiFiConnectRepository?
-    
+
     public func makeImageAnalysisRepository() -> ImageAnalysisRepository {
         return DefaultImageAnalysisRepository()
     }
-    
+
     public func makeWiFiConnectRepository() -> WiFiConnectRepository {
-            let newRepository = DefaultWiFiConnectRepository()
-            self.wifiConnectRepository = newRepository
-            return newRepository
+        return DefaultWiFiConnectRepository()
     }
-    
-    public func getWiFiConnectRepository() -> WiFiConnectRepository? {
-        return self.wifiConnectRepository
-    }
-    
+
     public func makeImageAnalysisUseCase(_ repository: ImageAnalysisRepository) -> ImageAnalysisUseCase {
         return DefaultImageAnalysisUseCase(imageAnalysisRepository: repository)
     }
-    
+
     public func makeWiFiConnectUseCase(_ repository: WiFiConnectRepository) -> WiFiConnectUseCase {
         return DefaultWiFiConnectUseCase(repository: repository)
     }
-    
-    public func makeScanViewModel(imageAnalysisUseCase: ImageAnalysisUseCase, wifiConnectUseCase: WiFiConnectUseCase, coordinatorcontroller: ScanCoordinatorController, image: UIImage) -> ScanViewModel {
-        return ScanViewModel(imageAnalysisUseCase: imageAnalysisUseCase, wifiConnectUseCase: wifiConnectUseCase, coordinatorController: coordinatorcontroller, previewImage: image)
+
+    public func makeScanViewModel(imageAnalysisUseCase: ImageAnalysisUseCase, coordinatorcontroller: ScanCoordinatorController, image: UIImage) -> ScanViewModel {
+        return ScanViewModel(imageAnalysisUseCase: imageAnalysisUseCase, coordinatorController: coordinatorcontroller, previewImage: image)
     }
-    
+
     public func makeScanViewController(_ viewModel: ScanViewModel) -> ScanViewController {
         return ScanViewController(viewModel: viewModel)
     }
-    
-    public func makeConnectingViewModel(wifiConnectUseCase: WiFiConnectUseCase, coordinatorcontroller: ConnectingCoordinatorController) -> ConnectingViewModel {
-        return ConnectingViewModel(wifiConnectUseCase: wifiConnectUseCase, coordinatorController: coordinatorcontroller)
+
+    public func makeConnectingViewModel(wifiConnectUseCase: WiFiConnectUseCase, coordinatorcontroller: ConnectingCoordinatorController, ssid: String, password: String) -> ConnectingViewModel {
+        return ConnectingViewModel(wifiConnectUseCase: wifiConnectUseCase, coordinatorController: coordinatorcontroller, ssid: ssid, password: password)
     }
-    
+
     public func makeConnectingViewController(_ viewModel: ConnectingViewModel) -> ConnectingViewController {
         return ConnectingViewController(viewModel: viewModel)
     }

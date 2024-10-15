@@ -10,7 +10,6 @@ import Foundation
 
 public protocol WiFiConnectUseCase {
     func connectToWiFi(ssid: String, password: String) -> Single<Bool>
-    func observeWiFiConnection() -> Observable<Bool>
 }
 
 final class DefaultWiFiConnectUseCase: WiFiConnectUseCase {
@@ -22,10 +21,6 @@ final class DefaultWiFiConnectUseCase: WiFiConnectUseCase {
     
     func connectToWiFi(ssid: String, password: String) -> Single<Bool> {
         return repository.connectToWiFi(ssid: ssid, password: password)
-    }
-
-    func observeWiFiConnection() -> Observable<Bool> {
-        return repository.wifiConnectionStatus
     }
 }
 

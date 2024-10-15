@@ -15,8 +15,8 @@ public class ScanCoordinator: NavigationCoordinator {
     public var childCoordinators: [any Coordinator] = []
     public let navigationController: UINavigationController
     let wifiAutoConnectDIContainer: WifiAutoConnectDIContainer
-    let previewImage: UIImage = .init(named: "previewTestImage1")!
-    
+    let previewImage: UIImage = .init(named: "previewTestImage4")!
+
     public init(navigationController: UINavigationController, wifiAutoConnectDIContainer: WifiAutoConnectDIContainer/*, previewImage: UIImage*/) {
         self.navigationController = navigationController
         self.wifiAutoConnectDIContainer = wifiAutoConnectDIContainer
@@ -25,8 +25,7 @@ public class ScanCoordinator: NavigationCoordinator {
     }
     
     public enum Flow {
-        // case previewImage(UIImage)
-        case connecting
+        case connecting(ssid: String, password: String)
     }
     
     public func start() {
@@ -34,10 +33,7 @@ public class ScanCoordinator: NavigationCoordinator {
         let imageAnalysisRepository = wifiAutoConnectDIContainer.makeImageAnalysisRepository()
         let imageAnalysisUseCase = wifiAutoConnectDIContainer.makeImageAnalysisUseCase(imageAnalysisRepository)
         
-        let wifiConnectRepository = wifiAutoConnectDIContainer.makeWiFiConnectRepository()
-        let wifiConnectUseCase = wifiAutoConnectDIContainer.makeWiFiConnectUseCase(wifiConnectRepository)
-        
-        let viewModel = wifiAutoConnectDIContainer.makeScanViewModel(imageAnalysisUseCase: imageAnalysisUseCase, wifiConnectUseCase: wifiConnectUseCase, coordinatorcontroller: self, image: previewImage)
+        let viewModel = wifiAutoConnectDIContainer.makeScanViewModel(imageAnalysisUseCase: imageAnalysisUseCase, coordinatorcontroller: self, image: previewImage)
         let viewController = wifiAutoConnectDIContainer.makeScanViewController(viewModel)
         
         // ScanViewController를 navagationController에 push
@@ -49,11 +45,9 @@ public class ScanCoordinator: NavigationCoordinator {
 extension ScanCoordinator: ScanCoordinatorController {
     public func performTransition(to flow: Flow) {
         switch flow {
-        case .connecting:
-            let coordinator = ConnectingCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: self.wifiAutoConnectDIContainer)
+        case .connecting(let ssid, let password):
+            let coordinator = ConnectingCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: self.wifiAutoConnectDIContainer, ssid: ssid, password: password)
             start(childCoordinator: coordinator)
-            
-            // case .previewImage(UIImage)
         }
     }
 }
