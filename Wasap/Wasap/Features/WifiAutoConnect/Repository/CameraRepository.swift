@@ -17,14 +17,23 @@ protocol CameraRepository {
     /// getPreviewLayer : 프리뷰 레이어를 가져옵니다. 뷰에서 이 레이어를 활용하세요.
     func getPreviewLayer() -> Single<AVCaptureVideoPreviewLayer>
 
-    /// startRunning() : 카메라 프리뷰를 시작합니다. 캡쳐 대기를 합니다.
-    func startRunning()
+    /// startRunning() : 카메라 프리뷰를 시작합니다. 시작되면 이벤트를 넘깁니다.
+    func startRunning() -> Single<Void>
 
     /// stopRunning() : 카메라 프리뷰를 중지합니다. 캡쳐 대기를 종료합니다.
     func stopRunning()
 
     /// capturePhoto() : 캡쳐를 수행합니다. 그 결과를 Single로 받습니다.
     func capturePhoto() -> Single<Data>
+
+    /// zoom() : 줌을 수행합니다.
+    func zoom(_ factor: CGFloat)
+
+    /// getMinimumZoomFactor() : minimum zoom fact를 구합니다
+    func getMinZoomFactor() -> CGFloat?
+
+    /// getMaximumZoomFactor() : maximum zoom fact를 구합니다
+    func getMaxZoomFactor() -> CGFloat?
 }
 
 class DefaultCameraRepository: NSObject, CameraRepository {
@@ -105,10 +114,26 @@ class DefaultCameraRepository: NSObject, CameraRepository {
         }
     }
 
-    func startRunning() {
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            self?.captureSession?.startRunning()
-            Log.print("Camera started running")
+    func startRunning() -> Single<Void> {
+        return Single.create { [weak self] single in
+            guard let self = self else {
+                single(.failure(CameraErrors.unknown))
+                return Disposables.create()
+            }
+
+            let notificationCenter = NotificationCenter.default
+            let startRunningObserver = notificationCenter.addObserver(forName: AVCaptureSession.didStartRunningNotification, object: self.captureSession, queue: .main) { _ in
+                Log.print("Camera started running")
+                single(.success(()))
+            }
+
+            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                self?.captureSession?.startRunning()
+            }
+
+            return Disposables.create {
+                notificationCenter.removeObserver(startRunningObserver)
+            }
         }
     }
 
@@ -117,6 +142,44 @@ class DefaultCameraRepository: NSObject, CameraRepository {
             self?.captureSession?.stopRunning()
         }
     }
+
+    func zoom(_ factor: CGFloat) {
+
+        guard let minAvailableZoomScale = self.getMinZoomFactor(),
+              let maxAvailableZoomScale = self.getMaxZoomFactor(),
+              let device = self.getCurrentInputDevice()
+        else {
+            return
+        }
+
+        do {
+            try device.lockForConfiguration()
+            if minAvailableZoomScale...maxAvailableZoomScale ~= factor {
+//                device.videoZoomFactor = factor
+                device.ramp(toVideoZoomFactor: factor, withRate: 5.0)
+            }
+        } catch {
+            return
+        }
+        device.unlockForConfiguration()
+    }
+
+    func getMinZoomFactor() -> CGFloat? {
+        let device = getCurrentInputDevice()
+
+        return device?.minAvailableVideoZoomFactor
+    }
+
+    func getMaxZoomFactor() -> CGFloat? {
+        let device = getCurrentInputDevice()
+
+        return device?.maxAvailableVideoZoomFactor
+    }
+
+    private func getCurrentInputDevice() -> AVCaptureDevice? {
+        return (captureSession?.inputs.first as? AVCaptureDeviceInput)?.device
+    }
+
 }
 
 extension DefaultCameraRepository: AVCapturePhotoCaptureDelegate {

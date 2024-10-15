@@ -76,7 +76,7 @@ final class CameraView: BaseView {
         return stackView
     }()
 
-    public lazy var zoomSlider: UISlider = {
+    public lazy var zoomSlider: CustomSlider = {
         let slider = CustomSlider()
         return slider
     }()
@@ -167,12 +167,20 @@ extension CustomSliderDelegate {
     func sliderChanged(_ newValue: Int, sender: Any) {}
 }
 
-class CustomSlider: UISlider {
+public final class CustomSlider: UISlider {
     let generator = UISelectionFeedbackGenerator()
     var delegate: CustomSliderDelegate?
     var stepCount: Int
     var currentStep: Int {
         valueToStep(self.value)
+    }
+    var currentSteppedValue: Float {
+        get {
+            stepToValue(currentStep)
+        }
+        set {
+            self.setValue(newValue, animated: true)
+        }
     }
 
     init(stepCount: Int = 50) {
@@ -193,13 +201,13 @@ class CustomSlider: UISlider {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func trackRect(forBounds bounds: CGRect) -> CGRect {
+    public override func trackRect(forBounds bounds: CGRect) -> CGRect {
         var result = super.trackRect(forBounds: bounds)
         result.size.height = 0
         return result
     }
 
-    override func draw(_ rect: CGRect) {
+    public override func draw(_ rect: CGRect) {
         super.draw(rect)
 
         // get the track rect
@@ -275,7 +283,7 @@ class CustomSlider: UISlider {
         pth.stroke()
     }
 
-    override func setValue(_ value: Float, animated: Bool) {
+    public override func setValue(_ value: Float, animated: Bool) {
         // don't allow value outside range of min and max values
         let newVal: Float = min(max(minimumValue, value), maximumValue)
         if self.currentStep != valueToStep(value) {
@@ -294,7 +302,7 @@ class CustomSlider: UISlider {
         delegate?.sliderChanged(Int(pos), sender: self)
     }
 
-    override var bounds: CGRect {
+    public override var bounds: CGRect {
         willSet {
             // we need to trigger draw() when the bounds changes
             setNeedsDisplay()
@@ -302,10 +310,27 @@ class CustomSlider: UISlider {
     }
 
     private func valueToStep(_ value: Float) -> Int {
-        Int((Double(value - self.minimumValue) / Double(self.maximumValue - self.minimumValue)) * Double(self.stepCount))
+        Int((Float(value - self.minimumValue) / Float(self.maximumValue - self.minimumValue)) * Float(self.stepCount))
     }
 
     private func playHapticFeedback() {
         generator.selectionChanged()
+    }
+
+    private func stepToValue(_ step: Int) -> Float {
+        Float(step) / Float(stepCount) * Float(maximumValue - minimumValue) + Float(minimumValue)
+    }
+}
+
+import RxSwift
+import RxCocoa
+
+extension Reactive where Base: CustomSlider {
+    public var currentSteppedValue: ControlProperty<Float> {
+        return controlProperty(editingEvents: [.allEditingEvents, .valueChanged]) { slider in
+            slider.currentSteppedValue
+        } setter: { slider, value in
+            slider.currentSteppedValue = value
+        }
     }
 }
