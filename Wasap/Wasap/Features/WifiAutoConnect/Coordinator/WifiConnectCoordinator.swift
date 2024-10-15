@@ -37,8 +37,7 @@ extension WifiConnectCoordinator: WifiConnectTranslater {
     func perfromTransition(_ flow: WifiConnectCoordinator.Flow) {
         switch flow {
         case .detail:
-            navigationController.pushViewController(
-                CameraViewController(cameraUseCase: DefaultCameraUseCase(repository: CameraRepository.self as! CameraRepository)), animated: true)
+            break
         }
     }
 }

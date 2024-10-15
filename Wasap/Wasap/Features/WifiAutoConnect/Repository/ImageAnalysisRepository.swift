@@ -16,8 +16,8 @@ public protocol ImageAnalysisRepository {
 public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
     public init() {}
     
-    let idStrings: Set<String> = ["ID", "Id", "iD", "id", "WIFI", "Wifi", "WiFi", "wifi", "Wi-Fi", "Network", "NETWORK", "network", "ssid", "SSID", "와이파이", "네트워크", "I.D"]
-    let pwStrings: Set<String> = ["PW", "Pw", "pW", "pw", "pass", "Pass", "PASS", "password", "Password", "PASSWORD", "패스워드", "암호", "P.W"]
+    let idStrings: Set<String> = ["ID", "Id", "iD", "id", "WIFI", "Wifi", "WiFi", "wifi", "Wi-Fi", "Network", "NETWORK", "network", "ssid", "SSID", "와이파이", "네트워크", "I.D", "1D"]
+    let pwStrings: Set<String> = ["PW", "Pw", "pW", "pw", "pass", "Pass", "PASS", "password", "Password", "PASSWORD", "패스워드", "암호", "P.W", "PV", "P/W"]
     
     var ssidText: String = ""
     var passwordText: String = ""
@@ -55,12 +55,16 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
                 var pwBoxes: [CGRect] = []
                 
                 for observation in results {
+                    print("--------------------------텍스트 분리----------------------------")
                     if let topCandidate = observation.topCandidates(1).first {
                         let originalString = topCandidate.string
                         let boundingBox = observation.boundingBox
                         
-                        // 콜론(:) 제거
-                        let cleanedString = originalString.replacingOccurrences(of: "[:\\-]", with: "", options: .regularExpression)
+                        // 1차: 공백 제거
+                        let noSpaceString = originalString.replacingOccurrences(of: " ", with: "")
+                        
+                        // 2차: 콜론(:) 및 하이픈(-) 제거
+                        let cleanedString = noSpaceString.replacingOccurrences(of: "[:\\-]", with: " ", options: .regularExpression)
                         
                         // 텍스트가 "ID" 또는 "PW"로 시작하는지 확인
                         let components = cleanedString.split(separator: " ", maxSplits: 1, omittingEmptySubsequences: true)
@@ -113,17 +117,24 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
                 
                 // "ID"에 가장 가까운 Bounding Box(SSID 값, 보라색) 탐색 - PW는 제외
                 for idBox in idBoxes {
+                    print("-----아이디박스----")
                     if let closestBox = self.closestBoundingBox(from: idBox, in: boxes.filter { $0.1 != "ID" && $0.1 != "PW" }),
                        let index = boxes.firstIndex(where: { $0.0 == closestBox.0 }) {
                         finalBoxes[index].1 = CGColor(red: 0.5, green: 0, blue: 0.5, alpha: 1)
                         
                         self.ssidText = closestBox.1.replacingOccurrences(of: " ", with: "")
                         Log.print("보라색박스(SSID 값 추정):\(self.ssidText)")
+                        
+                        let distance = self.distanceBetweenEdges(idBox, closestBox.0)
+                        print("ID 박스 CGRect: \(self.formatCGRect(idBox))")
+                        print("SSID 박스 CGRect: \(self.formatCGRect(closestBox.0))")
+                        print("ID 박스와 SSID 값의 거리: \(String(format: "%.3f", distance))")
                     }
                 }
                 
                 // "PW"에 가장 가까운 Bounding Box(Password 값, 연두색) 탐색 - ID와 SSID value 박스는 제외
                 for pwBox in pwBoxes {
+                    print("-----비번박스----")
                     if let closestBox = self.closestBoundingBox(from: pwBox, in: boxes.filter { box in
                         box.1 != "ID" && box.1 != "PW" && finalBoxes.first(where: { finalBox in box.0 == finalBox.0 && finalBox.1 == CGColor(red: 0.5, green: 0, blue: 0.5, alpha: 1) }) == nil }),
                        let index = boxes.firstIndex(where: { $0.0 == closestBox.0 }) {
@@ -131,11 +142,17 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
                         
                         self.passwordText = closestBox.1.replacingOccurrences(of: " ", with: "")
                         Log.print("연두색박스(Password 값 추정):\(self.passwordText)")
+                        
+                        let distance = self.distanceBetweenEdges(pwBox, closestBox.0)
+                        print("PW 박스 CGRect: \(self.formatCGRect(pwBox))")
+                        print("Password 박스 CGRect: \(self.formatCGRect(closestBox.0))")
+                        print("PW 박스와 Password 값의 거리: \(String(format: "%.3f", distance))")
                     }
                 }
                 
                 // "ID"는 노란색박스, "PW"는 파란색박스로 지정
                 for (index, box) in boxes.enumerated() {
+                    print("-----항목박스----")
                     if box.1 == "ID" {
                         finalBoxes[index].1 = CGColor(red: 1, green: 1, blue: 0, alpha: 1)
                         Log.print("노란색박스(ID 키):\(box.1)")
@@ -163,6 +180,11 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
             
             return Disposables.create()
         }
+    }
+    
+    // CGRect를 소수점 셋째자리까지 포맷팅하는 함수
+    private func formatCGRect(_ rect: CGRect) -> String {
+        return String(format: "(x: %.3f, y: %.3f, width: %.3f, height: %.3f)", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height)
     }
     
     // 이미지 Data 타입 -> CGImage 타입 변환
@@ -194,40 +216,29 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
         return boxes.min { distanceBetweenEdges($0.0, sourceBox) < distanceBetweenEdges($1.0, sourceBox) }
     }
     
-    private func distanceBetweenEdges(_ rect1: CGRect, _ rect2: CGRect) -> CGFloat {
-        // 각 사각형의 테두리 좌표 (X: 좌우, Y: 상하)
-        let minX1 = rect1.minX
-        let maxX1 = rect1.maxX
-        let minY1 = rect1.minY
-        let maxY1 = rect1.maxY
+    private func distanceBetweenEdges(_ rect1: CGRect, _ rect2: CGRect, yWeight: CGFloat = 2.0) -> CGFloat {
+        // X축 최단 거리: 두 사각형이 겹치지 않으면 그 간격, 겹치면 0
+        let dx = max(0, max(rect1.minX - rect2.maxX, rect2.minX - rect1.maxX))
         
-        let minX2 = rect2.minX
-        let maxX2 = rect2.maxX
-        let minY2 = rect2.minY
-        let maxY2 = rect2.maxY
+        // Y축 최단 거리: 두 사각형이 겹치지 않으면 그 간격, 겹치면 0
+        let dy = max(0, max(rect1.minY - rect2.maxY, rect2.minY - rect1.maxY))
         
-        // 두 사각형의 X축 방향 최단거리
-        let dx: CGFloat
-        if maxX1 < minX2 {
-            dx = minX2 - maxX1
-        } else if maxX2 < minX1 {
-            dx = minX1 - maxX2
-        } else {
-            dx = 0
-        }
+        // minX끼리의 차이, maxX끼리의 차이
+        let dxMin = abs(rect1.minX - rect2.minX)
+        let dxMax = abs(rect1.maxX - rect2.maxX)
         
-        // 두 사각형의 Y축 방향 최단거리
-        let dy: CGFloat
-        if maxY1 < minY2 {
-            dy = minY2 - maxY1
-        } else if maxY2 < minY1 {
-            dy = minY1 - maxY2
-        } else {
-            dy = 0
-        }
+        // minY끼리의 차이, maxY끼리의 차이
+        let dyMin = abs(rect1.minY - rect2.minY)
+        let dyMax = abs(rect1.maxY - rect2.maxY)
         
-        // 두 사각형의 대략적인 간격
-        return sqrt(dx * dx + dy * dy)
+        // X축에서 기존 dx와 minX끼리/maxX끼리 중 더 짧은 값 선택
+        let finalDx = min(dx, dxMin, dxMax)
+        
+        // Y축에서 기존 dy와 minY끼리/maxY끼리 중 더 짧은 값 선택
+        let finalDy = min(dy, dyMin, dyMax) * yWeight
+        
+        // 최종 거리 계산 (피타고라스 정리 사용)
+        return sqrt(finalDx * finalDx + finalDy * finalDy)
     }
 }
 

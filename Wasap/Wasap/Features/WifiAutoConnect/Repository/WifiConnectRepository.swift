@@ -9,26 +9,35 @@ import RxSwift
 import NetworkExtension
 import CoreLocation
 
-protocol WiFiConnectRepository {
+public protocol WiFiConnectRepository {
     // 와이파이 연결을 시도합니다. 그리고 성공 여부를 반환합니다.
     func connectToWiFi(ssid: String, password: String) -> Single<Bool>
     // 와이파이에 연결된 상태인지 확인합니다.
     func isWiFiConnectedcheck() -> Single<Bool>
     // 연결된 와이파이 SSID 를 반환합니다.
     func getCurrentWiFiSSID() -> Single<String?>
+
+    var wifiConnectionStatus: Observable<Bool> { get }
 }
 
 class DefaultWiFiConnectRepository: WiFiConnectRepository {
+    private let disposeBag = DisposeBag()
+    private let wifiConnectionStatusSubject = BehaviorSubject<Bool>(value: false)
+    
+    public var wifiConnectionStatus: Observable<Bool> {
+        return wifiConnectionStatusSubject.asObservable()
+    }
     
     // MARK: - Wi-Fi 연결 시도
     public func connectToWiFi(ssid: String, password: String) -> Single<Bool> {
+
         return Single<Bool>.create { single in
             let config = NEHotspotConfiguration(ssid: ssid,
                                                 passphrase: password,
                                                 isWEP: false)
             config.joinOnce = false
             
-            // 접속 여부를 자체적으로 판단 하지 않는다. 따라서 네트워크 연결 상태를 알려주는 함수 필요
+            /// 접속 여부를 자체적으로 판단 하지 않는다. 따라서 네트워크 연결 상태를 알려주는 함수 필요
             NEHotspotConfigurationManager.shared.apply(config) { error in
                 if let err = error as? NSError {
                     switch err.code {
@@ -50,15 +59,18 @@ class DefaultWiFiConnectRepository: WiFiConnectRepository {
                         // 접속하려는 와이파이와 연결된 와이파이가 같음
                         if currentSSID == ssid {
                             print("Successfully connected to \(ssid)")
+                            self.wifiConnectionStatusSubject.onNext(true)
                             single(.success(true))
                         }
                         // 접속하려는 와이파이와 연결된 와이파이가 다름
                         else {
                             print("Failed to connect to \(ssid)")
+                            self.wifiConnectionStatusSubject.onNext(false)
                             single(.failure(WiFiConnectionErrors.failedToConnect(ssid)))
                         }
                     })
-                    .dispose()
+                    .disposed(by: self.disposeBag)
+
                 }
             }
             return Disposables.create()

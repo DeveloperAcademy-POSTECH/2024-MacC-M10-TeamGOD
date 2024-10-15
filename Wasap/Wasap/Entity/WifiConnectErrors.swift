@@ -14,7 +14,6 @@ enum WiFiConnectionErrors: Error {
         switch self {
         case .failedToConnect(let ssid):
             return "Failed to connect to \(ssid)"
-            
         case .invalidPassword(let ssid):
             return "SSID 나 비밀번호가 형식에 맞지 않습니다: \(ssid)"
         case .alreadyConnected(let ssid):
@@ -25,3 +24,4 @@ enum WiFiConnectionErrors: Error {
     }
     
 }
+
