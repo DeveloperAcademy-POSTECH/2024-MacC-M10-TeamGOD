@@ -15,12 +15,17 @@ public class ConnectingCoordinator: NavigationCoordinator {
     public var childCoordinators: [any Coordinator] = []
     public let navigationController: UINavigationController
     let wifiAutoConnectDIContainer: WifiAutoConnectDIContainer
-    
+
+    let ssid: String?
+    let password: String?
+
     private weak var connectingViewController: ConnectingViewController?
     
-    public init(navigationController: UINavigationController, wifiAutoConnectDIContainer: WifiAutoConnectDIContainer) {
+    public init(navigationController: UINavigationController, wifiAutoConnectDIContainer: WifiAutoConnectDIContainer, ssid: String?, password: String?) {
         self.navigationController = navigationController
         self.wifiAutoConnectDIContainer = wifiAutoConnectDIContainer
+        self.ssid = ssid
+        self.password = password
     }
     
     public enum Flow {
@@ -28,11 +33,10 @@ public class ConnectingCoordinator: NavigationCoordinator {
     }
     
     public func start() {
-        let wifiConnectRepository = wifiAutoConnectDIContainer.getWiFiConnectRepository()
+        let wifiConnectRepository = wifiAutoConnectDIContainer.makeWiFiConnectRepository()
+        let wifiConnectUseCase = wifiAutoConnectDIContainer.makeWiFiConnectUseCase(wifiConnectRepository)
         
-        let wifiConnectUseCase = wifiAutoConnectDIContainer.makeWiFiConnectUseCase(wifiConnectRepository!)
-        
-        let viewModel = wifiAutoConnectDIContainer.makeConnectingViewModel(wifiConnectUseCase: wifiConnectUseCase, coordinatorcontroller: self)
+        let viewModel = wifiAutoConnectDIContainer.makeConnectingViewModel(wifiConnectUseCase: wifiConnectUseCase, coordinatorcontroller: self, ssid: ssid ?? "", password: password ?? "")
         let viewController = wifiAutoConnectDIContainer.makeConnectingViewController(viewModel)
         
         self.navigationController.setNavigationBarHidden(true, animated: false)

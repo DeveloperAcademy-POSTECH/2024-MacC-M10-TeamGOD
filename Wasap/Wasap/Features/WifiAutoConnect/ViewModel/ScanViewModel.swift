@@ -12,71 +12,54 @@ import UIKit
 public class ScanViewModel: BaseViewModel {
     // MARK: - Coordinator
     private weak var coordinatorController: ScanCoordinatorController?
-    
+
+    // MARK: - UseCase
+    private let imageAnalysisUseCase: ImageAnalysisUseCase
+
     // MARK: - Input
     
     // MARK: - Output
     public var updatedImage: Driver<UIImage>
-    public var ssidText: Driver<String>
-    public var passwordText: Driver<String>
-    public var isWiFiConnected: Driver<Bool>
-    
-    public init(imageAnalysisUseCase: ImageAnalysisUseCase, wifiConnectUseCase: WiFiConnectUseCase, coordinatorController: ScanCoordinatorController, previewImage: UIImage) {
-        
-        let ssidRelay = BehaviorRelay<String>(value: "")
-        self.ssidText = ssidRelay.asDriver(onErrorJustReturn: "")
-        
-        let passwordRelay = BehaviorRelay<String>(value: "")
-        self.passwordText = passwordRelay.asDriver(onErrorJustReturn: "")
-        
+
+    // MARK: - Properties
+    private var ocrResult: Observable<([(CGRect, CGColor)], String, String)>
+
+    public init(imageAnalysisUseCase: ImageAnalysisUseCase, coordinatorController: ScanCoordinatorController, previewImage: UIImage) {
+        self.imageAnalysisUseCase = imageAnalysisUseCase
+
+        let ocrResultRelay = BehaviorRelay<([(CGRect, CGColor)], String, String)>(value: ([], "", ""))
+        self.ocrResult = ocrResultRelay.asObservable().share()
+
         let updatedImageRelay = BehaviorRelay<UIImage?>(value: nil)
         self.updatedImage = updatedImageRelay.asDriver(onErrorJustReturn: nil).compactMap { $0 }
-        
-        let isWiFiConnectedRelay = BehaviorRelay<Bool>(value: false)
-        self.isWiFiConnected = isWiFiConnectedRelay.asDriver(onErrorJustReturn: false)
         
         self.coordinatorController = coordinatorController
         super.init()
         
-        self.viewDidLoad
-            .flatMapLatest { _ in
-                return imageAnalysisUseCase.performOCR(on: previewImage)
+        viewDidLoad
+            .withUnretained(self)
+            .flatMapLatest { owner, _ in
+                imageAnalysisUseCase.performOCR(on: previewImage)
             }
-            .flatMapLatest { boundingBoxes, ssid, password in
-                print("OCR 후 SSID: \(ssid), Password: \(password)")
-                
-                ssidRelay.accept(ssid)
-                passwordRelay.accept(password)
-                updatedImageRelay.accept(self.drawBoundingBoxes(boundingBoxes, on: previewImage))
-                
-                return Observable<Int>.timer(.seconds(2), scheduler: MainScheduler.instance)
-                    .flatMap { _ -> Observable<Bool> in
-                        if !ssid.isEmpty && !password.isEmpty {
-                            print("Wi-Fi 연결 시도: SSID = \(ssid), Password = \(password)")
-                            self.coordinatorController?.performTransition(to: .connecting)
-                            
-                            return wifiConnectUseCase.connectToWiFi(ssid: ssid, password: password)
-                                .asObservable()
-                                .do(onNext: { success in
-                                    print("Wi-Fi 연결 성공 여부: \(success)")
-                                }, onError: { error in
-                                    print("Wi-Fi 연결 중 에러 발생: \(error.localizedDescription)")
-                                })
-                                .catch { error in
-                                    print("Connection failed: \(error.localizedDescription)")
-                                    return .just(false)
-                                }
-                        } else {
-                            print("누락 - 현재SSID:\(ssid), 현재Password:\(password)")
-                            return .just(false)
-                        }
-                    }
+            .subscribe {
+                Log.debug("OCR 성공")
+                ocrResultRelay.accept($0)
+            } onError: { error in
+                Log.error("OCR 중 에러 발생: \(error.localizedDescription)")
             }
-            .subscribe(onNext: { success in
+            .disposed(by: disposeBag)
 
-            }, onError: { error in
-                print("OCR 또는 Wi-Fi 연결 중 에러 발생: \(error.localizedDescription)")
-            })
+        ocrResult
+            .subscribe { boundingBoxes, _, _ in
+                updatedImageRelay.accept(self.drawBoundingBoxes(boundingBoxes, on: previewImage))
+            }
+            .disposed(by: disposeBag)
+
+        ocrResult
+            .subscribe { _, ssid, password in
+                print("OCR 후 SSID: \(ssid), Password: \(password)")
+                self.coordinatorController?.performTransition(to: .connecting(ssid: ssid, password: password))
+            }
             .disposed(by: disposeBag)
     }
     

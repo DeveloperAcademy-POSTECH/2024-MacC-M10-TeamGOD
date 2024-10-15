@@ -16,8 +16,6 @@ public protocol WiFiConnectRepository {
     func isWiFiConnectedcheck() -> Single<Bool>
     // 연결된 와이파이 SSID 를 반환합니다.
     func getCurrentWiFiSSID() -> Single<String?>
-
-    var wifiConnectionStatus: Observable<Bool> { get }
 }
 
 class DefaultWiFiConnectRepository: WiFiConnectRepository {
@@ -59,13 +57,11 @@ class DefaultWiFiConnectRepository: WiFiConnectRepository {
                         // 접속하려는 와이파이와 연결된 와이파이가 같음
                         if currentSSID == ssid {
                             print("Successfully connected to \(ssid)")
-                            self.wifiConnectionStatusSubject.onNext(true)
                             single(.success(true))
                         }
                         // 접속하려는 와이파이와 연결된 와이파이가 다름
                         else {
                             print("Failed to connect to \(ssid)")
-                            self.wifiConnectionStatusSubject.onNext(false)
                             single(.failure(WiFiConnectionErrors.failedToConnect(ssid)))
                         }
                     })
