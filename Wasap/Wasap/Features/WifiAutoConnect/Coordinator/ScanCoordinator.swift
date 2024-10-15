@@ -25,7 +25,7 @@ public class ScanCoordinator: NavigationCoordinator {
     }
     
     public enum Flow {
-        case connecting(ssid: String, password: String)
+        case connecting(imageData: UIImage, ssid : String, password : String)
     }
     
     public func start() {
@@ -37,6 +37,7 @@ public class ScanCoordinator: NavigationCoordinator {
         let viewController = wifiAutoConnectDIContainer.makeScanViewController(viewModel)
         
         // ScanViewController를 navagationController에 push
+        self.navigationController.setNavigationBarHidden(true, animated: false)
         self.navigationController.pushViewController(viewController, animated: true)
     }
 }
@@ -44,8 +45,8 @@ public class ScanCoordinator: NavigationCoordinator {
 extension ScanCoordinator: ScanCoordinatorController {
     public func performTransition(to flow: Flow) {
         switch flow {
-        case .connecting(let ssid, let password):
-            let coordinator = ConnectingCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: self.wifiAutoConnectDIContainer, ssid: ssid, password: password)
+        case .connecting(let imageData,ssid: let ssid, password: let password):
+            let coordinator = ConnectingCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: self.wifiAutoConnectDIContainer, imageData: imageData, ssid: ssid, password: password)
             start(childCoordinator: coordinator)
         }
     }

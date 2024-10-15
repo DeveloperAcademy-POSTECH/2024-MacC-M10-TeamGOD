@@ -67,6 +67,7 @@ class GoToSettingView: BaseView {
     
     lazy var photoImageView: UIImageView = {
         let imageView = UIImageView()
+        imageView.image = UIImage(named: "RetryViewPhoto")
         imageView.backgroundColor = .black
         imageView.layer.borderWidth = 3.0
         return imageView

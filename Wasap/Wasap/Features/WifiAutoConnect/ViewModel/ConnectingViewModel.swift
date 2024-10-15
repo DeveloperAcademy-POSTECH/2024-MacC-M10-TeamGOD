@@ -23,7 +23,7 @@ public class ConnectingViewModel: BaseViewModel {
     public var isWiFiConnected: Driver<Bool>
     public var isLoading: Driver<Bool>
     
-    public init(wifiConnectUseCase: WiFiConnectUseCase, coordinatorController: ConnectingCoordinatorController, ssid: String, password: String) {
+    public init(wifiConnectUseCase: WiFiConnectUseCase, coordinatorController: ConnectingCoordinatorController, image: UIImage,ssid: String, password: String) {
         self.wifiConnectUseCase = wifiConnectUseCase
 
         let isWiFiConnectedRelay = BehaviorRelay<Bool>(value: false)
@@ -54,7 +54,7 @@ public class ConnectingViewModel: BaseViewModel {
         self.quitButtonTapped
             .withUnretained(self)
             .subscribe(onNext: { _ in
-                self.coordinatorController?.performTransition(to: .last(ssid: ssid, password: password))
+                self.coordinatorController?.performTransition(to: .last(imageData: image, ssid: ssid, password: password))
                 print("hello")
             })
             .disposed(by: disposeBag)
