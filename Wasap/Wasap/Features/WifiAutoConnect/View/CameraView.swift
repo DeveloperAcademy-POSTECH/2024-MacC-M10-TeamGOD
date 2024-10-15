@@ -50,18 +50,18 @@ final class CameraView: BaseView {
         button.setImage(UIImage(systemName: "plus.magnifyingglass"), for: .normal)
         button.tintColor = .white
         button.backgroundColor = .clear
-        button.addTarget(self, action: #selector(showZoomSliderView), for: .touchUpInside)
         return button
     }()
 
-    private lazy var zoomSliderStack: UIStackView = {
-
+    public lazy var zoomSliderStack: UIStackView = {
         let minusImage = UIImageView(image: UIImage(systemName: "minus"))
         minusImage.contentMode = .scaleAspectFit
+        minusImage.sizeToFit()
         minusImage.tintColor = .white
 
         let plusImage = UIImageView(image: UIImage(systemName: "plus"))
         plusImage.contentMode = .scaleAspectFit
+        plusImage.sizeToFit()
         plusImage.tintColor = .white
 
         let stackView = UIStackView(arrangedSubviews: [
@@ -151,11 +151,6 @@ final class CameraView: BaseView {
             $0.width.equalToSuperview().multipliedBy(0.8)
             $0.height.equalTo(50)
         }
-
-    }
-
-    @objc private func showZoomSliderView() {
-        zoomSlider.isHidden.toggle()
     }
 }
 

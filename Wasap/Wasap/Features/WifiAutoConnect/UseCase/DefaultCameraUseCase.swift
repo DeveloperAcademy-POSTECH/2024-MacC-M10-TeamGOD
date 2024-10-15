@@ -49,6 +49,12 @@ final class DefaultCameraUseCase: CameraUseCase {
 
     func startRunning() -> Single<Void> {
         Log.debug("Start Running")
+        NotificationCenter.rx.notification(
+            UIResponder.keyboardWillShowNotification
+        )
+        .subscribe(with: self, onNext: { owner, element in
+            // 키보드가 올라왔을 때의 동작
+        })
         return repository.startRunning()
             .catch { error in
                 Log.error(error.localizedDescription)

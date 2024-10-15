@@ -29,3 +29,14 @@ public class CameraCoordinator: NavigationCoordinator {
         self.navigationController.pushViewController(cameraViewController, animated: true)
     }
 }
+
+extension CameraCoordinator: CameraCoordinatorController {
+    public func performTransition(to flow: Flow) {
+        switch flow {
+        case .analysis(let imageData):
+            print("analysis view!")
+//            let coordinator = AnalysisCoordinator(imageData: imageData)
+//            start(childCoordinator: coordinator)
+        }
+    }
+}

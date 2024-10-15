@@ -11,15 +11,18 @@ import AVFoundation
 
 public class CameraViewModel: BaseViewModel {
     // MARK: - Coordinator
+    private weak var coordinatorController: CameraCoordinatorController?
 
     // MARK: - UseCase
     private let cameraUseCase: CameraUseCase
 
     // MARK: - Input
     public var zoomValue = BehaviorRelay<CGFloat>(value: 1.0)
+    public var zoomControlButtonDidTap = PublishRelay<Void>()
 
     // MARK: - Output
     public var previewLayer: Driver<AVCaptureVideoPreviewLayer>
+    public var isZoomControlButtonHidden: Driver<Bool>
 
     // MARK: - Properties
     private var isCameraRunning = BehaviorRelay<Bool>(value: false)
@@ -30,6 +33,9 @@ public class CameraViewModel: BaseViewModel {
         let previewLayerRelay = PublishRelay<AVCaptureVideoPreviewLayer>()
         self.previewLayer = previewLayerRelay.asDriver(onErrorDriveWith: .empty())
 
+        let isZoomControlButtonHiddenRelay = BehaviorRelay<Bool>(value: false)
+        self.isZoomControlButtonHidden = isZoomControlButtonHiddenRelay.asDriver(onErrorDriveWith: .empty())
+
         super.init()
         let isCameraConfigured = PublishRelay<Void>()
 
@@ -39,6 +45,7 @@ public class CameraViewModel: BaseViewModel {
                 cameraUseCase.configureCamera()
             }
             .subscribe {
+                Log.debug("Camera Configure Completed")
                 isCameraConfigured.accept($0)
             } onError: { error in
                 Log.error("\(error.localizedDescription)")
@@ -53,6 +60,7 @@ public class CameraViewModel: BaseViewModel {
             }
             .withUnretained(self)
             .subscribe { owner, _ in
+                Log.debug("Camera start running")
                 owner.isCameraRunning.accept(true)
             } onError: { error in
                 Log.error(error.localizedDescription)
@@ -77,6 +85,17 @@ public class CameraViewModel: BaseViewModel {
             .subscribe { [weak self] _, value in
                 self?.cameraUseCase.zoom(value)
             }
+            .disposed(by: disposeBag)
+
+        zoomValue
+            .debounce(.seconds(3), scheduler: MainScheduler.instance)
+            .map { _ in false }
+            .bind(to: isZoomControlButtonHiddenRelay)
+            .disposed(by: disposeBag)
+
+        zoomControlButtonDidTap
+            .map { _ in true }
+            .bind(to: isZoomControlButtonHiddenRelay)
             .disposed(by: disposeBag)
     }
 }

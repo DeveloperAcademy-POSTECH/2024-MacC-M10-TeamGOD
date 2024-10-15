@@ -35,6 +35,17 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
             }
             .disposed(by: disposeBag)
 
+        viewModel.isZoomControlButtonHidden
+            .drive { [weak self] isHidden in
+                self?.cameraView.zoomControlButton.isHidden = isHidden
+                self?.cameraView.zoomSliderStack.isHidden = !isHidden
+            }
+            .disposed(by: disposeBag)
+
+        cameraView.zoomControlButton.rx.tap
+            .bind(to: viewModel.zoomControlButtonDidTap)
+            .disposed(by: disposeBag)
+
         cameraView.zoomSlider.rx.currentSteppedValue
             .map { CGFloat($0) }
             .bind(to: viewModel.zoomValue)
