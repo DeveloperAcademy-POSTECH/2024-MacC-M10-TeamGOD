@@ -9,7 +9,7 @@ import RxSwift
 import Vision
 
 public protocol ImageAnalysisRepository {
-    func performOCR(from imageData: Data) -> Single<([(CGRect, CGColor)], String, String)>
+    func performOCR(from imageData: Data) -> Single<([CGRect], String, String)>
     
 }
 
@@ -21,9 +21,9 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
     
     var ssidText: String = ""
     var passwordText: String = ""
-    var boundingBoxes: [(CGRect, CGColor)] = []
+    var boundingBoxes: [CGRect] = []
     
-    public func performOCR(from imageData: Data) -> Single<([(CGRect, CGColor)], String, String)> {
+    public func performOCR(from imageData: Data) -> Single<([CGRect], String, String)> {
         return Single.create { [weak self] single in
             guard let self else {
                 single(.failure(ImageAnalysisError.ocrFailed("Self not found")))
@@ -77,8 +77,8 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
                             
                             // "ID" 부분에 대한 Bounding Box 분리
                             let idBox = boundingBox
-                            let remainingBox = self.splitBoundingBox(originalBox: boundingBox, splitFactor: 0.3)
-                            
+                            let remainingBox = self.splitBoundingBox(originalBox: boundingBox, splitFactor: CGFloat(1 - Double(remainingText.count)/Double(noSpaceString.count)))
+
                             idBoxes.append(idBox)
                             boxes.append((idBox, "ID"))
                             
@@ -95,8 +95,8 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
                             
                             // "PW" 부분에 대한 Bounding Box 분리
                             let pwBox = boundingBox
-                            let remainingBox = self.splitBoundingBox(originalBox: boundingBox, splitFactor: 0.3)
-                            
+                            let remainingBox = self.splitBoundingBox(originalBox: boundingBox, splitFactor: CGFloat(1 - Double(remainingText.count)/Double(noSpaceString.count)))
+
                             pwBoxes.append(pwBox)
                             boxes.append((pwBox, "PW"))
                             
@@ -114,14 +114,16 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
                 }
                 
                 var finalBoxes: [(CGRect, CGColor)] = boxes.map { ($0.0, CGColor(red: 0, green: 0, blue: 0, alpha: 1)) }
-                
+                var extractedBoxes: [CGRect] = []
+
                 // "ID"에 가장 가까운 Bounding Box(SSID 값, 보라색) 탐색 - PW는 제외
                 for idBox in idBoxes {
                     print("-----아이디박스----")
                     if let closestBox = self.closestBoundingBox(from: idBox, in: boxes.filter { $0.1 != "ID" && $0.1 != "PW" }),
                        let index = boxes.firstIndex(where: { $0.0 == closestBox.0 }) {
                         finalBoxes[index].1 = CGColor(red: 0.5, green: 0, blue: 0.5, alpha: 1)
-                        
+
+                        extractedBoxes.append(closestBox.0)
                         self.ssidText = closestBox.1.replacingOccurrences(of: " ", with: "")
                         Log.print("보라색박스(SSID 값 추정):\(self.ssidText)")
                         
@@ -139,7 +141,8 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
                         box.1 != "ID" && box.1 != "PW" && finalBoxes.first(where: { finalBox in box.0 == finalBox.0 && finalBox.1 == CGColor(red: 0.5, green: 0, blue: 0.5, alpha: 1) }) == nil }),
                        let index = boxes.firstIndex(where: { $0.0 == closestBox.0 }) {
                         finalBoxes[index].1 = CGColor(red: 0, green: 1, blue: 0, alpha: 1)
-                        
+
+                        extractedBoxes.append(closestBox.0)
                         self.passwordText = closestBox.1.replacingOccurrences(of: " ", with: "")
                         Log.print("연두색박스(Password 값 추정):\(self.passwordText)")
                         
@@ -163,8 +166,8 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
                 }
                 
                 DispatchQueue.main.async {
-                    self.boundingBoxes.append(contentsOf: finalBoxes)
-                    
+                    self.boundingBoxes.append(contentsOf: extractedBoxes)
+
                     single(.success((self.boundingBoxes, self.ssidText, self.passwordText)))
                 }
             }
@@ -242,7 +245,4 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
     }
 }
 
-public enum ImageAnalysisError: Error {
-    case invalidImage
-    case ocrFailed(String)
-}
+
