@@ -45,15 +45,17 @@ public class GoToSettingCoordinator: NavigationCoordinator {
 
         self.navigationController.pushViewController(viewController, animated: true)
     }
+
+    public func finish() {
+        self.navigationController.popViewController(animated: true)
+    }
 }
 
 extension GoToSettingCoordinator: GoToSettingCoordinatorController {
     public func performTransition(to flow: Flow) {
         switch flow {
         case .camera:
-            print("Camara View")
-            let coordinator = CameraCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer)
-            start(childCoordinator: coordinator)
+            finishUntil(CameraCoordinator.self)
         }
 
     }

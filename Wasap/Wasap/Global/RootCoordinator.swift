@@ -9,7 +9,7 @@ import UIKit
 
 public class RootCoordinator: Coordinator {
     public var parentCoordinator: (any Coordinator)? = nil
-    
+
     public var childCoordinators: [Coordinator] = []
     let window: UIWindow?
     let appDIContainer: AppDIContainer
@@ -28,5 +28,9 @@ public class RootCoordinator: Coordinator {
         start(childCoordinator: scanCoordinator)
         window?.rootViewController = scanCoordinator.navigationController
         window?.makeKeyAndVisible()
+    }
+
+    public func finish() {
+        fatalError("You cannot finish Root Coordinator")
     }
 }

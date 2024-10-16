@@ -30,6 +30,10 @@ public class CameraCoordinator: NavigationCoordinator {
 
         self.navigationController.pushViewController(cameraViewController, animated: true)
     }
+
+    public func finish() {
+        self.navigationController.popViewController(animated: true)
+    }
 }
 
 extension CameraCoordinator: CameraCoordinatorController {
