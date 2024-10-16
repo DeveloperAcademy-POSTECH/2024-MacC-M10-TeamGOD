@@ -18,6 +18,7 @@ public class GoToSettingViewModel: BaseViewModel {
     // MARK: - Input
     let setButtonTapped = PublishRelay<Void>()
     let xButtonTapped = PublishRelay<Void>()
+    let passwordRelay = BehaviorRelay<String>(value: "")
 
     // MARK: - Property
     let ssidDriver: Driver<String>
@@ -57,8 +58,10 @@ public class GoToSettingViewModel: BaseViewModel {
         setButtonTapped
             .subscribe(onNext: {
                 gotoSettingUseCase.openSettings()
+                gotoSettingUseCase.copyPassword(pw: passwordRelay.value)
             })
             .disposed(by: disposeBag)
     }
 }
+
 

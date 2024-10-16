@@ -11,6 +11,7 @@ import UIKit
 
 public protocol GoToSettingUseCase {
     func openSettings()
+    func copyPassword(pw : String)
 }
 
 final class DefaultGoToSettingUseCase: GoToSettingUseCase {
@@ -28,6 +29,10 @@ final class DefaultGoToSettingUseCase: GoToSettingUseCase {
                 print("설정 앱을 열 수 없습니다.")
             }
         }
+    }
+
+    func copyPassword(pw : String) {
+        UIPasteboard.general.string = pw
     }
 }
 
