@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 
 public class WifiConnectCoordinator: NavigationCoordinator {
+    public var parentCoordinator: (any Coordinator)? = nil
     public var childCoordinators: [any Coordinator] = []
     public let navigationController: UINavigationController
     let wifiAutoConnectDIContainer: WifiAutoConnectDIContainer
@@ -28,12 +29,13 @@ public class WifiConnectCoordinator: NavigationCoordinator {
     public enum Flow {
         case connecting(imageData: UIImage,ssid : String, password : String)
         case camera
+        case gotoSetting(imageData: UIImage,ssid : String, password : String)
     }
 
     public func start() {
         let repository = wifiAutoConnectDIContainer.makeWiFiConnectRepository()
         let usecase = wifiAutoConnectDIContainer.makeWiFiConnectUseCase(repository)
-        let viewModel = wifiAutoConnectDIContainer.makeWifiConnectViewModel(wifiConnectUseCase: usecase, coordinatorcontroller: self)
+        let viewModel = wifiAutoConnectDIContainer.makeWifiConnectViewModel(wifiConnectUseCase: usecase, coordinatorcontroller: self, imageData: image, ssid: ssid, password: password)
         let viewController = wifiAutoConnectDIContainer.makeWifiReConnectViewController(viewModel)
 
         self.navigationController.pushViewController(viewController, animated: true)
@@ -50,6 +52,10 @@ extension WifiConnectCoordinator: WifiConnectCoordinatorController {
 
         case .connecting(imageData: let imageData,ssid: let ssid, password: let password):
             let coordinator = ConnectingCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: WifiAutoConnectDIContainer(),imageData: imageData, ssid: ssid, password: password)
+            start(childCoordinator: coordinator)
+
+        case .gotoSetting(let image, let ssid, let password):
+            let coordinator = GoToSettingCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, imageData: image, ssid: ssid, password: password)
             start(childCoordinator: coordinator)
         }
 

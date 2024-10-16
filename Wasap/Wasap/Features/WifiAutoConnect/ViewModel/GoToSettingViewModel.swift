@@ -25,7 +25,7 @@ public class GoToSettingViewModel: BaseViewModel {
     let updatedImageDriver: Driver<UIImage>
 
 
-    public init(gotoSettingUseCase: GoToSettingUseCase, coordinatorController: GoToSettingCoordinator,imageData: UIImage,ssid : String, password: String) {
+    public init(gotoSettingUseCase: GoToSettingUseCase, coordinatorController: GoToSettingCoordinator, imageData: UIImage, ssid : String, password: String) {
 
         self.coordinatorController = coordinatorController
 

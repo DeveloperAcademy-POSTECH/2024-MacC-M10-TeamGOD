@@ -8,10 +8,12 @@
 import UIKit
 
 public protocol ConnectingCoordinatorController: AnyObject {
-    func performTransition(to flow: ConnectingCoordinator.Flow)
+//    func performTransition(to flow: ConnectingCoordinator.Flow)
+    func performFinish(to flow: ConnectingCoordinator.FinishFlow)
 }
 
 public class ConnectingCoordinator: NavigationCoordinator {
+    public var parentCoordinator: (any Coordinator)? = nil
     public var childCoordinators: [any Coordinator] = []
     public let navigationController: UINavigationController
     let wifiAutoConnectDIContainer: WifiAutoConnectDIContainer
@@ -22,7 +24,7 @@ public class ConnectingCoordinator: NavigationCoordinator {
 
     private weak var connectingViewController: ConnectingViewController?
     
-    public init(navigationController: UINavigationController, wifiAutoConnectDIContainer: WifiAutoConnectDIContainer,imageData: UIImage, ssid: String?, password: String?) {
+    public init(navigationController: UINavigationController, wifiAutoConnectDIContainer: WifiAutoConnectDIContainer, imageData: UIImage, ssid: String?, password: String?) {
         self.navigationController = navigationController
         self.wifiAutoConnectDIContainer = wifiAutoConnectDIContainer
         self.ssid = ssid
@@ -30,10 +32,17 @@ public class ConnectingCoordinator: NavigationCoordinator {
         self.imageData = imageData
     }
     
-    public enum Flow {
-        case last(imageData: UIImage,ssid : String, password : String)
+//    public enum Flow {
+//        case last(imageData: UIImage, ssid : String, password : String)
+//        case retry(imageData: UIImage, ssid : String, password : String)
+//        case camera
+//    }
+
+    public enum FinishFlow {
+        case popToRoot
+        case finishWithError
     }
-    
+
     public func start() {
         let wifiConnectRepository = wifiAutoConnectDIContainer.makeWiFiConnectRepository()
         let wifiConnectUseCase = wifiAutoConnectDIContainer.makeWiFiConnectUseCase(wifiConnectRepository)
@@ -47,11 +56,36 @@ public class ConnectingCoordinator: NavigationCoordinator {
 }
 
 extension ConnectingCoordinator: ConnectingCoordinatorController {
-    public func performTransition(to flow: Flow) {
+//    public func performTransition(to flow: Flow) {
+//        switch flow {
+//        case .last(let imageData,ssid: let ssid, password: let password):
+//            let coordinator = GoToSettingCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, imageData: imageData, ssid: ssid, password: password)
+//            start(childCoordinator: coordinator)
+//
+//        case .camera:
+//            print("Camara View")
+//            let coordinator = CameraCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer)
+//            start(childCoordinator: coordinator)
+//
+//        case .retry(imageData: let imageData, ssid: let ssid, password: let password):
+//            print("Retry View")
+//
+//        }
+//    }
+
+    public func performFinish(to flow: FinishFlow) {
         switch flow {
-        case .last(let imageData,ssid: let ssid, password: let password):
-            let coordinator = GoToSettingCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, imageData: imageData, ssid: ssid, password: password)
-            start(childCoordinator: coordinator)
+        case .popToRoot:
+            navigationController.popToRootViewController(animated: true)
+            // TODO: 코디네이터 삭제 되는지 보기
+        case .finishWithError:
+            navigationController.popViewController(animated: true)
+            defer { finishCurrentCoordinator() }
+            if let parentCoordinator = parentCoordinator as? ScanCoordinator {
+                defer { parentCoordinator.performTransition(to: .retry(imageData: imageData, ssid: ssid, password: password)) }
+            } else if let parentCoordinator = parentCoordinator as? WifiConnectCoordinator {
+                defer { parentCoordinator.performTransition(to: .gotoSetting(imageData: imageData, ssid: ssid ?? "", password: password ?? "")) }
+            }
         }
     }
 }

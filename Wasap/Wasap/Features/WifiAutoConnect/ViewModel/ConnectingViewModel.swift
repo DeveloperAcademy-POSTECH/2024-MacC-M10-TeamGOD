@@ -47,6 +47,8 @@ public class ConnectingViewModel: BaseViewModel {
                 isWiFiConnectedRelay.accept(success)
             } onError: { error in
                 isLoadingRelay.accept(false)
+//                self.coordinatorController?.performTransition(to: .last(imageData: image, ssid: ssid, password: password))
+                self.coordinatorController?.performFinish(to: .finishWithError)
                 Log.error("Wi-Fi 연결 중 에러 발생: \(error.localizedDescription)")
             }
             .disposed(by: disposeBag)
@@ -54,8 +56,7 @@ public class ConnectingViewModel: BaseViewModel {
         self.quitButtonTapped
             .withUnretained(self)
             .subscribe(onNext: { _ in
-                self.coordinatorController?.performTransition(to: .last(imageData: image, ssid: ssid, password: password))
-                print("hello")
+                self.coordinatorController?.performFinish(to: .popToRoot)
             })
             .disposed(by: disposeBag)
     }

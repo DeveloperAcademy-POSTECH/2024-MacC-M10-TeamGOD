@@ -8,6 +8,7 @@
 import UIKit
 
 public class CameraCoordinator: NavigationCoordinator {
+    public var parentCoordinator: (any Coordinator)? = nil
     public var childCoordinators: [any Coordinator] = []
     public let navigationController: UINavigationController
     let wifiAutoConnectDIContainer: WifiAutoConnectDIContainer

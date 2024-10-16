@@ -37,6 +37,7 @@ public class ScanViewModel: BaseViewModel {
         super.init()
         
         viewDidLoad
+            .observe(on: MainScheduler.asyncInstance)
             .withUnretained(self)
             .flatMapLatest { owner, _ in
                 imageAnalysisUseCase.performOCR(on: previewImage)

@@ -12,6 +12,7 @@ public protocol ScanCoordinatorController: AnyObject {
 }
 
 public class ScanCoordinator: NavigationCoordinator {
+    public var parentCoordinator: (any Coordinator)? = nil
     public var childCoordinators: [any Coordinator] = []
     public let navigationController: UINavigationController
     let wifiAutoConnectDIContainer: WifiAutoConnectDIContainer
@@ -21,11 +22,12 @@ public class ScanCoordinator: NavigationCoordinator {
         self.navigationController = navigationController
         self.wifiAutoConnectDIContainer = wifiAutoConnectDIContainer
         
-         self.previewImage = previewImage
+        self.previewImage = previewImage
     }
     
     public enum Flow {
-        case connecting(imageData: UIImage, ssid : String, password : String)
+        case connecting(imageData: UIImage, ssid : String?, password : String?)
+        case retry(imageData: UIImage, ssid : String?, password : String?)
     }
     
     public func start() {
@@ -47,6 +49,9 @@ extension ScanCoordinator: ScanCoordinatorController {
         switch flow {
         case .connecting(let imageData,ssid: let ssid, password: let password):
             let coordinator = ConnectingCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: self.wifiAutoConnectDIContainer, imageData: imageData, ssid: ssid, password: password)
+            start(childCoordinator: coordinator)
+        case .retry(let image, let ssid, let password):
+            let coordinator = WifiConnectCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, image: image, ssid: ssid ?? "", password: password ?? "")
             start(childCoordinator: coordinator)
         }
     }
