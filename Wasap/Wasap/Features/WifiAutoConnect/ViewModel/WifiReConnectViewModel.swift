@@ -9,10 +9,10 @@ import RxSwift
 import RxCocoa
 import UIKit
 
-public class WifiConnectViewModel: BaseViewModel {
+public class WifiReConnectViewModel: BaseViewModel {
 
     // MARK: - Coordinator
-    private weak var coordinatorController: WifiConnectCoordinatorController?
+    private weak var coordinatorController: WifiReConnectCoordinatorController?
 
     // MARK: - Input
     public let reConnectButtonTapped = PublishRelay<Void>()
@@ -24,7 +24,7 @@ public class WifiConnectViewModel: BaseViewModel {
     // MARK: - Output
     public var updatedImageDriver: Driver<UIImage>
 
-    public init(wifiConnectUseCase: WiFiConnectUseCase, coordinatorController: WifiConnectCoordinatorController, image: UIImage, ssid: String, password: String) {
+    public init(wifiConnectUseCase: WiFiConnectUseCase, coordinatorController: WifiReConnectCoordinatorController, image: UIImage, ssid: String, password: String) {
         self.coordinatorController = coordinatorController
 
         let updatedImageRelay = BehaviorRelay<UIImage>(value: image)

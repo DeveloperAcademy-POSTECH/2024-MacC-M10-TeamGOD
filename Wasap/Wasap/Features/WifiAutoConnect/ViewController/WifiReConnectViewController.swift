@@ -9,8 +9,8 @@ import RxSwift
 import SnapKit
 import CoreLocation
 
-public class WifiReConnectViewController: RxBaseViewController<WifiConnectViewModel>{
-    
+public class WifiReConnectViewController: RxBaseViewController<WifiReConnectViewModel>{
+
     private let wifiReConnectView = WifiReConnectView()
     
     
@@ -26,7 +26,7 @@ public class WifiReConnectViewController: RxBaseViewController<WifiConnectViewMo
         
     }
     
-    override init(viewModel: WifiConnectViewModel) {
+    override init(viewModel: WifiReConnectViewModel) {
         super.init(viewModel: viewModel)
         bind(viewModel)
     }
@@ -35,7 +35,7 @@ public class WifiReConnectViewController: RxBaseViewController<WifiConnectViewMo
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func bind(_ viewModel: WifiConnectViewModel) {
+    private func bind(_ viewModel: WifiReConnectViewModel) {
         
         wifiReConnectView.ssidField.rx.text.orEmpty
             .bind(to: viewModel.ssidText)

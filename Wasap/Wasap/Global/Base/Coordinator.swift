@@ -98,8 +98,8 @@ public protocol NavigationCoordinator: Coordinator {
 }
 
 // MARK: - CoordinatorController ( 추가 )
-public protocol WifiConnectCoordinatorController: AnyObject {
-    func performTransition(to flow: WifiConnectCoordinator.Flow)
+public protocol WifiReConnectCoordinatorController: AnyObject {
+    func performTransition(to flow: WifiReConnectCoordinator.Flow)
 }
 
 public protocol CameraCoordinatorController: AnyObject {

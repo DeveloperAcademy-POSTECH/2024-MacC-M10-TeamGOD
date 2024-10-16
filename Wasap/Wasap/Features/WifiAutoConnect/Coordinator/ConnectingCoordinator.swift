@@ -61,7 +61,7 @@ extension ConnectingCoordinator: ConnectingCoordinatorController {
             if let parentCoordinator = parentCoordinator as? ScanCoordinator {
                 finishCurrentCoordinator()
                 parentCoordinator.performTransition(to: .retry(imageData: imageData, ssid: ssid, password: password))
-            } else if let parentCoordinator = parentCoordinator as? WifiConnectCoordinator {
+            } else if let parentCoordinator = parentCoordinator as? WifiReConnectCoordinator {
                 finishCurrentCoordinator()
                 parentCoordinator.performTransition(to: .gotoSetting(imageData: imageData, ssid: ssid ?? "", password: password ?? ""))
             }
