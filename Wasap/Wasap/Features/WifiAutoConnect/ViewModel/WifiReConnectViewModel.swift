@@ -43,7 +43,6 @@ public class WifiReConnectViewModel: BaseViewModel {
         self.passwordDriver = passwordRelay.asDriver()
 
         super.init()
-        // MARK: 다시 와이파이 연결
 
         cameraButtonTapped
             .subscribe(onNext: { _ in
