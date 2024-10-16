@@ -18,7 +18,8 @@ public class GoToSettingCoordinator: NavigationCoordinator {
     let password : String
     let imageData : UIImage
 
-    public init(navigationController: UINavigationController, wifiAutoConnectDIContainer: WifiAutoConnectDIContainer, imageData : UIImage, ssid : String, password : String) {
+    public init(navigationController: UINavigationController, wifiAutoConnectDIContainer: WifiAutoConnectDIContainer, imageData: UIImage, ssid: String, password: String) {
+        Log.print("GoToSettingCoordinator에서 받은 image: \(imageData), ssid: \(ssid), password: \(password)")
         self.navigationController = navigationController
         self.wifiAutoConnectDIContainer = wifiAutoConnectDIContainer
         self.ssid = ssid
