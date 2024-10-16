@@ -19,6 +19,7 @@ public class WifiConnectCoordinator: NavigationCoordinator {
     let password: String
 
     public init(navigationController: UINavigationController, wifiAutoConnectDIContainer: WifiAutoConnectDIContainer, image: UIImage, ssid: String, password: String) {
+        Log.print("WifiConnectCoordinator에서 받은 image: \(image), ssid: \(ssid), password: \(password)")
         self.navigationController = navigationController
         self.wifiAutoConnectDIContainer = wifiAutoConnectDIContainer
         self.image = image
