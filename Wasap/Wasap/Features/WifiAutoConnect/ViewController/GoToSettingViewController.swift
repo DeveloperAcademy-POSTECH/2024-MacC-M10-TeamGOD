@@ -42,10 +42,6 @@ public class GoToSettingViewController: RxBaseViewController<GoToSettingViewMode
             .bind(to: viewModel.xButtonTapped)
             .disposed(by: disposeBag)
 
-        if let pwText = goToSettingView.pwFieldLabel.text {
-            viewModel.passwordRelay.accept(pwText)
-        }
-
         Observable.just(())
             .bind(to: viewModel.viewDidLoad)
             .disposed(by: disposeBag)
@@ -67,22 +63,12 @@ public class GoToSettingViewController: RxBaseViewController<GoToSettingViewMode
                 self?.goToSettingView.photoImageView.image = image
             }
             .disposed(by: disposeBag)
-
     }
 
     private func setupNavigationBar() {
         navigationItem.rightBarButtonItem = goToSettingView.barItem
         navigationItem.rightBarButtonItem?.customView?.frame = CGRect(x: 0, y: 300, width: 26, height: 26)
     }
-
-//    @objc func copyPassword() {
-//        guard let password = goToSettingView.pwFieldLabel.text, !password.isEmpty else {
-//            print("비밀번호가 없습니다.")
-//            return
-//        }
-//        UIPasteboard.general.string = password
-//        print("비밀번호가 복사되었습니다: \(password)")
-//    }
 }
 
 
