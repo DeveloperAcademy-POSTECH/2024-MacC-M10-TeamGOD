@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-public class WifiConnectCoordinator: NavigationCoordinator {
+public class WifiReConnectCoordinator: NavigationCoordinator {
     public var parentCoordinator: (any Coordinator)? = nil
     public var childCoordinators: [any Coordinator] = []
     public let navigationController: UINavigationController
@@ -19,7 +19,7 @@ public class WifiConnectCoordinator: NavigationCoordinator {
     let password: String
 
     public init(navigationController: UINavigationController, wifiAutoConnectDIContainer: WifiAutoConnectDIContainer, image: UIImage, ssid: String, password: String) {
-        Log.print("WifiConnectCoordinator에서 받은 image: \(image), ssid: \(ssid), password: \(password)")
+        Log.print("WifiReConnectCoordinator에서 받은 image: \(image), ssid: \(ssid), password: \(password)")
         self.navigationController = navigationController
         self.wifiAutoConnectDIContainer = wifiAutoConnectDIContainer
         self.image = image
@@ -36,7 +36,7 @@ public class WifiConnectCoordinator: NavigationCoordinator {
     public func start() {
         let repository = wifiAutoConnectDIContainer.makeWiFiConnectRepository()
         let usecase = wifiAutoConnectDIContainer.makeWiFiConnectUseCase(repository)
-        let viewModel = wifiAutoConnectDIContainer.makeWifiConnectViewModel(wifiConnectUseCase: usecase, coordinatorcontroller: self, imageData: image, ssid: ssid, password: password)
+        let viewModel = wifiAutoConnectDIContainer.makeWifiReConnectViewModel(wifiConnectUseCase: usecase, coordinatorcontroller: self, imageData: image, ssid: ssid, password: password)
         let viewController = wifiAutoConnectDIContainer.makeWifiReConnectViewController(viewModel)
 
         self.navigationController.pushViewController(viewController, animated: true)
@@ -47,7 +47,7 @@ public class WifiConnectCoordinator: NavigationCoordinator {
     }
 }
 
-extension WifiConnectCoordinator: WifiConnectCoordinatorController {
+extension WifiReConnectCoordinator: WifiReConnectCoordinatorController {
     public func performTransition(to flow: Flow) {
         switch flow {
         case .camera:

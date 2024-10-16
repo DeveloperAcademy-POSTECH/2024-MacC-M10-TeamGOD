@@ -55,7 +55,7 @@ extension ScanCoordinator: ScanCoordinatorController {
             let coordinator = ConnectingCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: self.wifiAutoConnectDIContainer, imageData: imageData, ssid: ssid, password: password)
             start(childCoordinator: coordinator)
         case .retry(let image, let ssid, let password):
-            let coordinator = WifiConnectCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, image: image, ssid: ssid ?? "", password: password ?? "")
+            let coordinator = WifiReConnectCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, image: image, ssid: ssid ?? "", password: password ?? "")
             start(childCoordinator: coordinator)
         }
     }

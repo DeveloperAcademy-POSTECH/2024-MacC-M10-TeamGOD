@@ -1,5 +1,5 @@
 //
-//  WifiConnectView.swift
+//  WifiReConnectView.swift
 //  Wasap
 //
 //  Created by 김상준 on 10/6/24.

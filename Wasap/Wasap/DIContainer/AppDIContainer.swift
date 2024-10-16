@@ -48,8 +48,8 @@ final public class WifiAutoConnectDIContainer {
         return ScanViewModel(imageAnalysisUseCase: imageAnalysisUseCase, coordinatorController: coordinatorcontroller, previewImage: image)
     }
 
-    public func makeWifiConnectViewModel(wifiConnectUseCase: WiFiConnectUseCase, coordinatorcontroller: WifiConnectCoordinatorController, imageData: UIImage, ssid: String, password: String) -> WifiConnectViewModel {
-        return WifiConnectViewModel(wifiConnectUseCase: wifiConnectUseCase, coordinatorController: coordinatorcontroller, image: imageData, ssid: ssid, password: password)
+    public func makeWifiReConnectViewModel(wifiConnectUseCase: WiFiConnectUseCase, coordinatorcontroller: WifiReConnectCoordinatorController, imageData: UIImage, ssid: String, password: String) -> WifiReConnectViewModel {
+        return WifiReConnectViewModel(wifiConnectUseCase: wifiConnectUseCase, coordinatorController: coordinatorcontroller, image: imageData, ssid: ssid, password: password)
     }
 
     public func makeConnectingViewModel(wifiConnectUseCase: WiFiConnectUseCase, coordinatorcontroller: ConnectingCoordinatorController, imageData: UIImage, ssid: String, password: String) -> ConnectingViewModel {
@@ -68,7 +68,7 @@ final public class WifiAutoConnectDIContainer {
         return ConnectingViewController(viewModel: viewModel)
     }
 
-    public func makeWifiReConnectViewController(_ viewModel: WifiConnectViewModel) -> WifiReConnectViewController {
+    public func makeWifiReConnectViewController(_ viewModel: WifiReConnectViewModel) -> WifiReConnectViewController {
         return WifiReConnectViewController(viewModel: viewModel)
     }
 
