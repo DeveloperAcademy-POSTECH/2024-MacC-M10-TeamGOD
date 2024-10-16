@@ -16,23 +16,31 @@ public class WifiReConnectViewModel: BaseViewModel {
 
     // MARK: - Input
     public let reConnectButtonTapped = PublishRelay<Void>()
-    public let ssidText = BehaviorRelay<String>(value: "")
-    public let pwText = BehaviorRelay<String>(value: "")
-    public let image = BehaviorRelay<UIImage>(value: UIImage())
     public let cameraButtonTapped = PublishRelay<Void>()
 
-    // MARK: - Output
-    public var updatedImageDriver: Driver<UIImage>
+    public let ssidText = BehaviorRelay<String>(value: "")
+    public let pwText = BehaviorRelay<String>(value: "")
+    public let photoImage = BehaviorRelay<UIImage>(value: UIImage())
 
-    public init(wifiConnectUseCase: WiFiConnectUseCase, coordinatorController: WifiReConnectCoordinatorController, image: UIImage, ssid: String, password: String) {
+    // MARK: - Output
+    let ssidDriver: Driver<String>
+    let passwordDriver: Driver<String>
+    let updatedImageDriver: Driver<UIImage>
+
+    public init(wifiConnectUseCase: WiFiConnectUseCase,
+                coordinatorController: WifiReConnectCoordinatorController,
+                image: UIImage, ssid: String, password: String) {
+
         self.coordinatorController = coordinatorController
 
         let updatedImageRelay = BehaviorRelay<UIImage>(value: image)
         self.updatedImageDriver = updatedImageRelay.asDriver()
 
-        self.ssidText.accept(ssid)
-        self.pwText.accept(password)
-        self.image.accept(image)
+        let ssidRelay = BehaviorRelay<String>(value: ssid)
+        self.ssidDriver = ssidRelay.asDriver()
+
+        let passwordRelay = BehaviorRelay<String>(value: password)
+        self.passwordDriver = passwordRelay.asDriver()
 
         super.init()
         // MARK: 다시 와이파이 연결
@@ -40,15 +48,22 @@ public class WifiReConnectViewModel: BaseViewModel {
         cameraButtonTapped
             .subscribe(onNext: { _ in
                 self.coordinatorController?.performTransition(to: .camera)
-                print("hello")
             })
             .disposed(by: disposeBag)
 
         reConnectButtonTapped
-            .withLatestFrom(Observable.combineLatest(self.image, self.ssidText, self.pwText))
-            .subscribe(onNext: {  image ,ssid, password in
-                print(image,ssid, password)
-                self.coordinatorController?.performTransition(to: .connecting(imageData: image,ssid: ssid, password: password))
+            .withLatestFrom(Observable.combineLatest(self.photoImage, self.ssidText, self.pwText))
+            .subscribe(onNext: { [weak self] image, ssid, password in
+                guard let self = self else { return }
+
+                print("이미지: \(image), SSID: \(ssid), 비밀번호: \(password)")
+
+                // 화면 전환 수행
+                self.coordinatorController?.performTransition(to: .connecting(
+                    imageData: image,
+                    ssid: ssid,
+                    password: password
+                ))
             })
             .disposed(by: disposeBag)
     }

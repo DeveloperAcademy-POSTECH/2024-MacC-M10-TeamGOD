@@ -94,7 +94,7 @@ class GoToSettingView: BaseView {
     lazy var ssidStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [ssidLabel, ssidFieldLabel])
         stackView.axis = .vertical
-        stackView.spacing = 1
+        stackView.spacing = 4
         return stackView
     }()
     
@@ -107,8 +107,8 @@ class GoToSettingView: BaseView {
     }()
     lazy var pwFieldLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .white
-        label.backgroundColor = UIColor(red: 66/255, green: 66/255, blue: 70/255, alpha: 1)
+        label.textColor = .neutral200
+        label.backgroundColor = UIColor(red: 0.26, green: 0.26, blue: 0.275, alpha: 1)
         label.font = .preferredFont(forTextStyle: .headline)
         label.layer.cornerRadius = 16
         label.layer.masksToBounds = true
@@ -119,7 +119,7 @@ class GoToSettingView: BaseView {
     lazy var pwStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [pwLabel, pwFieldLabel])
         stackView.axis = .vertical
-        stackView.spacing = 10
+        stackView.spacing = 4
         return stackView
     }()
     

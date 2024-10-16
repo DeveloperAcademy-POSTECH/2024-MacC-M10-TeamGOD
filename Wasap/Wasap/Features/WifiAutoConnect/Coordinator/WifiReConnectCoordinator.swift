@@ -18,7 +18,9 @@ public class WifiReConnectCoordinator: NavigationCoordinator {
     let ssid : String
     let password: String
 
-    public init(navigationController: UINavigationController, wifiAutoConnectDIContainer: WifiAutoConnectDIContainer, image: UIImage, ssid: String, password: String) {
+    public init(navigationController: UINavigationController,
+                wifiAutoConnectDIContainer: WifiAutoConnectDIContainer,
+                image: UIImage, ssid: String, password: String) {
         Log.print("WifiReConnectCoordinator에서 받은 image: \(image), ssid: \(ssid), password: \(password)")
         self.navigationController = navigationController
         self.wifiAutoConnectDIContainer = wifiAutoConnectDIContainer
@@ -59,8 +61,8 @@ extension WifiReConnectCoordinator: WifiReConnectCoordinatorController {
             let coordinator = ConnectingCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: WifiAutoConnectDIContainer(),imageData: imageData, ssid: ssid, password: password)
             start(childCoordinator: coordinator)
 
-        case .gotoSetting(let image, let ssid, let password):
-            let coordinator = GoToSettingCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, imageData: image, ssid: ssid, password: password)
+        case .gotoSetting(imageData: let imageData,ssid: let ssid, password: let password):
+            let coordinator = GoToSettingCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, imageData: imageData, ssid: ssid, password: password)
             start(childCoordinator: coordinator)
         }
 
