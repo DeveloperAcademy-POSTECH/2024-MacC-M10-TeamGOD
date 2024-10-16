@@ -22,7 +22,7 @@ public class GoToSettingViewModel: BaseViewModel {
     // MARK: - Property
     let ssidDriver: Driver<String>
     let passwordDriver: Driver<String>
-    let updatedImageDriver: Driver<UIImage>
+    let imageDriver: Driver<UIImage>
 
     public init(gotoSettingUseCase: GoToSettingUseCase,
                 coordinatorController: GoToSettingCoordinator,
@@ -30,8 +30,8 @@ public class GoToSettingViewModel: BaseViewModel {
 
         self.coordinatorController = coordinatorController
 
-        let updatedImageRelay = BehaviorRelay<UIImage>(value: imageData)
-        self.updatedImageDriver = updatedImageRelay.asDriver()
+        let imageRelay = BehaviorRelay<UIImage>(value: imageData)
+        self.imageDriver = imageRelay.asDriver()
 
         let ssidRelay = BehaviorRelay<String>(value: ssid)
         self.ssidDriver = ssidRelay.asDriver()
@@ -41,16 +41,9 @@ public class GoToSettingViewModel: BaseViewModel {
 
         super.init()
 
-        viewDidLoad
-            .subscribe(onNext: {
-                print("SSID: \(ssidRelay.value), Password: \(passwordRelay.value), image: \(updatedImageRelay.value)")
-            })
-            .disposed(by: disposeBag)
-
         xButtonTapped
             .subscribe(onNext: { _ in
                 self.coordinatorController?.performTransition(to: .camera)
-                print("hello")
             })
             .disposed(by: disposeBag)
 

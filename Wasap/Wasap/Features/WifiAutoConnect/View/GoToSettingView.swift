@@ -35,6 +35,7 @@ class GoToSettingView: BaseView {
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
+
     lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Sorry"
@@ -43,6 +44,7 @@ class GoToSettingView: BaseView {
         label.font = UIFont.systemFont(ofSize: 26)
         return label
     }()
+
     lazy var titleStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [iconImageView, titleLabel])
         stackView.axis = .horizontal
@@ -58,6 +60,7 @@ class GoToSettingView: BaseView {
         label.textAlignment = .left
         return label
     }()
+
     lazy var labelStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [titleStackView, subLabel])
         stackView.axis = .vertical
@@ -80,6 +83,7 @@ class GoToSettingView: BaseView {
         label.font = UIFont.systemFont(ofSize: 10)
         return label
     }()
+
     lazy var ssidFieldLabel: UILabel = {
         let label = UILabel()
         label.textColor = .neutral200
@@ -91,6 +95,7 @@ class GoToSettingView: BaseView {
         label.text = "SSID" // 기본 텍스트 설정 (예시)
         return label
     }()
+
     lazy var ssidStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [ssidLabel, ssidFieldLabel])
         stackView.axis = .vertical
@@ -105,6 +110,7 @@ class GoToSettingView: BaseView {
         label.font = UIFont.systemFont(ofSize: 10)
         return label
     }()
+
     lazy var pwFieldLabel: UILabel = {
         let label = UILabel()
         label.textColor = .neutral200
@@ -116,6 +122,7 @@ class GoToSettingView: BaseView {
         label.text = "PW" // 기본 텍스트 설정 (예시)
         return label
     }()
+
     lazy var pwStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [pwLabel, pwFieldLabel])
         stackView.axis = .vertical
@@ -128,17 +135,16 @@ class GoToSettingView: BaseView {
         label.numberOfLines = 0
         label.textColor = .gray100
         label.textAlignment = .center
-        
-        // 텍스트 설정 및 속성 적용
+
         let wifiID = "와이파이 ID"
         let description = "\(wifiID)가 실제와 다를 수 있어요.\n아래 버튼을 누르면 비밀번호를 복사합니다."
-        
+        // 글자 색깔 넣기
         let attributedString = NSMutableAttributedString(string: description)
         if let wifiIDRange = description.range(of: wifiID) {
             let nsRange = NSRange(wifiIDRange, in: description)
             attributedString.addAttribute(.foregroundColor, value: UIColor.green200, range: nsRange)
         }
-        
+
         label.attributedText = attributedString
         return label
     }()

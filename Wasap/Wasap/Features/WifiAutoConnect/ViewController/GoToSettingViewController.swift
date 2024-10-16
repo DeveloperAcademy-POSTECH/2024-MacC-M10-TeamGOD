@@ -21,7 +21,6 @@ public class GoToSettingViewController: RxBaseViewController<GoToSettingViewMode
     public override func loadView() {
         super.loadView()
         self.view = goToSettingView
-
     }
 
     override init(viewModel: GoToSettingViewModel) {
@@ -42,10 +41,6 @@ public class GoToSettingViewController: RxBaseViewController<GoToSettingViewMode
             .bind(to: viewModel.xButtonTapped)
             .disposed(by: disposeBag)
 
-        Observable.just(())
-            .bind(to: viewModel.viewDidLoad)
-            .disposed(by: disposeBag)
-
         viewModel.ssidDriver
             .drive { [ weak self] ssid in
                 self?.goToSettingView.ssidFieldLabel.text = ssid
@@ -58,7 +53,7 @@ public class GoToSettingViewController: RxBaseViewController<GoToSettingViewMode
             }
             .disposed(by: disposeBag)
 
-        viewModel.updatedImageDriver
+        viewModel.imageDriver
             .drive { [weak self] image in
                 self?.goToSettingView.photoImageView.image = image
             }
@@ -69,6 +64,8 @@ public class GoToSettingViewController: RxBaseViewController<GoToSettingViewMode
         navigationItem.rightBarButtonItem = goToSettingView.barItem
         navigationItem.rightBarButtonItem?.customView?.frame = CGRect(x: 0, y: 300, width: 26, height: 26)
     }
+
+
 }
 
 
