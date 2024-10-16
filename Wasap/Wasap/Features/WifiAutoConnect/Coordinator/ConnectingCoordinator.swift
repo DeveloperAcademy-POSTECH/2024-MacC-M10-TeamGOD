@@ -8,7 +8,6 @@
 import UIKit
 
 public protocol ConnectingCoordinatorController: AnyObject {
-//    func performTransition(to flow: ConnectingCoordinator.Flow)
     func performFinish(to flow: ConnectingCoordinator.FinishFlow)
 }
 
@@ -31,12 +30,6 @@ public class ConnectingCoordinator: NavigationCoordinator {
         self.password = password
         self.imageData = imageData
     }
-    
-//    public enum Flow {
-//        case last(imageData: UIImage, ssid : String, password : String)
-//        case retry(imageData: UIImage, ssid : String, password : String)
-//        case camera
-//    }
 
     public enum FinishFlow {
         case popToRoot
@@ -60,23 +53,6 @@ public class ConnectingCoordinator: NavigationCoordinator {
 }
 
 extension ConnectingCoordinator: ConnectingCoordinatorController {
-//    public func performTransition(to flow: Flow) {
-//        switch flow {
-//        case .last(let imageData,ssid: let ssid, password: let password):
-//            let coordinator = GoToSettingCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, imageData: imageData, ssid: ssid, password: password)
-//            start(childCoordinator: coordinator)
-//
-//        case .camera:
-//            print("Camara View")
-//            let coordinator = CameraCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer)
-//            start(childCoordinator: coordinator)
-//
-//        case .retry(imageData: let imageData, ssid: let ssid, password: let password):
-//            print("Retry View")
-//
-//        }
-//    }
-
     public func performFinish(to flow: FinishFlow) {
         switch flow {
         case .popToRoot:
