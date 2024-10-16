@@ -53,6 +53,10 @@ public class ConnectingCoordinator: NavigationCoordinator {
         self.navigationController.setNavigationBarHidden(true, animated: false)
         self.navigationController.pushViewController(viewController, animated: true)
     }
+
+    public func finish() {
+        self.navigationController.popViewController(animated: true)
+    }
 }
 
 extension ConnectingCoordinator: ConnectingCoordinatorController {
@@ -76,15 +80,14 @@ extension ConnectingCoordinator: ConnectingCoordinatorController {
     public func performFinish(to flow: FinishFlow) {
         switch flow {
         case .popToRoot:
-            navigationController.popToRootViewController(animated: true)
-            // TODO: 코디네이터 삭제 되는지 보기
+            finishUntil(CameraCoordinator.self)
         case .finishWithError:
-            navigationController.popViewController(animated: true)
-            defer { finishCurrentCoordinator() }
             if let parentCoordinator = parentCoordinator as? ScanCoordinator {
-                defer { parentCoordinator.performTransition(to: .retry(imageData: imageData, ssid: ssid, password: password)) }
+                finishCurrentCoordinator()
+                parentCoordinator.performTransition(to: .retry(imageData: imageData, ssid: ssid, password: password))
             } else if let parentCoordinator = parentCoordinator as? WifiConnectCoordinator {
-                defer { parentCoordinator.performTransition(to: .gotoSetting(imageData: imageData, ssid: ssid ?? "", password: password ?? "")) }
+                finishCurrentCoordinator()
+                parentCoordinator.performTransition(to: .gotoSetting(imageData: imageData, ssid: ssid ?? "", password: password ?? ""))
             }
         }
     }

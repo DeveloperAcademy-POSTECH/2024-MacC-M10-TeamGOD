@@ -42,6 +42,10 @@ public class ScanCoordinator: NavigationCoordinator {
         self.navigationController.setNavigationBarHidden(true, animated: false)
         self.navigationController.pushViewController(viewController, animated: true)
     }
+
+    public func finish() {
+        self.navigationController.popViewController(animated: true)
+    }
 }
 
 extension ScanCoordinator: ScanCoordinatorController {
