@@ -8,6 +8,8 @@
 import UIKit
 
 public class RootCoordinator: Coordinator {
+    public var parentCoordinator: (any Coordinator)? = nil
+    
     public var childCoordinators: [Coordinator] = []
     let window: UIWindow?
     let appDIContainer: AppDIContainer

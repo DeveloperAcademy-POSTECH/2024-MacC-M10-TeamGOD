@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 
 public class GoToSettingCoordinator: NavigationCoordinator {
+    public var parentCoordinator: (any Coordinator)? = nil
     public var childCoordinators: [any Coordinator] = []
     public let navigationController: UINavigationController
     private let wifiAutoConnectDIContainer: WifiAutoConnectDIContainer
