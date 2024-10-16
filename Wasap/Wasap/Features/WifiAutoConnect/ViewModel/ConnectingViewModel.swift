@@ -47,7 +47,6 @@ public class ConnectingViewModel: BaseViewModel {
                 isWiFiConnectedRelay.accept(success)
             } onError: { error in
                 isLoadingRelay.accept(false)
-//                self.coordinatorController?.performTransition(to: .last(imageData: image, ssid: ssid, password: password))
                 self.coordinatorController?.performFinish(to: .finishWithError)
                 Log.error("Wi-Fi 연결 중 에러 발생: \(error.localizedDescription)")
             }
