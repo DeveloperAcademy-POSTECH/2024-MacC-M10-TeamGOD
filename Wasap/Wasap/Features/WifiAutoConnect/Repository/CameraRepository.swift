@@ -8,7 +8,7 @@
 import RxSwift
 import AVFoundation
 
-protocol CameraRepository {
+public protocol CameraRepository {
 
     /// configureCamera : 카메라의 초기 설정을 담당. Input과 Output을 지정함.
     /// configure과 previewLayer 세팅이 끝나면 startRunning() 함수로 시작하세요.
@@ -37,14 +37,14 @@ protocol CameraRepository {
     func getMaxZoomFactor() -> CGFloat?
 }
 
-class DefaultCameraRepository: NSObject, CameraRepository {
+final public class DefaultCameraRepository: NSObject, CameraRepository {
     private var captureSession: AVCaptureSession?
     private var previewLayer: AVCaptureVideoPreviewLayer?
 
     private var stillImageOutput: AVCapturePhotoOutput?
     private var photoCaptureCompletion: ((Result<Data, Error>) -> Void)?
 
-    func requestAuthorization() -> Single<Void> {
+    public func requestAuthorization() -> Single<Void> {
         return Single.create { single in
             let status = AVCaptureDevice.authorizationStatus(for: .video)
             if status == .authorized {
@@ -68,7 +68,7 @@ class DefaultCameraRepository: NSObject, CameraRepository {
         }
     }
 
-    func configureCamera() -> Single<AVCaptureSession> {
+    public func configureCamera() -> Single<AVCaptureSession> {
         let configureStream = Single<AVCaptureSession>.create { [weak self] single in
             let session = AVCaptureSession()
             session.beginConfiguration()
@@ -107,7 +107,7 @@ class DefaultCameraRepository: NSObject, CameraRepository {
             }
     }
 
-    func getPreviewLayer() -> Single<AVCaptureVideoPreviewLayer> {
+    public func getPreviewLayer() -> Single<AVCaptureVideoPreviewLayer> {
         Single.create { [weak self] single in
             guard let captureSession = self?.captureSession else {
                 Log.error("아이고.. configure camera를 먼저 해줘야 해요.")
@@ -123,11 +123,11 @@ class DefaultCameraRepository: NSObject, CameraRepository {
 
     }
 
-    func getPreviewLayer() -> AVCaptureVideoPreviewLayer? {
+    public func getPreviewLayer() -> AVCaptureVideoPreviewLayer? {
         return previewLayer
     }
 
-    func capturePhoto() -> Single<Data> {
+    public func capturePhoto() -> Single<Data> {
         return Single.create { [weak self] single in
             guard let self else {
                 single(.failure(CameraErrors.unknown))
@@ -153,7 +153,7 @@ class DefaultCameraRepository: NSObject, CameraRepository {
         }
     }
 
-    func startRunning() -> Single<Void> {
+    public func startRunning() -> Single<Void> {
         return Single.create { [weak self] single in
             guard let self = self else {
                 single(.failure(CameraErrors.unknown))
@@ -179,13 +179,13 @@ class DefaultCameraRepository: NSObject, CameraRepository {
         }
     }
 
-    func stopRunning() {
+    public func stopRunning() {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             self?.captureSession?.stopRunning()
         }
     }
 
-    func zoom(_ factor: CGFloat) {
+    public func zoom(_ factor: CGFloat) {
 
         guard let minAvailableZoomScale = self.getMinZoomFactor(),
               let maxAvailableZoomScale = self.getMaxZoomFactor(),
@@ -206,13 +206,13 @@ class DefaultCameraRepository: NSObject, CameraRepository {
         device.unlockForConfiguration()
     }
 
-    func getMinZoomFactor() -> CGFloat? {
+    public func getMinZoomFactor() -> CGFloat? {
         let device = getCurrentInputDevice()
 
         return device?.minAvailableVideoZoomFactor
     }
 
-    func getMaxZoomFactor() -> CGFloat? {
+    public func getMaxZoomFactor() -> CGFloat? {
         let device = getCurrentInputDevice()
 
         return device?.maxAvailableVideoZoomFactor
@@ -226,7 +226,7 @@ class DefaultCameraRepository: NSObject, CameraRepository {
 
 extension DefaultCameraRepository: AVCapturePhotoCaptureDelegate {
 
-    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
+    public func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         if let error {
             photoCaptureCompletion?(.failure(error))
         } else if let imageData = photo.fileDataRepresentation() {

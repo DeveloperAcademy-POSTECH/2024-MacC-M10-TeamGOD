@@ -15,13 +15,13 @@ public class ScanCoordinator: NavigationCoordinator {
     public var childCoordinators: [any Coordinator] = []
     public let navigationController: UINavigationController
     let wifiAutoConnectDIContainer: WifiAutoConnectDIContainer
-    let previewImage: UIImage = .init(named: "previewTestImage4")!
+    let previewImage: UIImage/* = .init(named: "previewTestImage4")!*/
 
-    public init(navigationController: UINavigationController, wifiAutoConnectDIContainer: WifiAutoConnectDIContainer/*, previewImage: UIImage*/) {
+    public init(navigationController: UINavigationController, wifiAutoConnectDIContainer: WifiAutoConnectDIContainer, previewImage: UIImage) {
         self.navigationController = navigationController
         self.wifiAutoConnectDIContainer = wifiAutoConnectDIContainer
         
-        // self.previewImage = previewImage
+         self.previewImage = previewImage
     }
     
     public enum Flow {

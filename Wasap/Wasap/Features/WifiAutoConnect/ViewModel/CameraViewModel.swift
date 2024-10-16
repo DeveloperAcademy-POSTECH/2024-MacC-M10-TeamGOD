@@ -30,8 +30,10 @@ public class CameraViewModel: BaseViewModel {
     private var isCameraRunning = BehaviorRelay<Bool>(value: false)
 
     // MARK: - Init & Binding
-    public init(cameraUseCase: CameraUseCase) {
+    public init(cameraUseCase: CameraUseCase, coordinatorController: CameraCoordinatorController) {
         self.cameraUseCase = cameraUseCase
+        self.coordinatorController = coordinatorController
+
         let previewLayerRelay = PublishRelay<AVCaptureVideoPreviewLayer>()
         self.previewLayer = previewLayerRelay.asDriver(onErrorDriveWith: .empty())
 

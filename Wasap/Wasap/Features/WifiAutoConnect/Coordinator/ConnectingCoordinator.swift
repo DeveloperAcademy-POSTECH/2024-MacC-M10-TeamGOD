@@ -50,7 +50,7 @@ extension ConnectingCoordinator: ConnectingCoordinatorController {
     public func performTransition(to flow: Flow) {
         switch flow {
         case .last(let imageData,ssid: let ssid, password: let password):
-            let coordinator = GoToSettingCoordinator(navigationController: self.navigationController, imageData: imageData, ssid: ssid, password: password)
+            let coordinator = GoToSettingCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, imageData: imageData, ssid: ssid, password: password)
             start(childCoordinator: coordinator)
         }
     }

@@ -11,13 +11,15 @@ import UIKit
 public class GoToSettingCoordinator: NavigationCoordinator {
     public var childCoordinators: [any Coordinator] = []
     public let navigationController: UINavigationController
+    private let wifiAutoConnectDIContainer: WifiAutoConnectDIContainer
 
     let ssid : String
     let password : String
     let imageData : UIImage
 
-    public init(navigationController: UINavigationController,imageData : UIImage, ssid : String, password : String) {
+    public init(navigationController: UINavigationController, wifiAutoConnectDIContainer: WifiAutoConnectDIContainer, imageData : UIImage, ssid : String, password : String) {
         self.navigationController = navigationController
+        self.wifiAutoConnectDIContainer = wifiAutoConnectDIContainer
         self.ssid = ssid
         self.password = password
         self.imageData = imageData
@@ -49,7 +51,7 @@ extension GoToSettingCoordinator: GoToSettingCoordinatorController {
         switch flow {
         case .camera:
             print("Camara View")
-            let coordinator = CameraCoordinator(navigationController: self.navigationController)
+            let coordinator = CameraCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer)
             start(childCoordinator: coordinator)
         }
 

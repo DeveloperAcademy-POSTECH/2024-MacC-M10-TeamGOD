@@ -10,9 +10,11 @@ import UIKit
 public class CameraCoordinator: NavigationCoordinator {
     public var childCoordinators: [any Coordinator] = []
     public let navigationController: UINavigationController
+    let wifiAutoConnectDIContainer: WifiAutoConnectDIContainer
 
-    public init(navigationController: UINavigationController) {
+    public init(navigationController: UINavigationController, wifiAutoConnectDIContainer: WifiAutoConnectDIContainer) {
         self.navigationController = navigationController
+        self.wifiAutoConnectDIContainer = wifiAutoConnectDIContainer
     }
 
     public enum Flow {
@@ -20,11 +22,10 @@ public class CameraCoordinator: NavigationCoordinator {
     }
 
     public func start() {
-        let cameraRepository = DefaultCameraRepository()
-        let cameraUseCase = DefaultCameraUseCase(repository: cameraRepository)
-        let cameraViewModel = CameraViewModel(cameraUseCase: cameraUseCase)
-        let cameraViewController = CameraViewController(viewModel: cameraViewModel)
-
+        let cameraRepository = wifiAutoConnectDIContainer.makeCameraRepository()
+        let cameraUseCase = wifiAutoConnectDIContainer.makeCameraUseCase(cameraRepository)
+        let cameraViewModel = wifiAutoConnectDIContainer.makeCameraViewModel(cameraUseCase: cameraUseCase, coordinatorcontroller: self)
+        let cameraViewController = wifiAutoConnectDIContainer.makeCameraViewController(cameraViewModel)
 
         self.navigationController.pushViewController(cameraViewController, animated: true)
     }
@@ -35,8 +36,8 @@ extension CameraCoordinator: CameraCoordinatorController {
         switch flow {
         case .analysis(let imageData):
             print("analysis view! : \(imageData)")
-//            let coordinator = AnalysisCoordinator(imageData: imageData)
-//            start(childCoordinator: coordinator)
+            let coordinator = ScanCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, previewImage: imageData)
+            start(childCoordinator: coordinator)
         }
     }
 }
