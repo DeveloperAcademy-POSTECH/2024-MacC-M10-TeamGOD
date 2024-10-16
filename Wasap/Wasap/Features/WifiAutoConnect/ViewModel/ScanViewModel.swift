@@ -57,6 +57,7 @@ public class ScanViewModel: BaseViewModel {
             .disposed(by: disposeBag)
 
         ocrResult
+            .delay(.milliseconds(1500), scheduler: MainScheduler.asyncInstance)
             .subscribe { _, ssid, password in
                 print("OCR 후 SSID: \(ssid), Password: \(password)")
                 self.coordinatorController?.performTransition(to: .connecting( imageData: previewImage,ssid: ssid, password: password))

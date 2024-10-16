@@ -40,7 +40,6 @@ public class ConnectingViewModel: BaseViewModel {
             .flatMapLatest { owner, _ in
                 isLoadingRelay.accept(true)
                 return wifiConnectUseCase.connectToWiFi(ssid: ssid, password: password)
-                    .asObservable()
             }
             .subscribe { success in
                 isLoadingRelay.accept(false)
