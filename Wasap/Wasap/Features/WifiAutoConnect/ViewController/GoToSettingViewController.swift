@@ -48,11 +48,15 @@ public class GoToSettingViewController: RxBaseViewController<GoToSettingViewMode
             .disposed(by: disposeBag)
 
         viewModel.ssidDriver
-            .drive(goToSettingView.ssidFieldLabel.rx.text)
+            .drive { [ weak self] ssid in
+                self?.goToSettingView.ssidFieldLabel.text = ssid
+            }
             .disposed(by: disposeBag)
 
         viewModel.passwordDriver
-            .drive(goToSettingView.pwFieldLabel.rx.text)
+            .drive { [ weak self] password in
+                self?.goToSettingView.pwFieldLabel.text = password
+            }
             .disposed(by: disposeBag)
 
         viewModel.updatedImageDriver

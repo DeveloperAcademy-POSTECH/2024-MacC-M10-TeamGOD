@@ -16,19 +16,22 @@ public class GoToSettingViewModel: BaseViewModel {
     private weak var coordinatorController: GoToSettingCoordinator?
 
     // MARK: - Input
-    let setButtonTapped = PublishSubject<Void>()
-    let xButtonTapped = PublishSubject<Void>()
+    let setButtonTapped = PublishRelay<Void>()
+    let xButtonTapped = PublishRelay<Void>()
 
-    // MARK: - Output
+    // MARK: - Property
     let ssidDriver: Driver<String>
     let passwordDriver: Driver<String>
     let updatedImageDriver: Driver<UIImage>
 
-
-    public init(gotoSettingUseCase: GoToSettingUseCase, coordinatorController: GoToSettingCoordinator, imageData: UIImage, ssid : String, password: String) {
+    public init(gotoSettingUseCase: GoToSettingUseCase,
+                coordinatorController: GoToSettingCoordinator,
+                imageData: UIImage, ssid : String, password: String) {
 
         self.coordinatorController = coordinatorController
 
+        let updatedImageRelay = BehaviorRelay<UIImage>(value: imageData)
+        self.updatedImageDriver = updatedImageRelay.asDriver()
 
         let ssidRelay = BehaviorRelay<String>(value: ssid)
         self.ssidDriver = ssidRelay.asDriver()
@@ -36,11 +39,7 @@ public class GoToSettingViewModel: BaseViewModel {
         let passwordRelay = BehaviorRelay<String>(value: password)
         self.passwordDriver = passwordRelay.asDriver()
 
-        let updatedImageRelay = BehaviorRelay<UIImage>(value: imageData)
-        self.updatedImageDriver = updatedImageRelay.asDriver()
-
         super.init()
-
 
         viewDidLoad
             .subscribe(onNext: {

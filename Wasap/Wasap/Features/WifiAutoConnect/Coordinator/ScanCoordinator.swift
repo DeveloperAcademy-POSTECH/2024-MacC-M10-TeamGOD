@@ -55,7 +55,7 @@ extension ScanCoordinator: ScanCoordinatorController {
             let coordinator = ConnectingCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: self.wifiAutoConnectDIContainer, imageData: imageData, ssid: ssid, password: password)
             start(childCoordinator: coordinator)
         case .retry(let image, let ssid, let password):
-            let coordinator = WifiReConnectCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, image: image, ssid: ssid ?? "SSID가 인식 불가합니다.", password: password ?? "PASSWORD가 인식 불가 합니다.")
+            let coordinator = WifiReConnectCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, image: image, ssid: ssid ?? "", password: password ?? "")
             start(childCoordinator: coordinator)
         }
     }
