@@ -24,11 +24,6 @@ class GoToSettingView: BaseView {
         return button
     }()
     
-    lazy var barItem: UIBarButtonItem = {
-        let barButtonItem = UIBarButtonItem(customView: xButton)
-        return barButtonItem
-    }()
-    
     lazy var iconImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "SorryViewIcon")
@@ -174,12 +169,19 @@ class GoToSettingView: BaseView {
         self.addSubview(backgroundView)
         backgroundView.addSubViews(labelStackView,photoImageView,
                                    ssidStackView,pwStackView,
-                                   settingBtn,infoLabel)
+                                   settingBtn,infoLabel,xButton)
     }
     
     func setConstraints() {
         backgroundView.snp.makeConstraints { $0.edges.equalToSuperview() }
-        
+
+        xButton.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(71)
+            $0.trailing.equalToSuperview().offset(-20)
+            $0.width.equalTo(26)
+            $0.height.equalTo(26)
+        }
+
         iconImageView.snp.makeConstraints { $0.width.height.equalTo(30) }
         
         labelStackView.snp.makeConstraints {
