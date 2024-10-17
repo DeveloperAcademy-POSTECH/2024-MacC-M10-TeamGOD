@@ -20,6 +20,7 @@ extension UIColor {
     class var neutral50: UIColor { UIColor.gray50 }
     class var neutral200: UIColor { UIColor.gray200 }
     class var neutral400: UIColor { UIColor.gray400 }
+    class var neutral450: UIColor { UIColor.gray450 }
     class var neutral500: UIColor { UIColor.gray500 }
 
     // MARK: - Component
