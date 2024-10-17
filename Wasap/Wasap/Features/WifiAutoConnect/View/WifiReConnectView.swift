@@ -185,12 +185,12 @@ class WifiReConnectView: BaseView {
 
         pwStackView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(31)
-            $0.bottom.equalTo(self.keyboardLayoutGuide.snp.top).offset(-187)
+            $0.bottom.equalTo(self.keyboardLayoutGuide.snp.top).offset(-157) // - 30 (키보드 레이아웃 가이드)
         }
 
         pwField.snp.makeConstraints {
-            $0.height.equalTo(60)
-            $0.width.equalToSuperview()
+            $0.height.equalTo(62)
+            $0.width.equalTo(330)
         }
 
         ssidStackView.snp.makeConstraints {
@@ -199,8 +199,8 @@ class WifiReConnectView: BaseView {
         }
 
         ssidField.snp.makeConstraints {
-            $0.height.equalTo(60)
-            $0.width.equalToSuperview()
+            $0.height.equalTo(62)
+            $0.width.equalTo(330)
         }
 
         photoImageView.snp.makeConstraints {
@@ -283,7 +283,7 @@ class WifiReConnectView: BaseView {
             $0.bottom.equalTo(self.keyboardLayoutGuide.snp.top).offset(-49)
         }
 
-        UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseInOut], animations: {
+        UIView.animate(withDuration: 0.1, delay: 0, options: [.curveEaseInOut], animations: {
                 self.labelStackView.alpha = 0
                 self.cameraButton.alpha = 0
                 self.layoutIfNeeded()  // 제약 변경 반영
@@ -296,11 +296,11 @@ class WifiReConnectView: BaseView {
         resetViewState()
 
         pwStackView.snp.updateConstraints {
-            $0.bottom.equalTo(self.keyboardLayoutGuide.snp.top).offset(-187)
+            $0.bottom.equalTo(self.keyboardLayoutGuide.snp.top).offset(-157)
         }
 
         // 올라간 화면 원상 복구
-        UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseInOut], animations: {
+        UIView.animate(withDuration: 0.1, delay: 0, options: [.curveEaseInOut], animations: {
             self.layoutIfNeeded()  // 제약 변경 반영
                     self.labelStackView.alpha = 1
                     self.cameraButton.alpha = 1
