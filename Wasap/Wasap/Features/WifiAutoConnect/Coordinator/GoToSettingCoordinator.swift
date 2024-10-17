@@ -14,28 +14,28 @@ public class GoToSettingCoordinator: NavigationCoordinator {
     public let navigationController: UINavigationController
     private let wifiAutoConnectDIContainer: WifiAutoConnectDIContainer
 
+    let imageData : UIImage
     let ssid : String
     let password : String
-    let imageData : UIImage
 
-    public init(navigationController: UINavigationController, wifiAutoConnectDIContainer: WifiAutoConnectDIContainer, imageData: UIImage, ssid: String, password: String) {
+    public init(navigationController: UINavigationController,
+                wifiAutoConnectDIContainer: WifiAutoConnectDIContainer,
+                imageData: UIImage, ssid: String, password: String) {
         Log.print("GoToSettingCoordinator에서 받은 image: \(imageData), ssid: \(ssid), password: \(password)")
         self.navigationController = navigationController
         self.wifiAutoConnectDIContainer = wifiAutoConnectDIContainer
+        self.imageData = imageData
         self.ssid = ssid
         self.password = password
-        self.imageData = imageData
     }
-    
-    public enum Flow {
-       case camera
+
+    public enum FinishFlow {
+        case popToRoot
     }
-    
+
     public func start() {
         let repository = DefaultGoToSettingRepository()
-        
         let usecase = DefaultGoToSettingUseCase(repository: repository)
-        
         let viewModel = GoToSettingViewModel(
             gotoSettingUseCase: usecase,
             coordinatorController: self, imageData: imageData,
@@ -53,12 +53,13 @@ public class GoToSettingCoordinator: NavigationCoordinator {
 }
 
 extension GoToSettingCoordinator: GoToSettingCoordinatorController {
-    public func performTransition(to flow: Flow) {
-        switch flow {
-        case .camera:
-            finishUntil(CameraCoordinator.self)
-        }
 
+    public func performFinish(to flow: FinishFlow) {
+        switch flow {
+        case .popToRoot:
+            finishUntil(CameraCoordinator.self)
+
+        }
     }
 }
 

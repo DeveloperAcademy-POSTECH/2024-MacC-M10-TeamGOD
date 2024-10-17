@@ -15,7 +15,6 @@ public class GoToSettingViewController: RxBaseViewController<GoToSettingViewMode
 
     public override func viewDidLoad() {
         super.viewDidLoad()
-        setupNavigationBar()
     }
 
     public override func loadView() {
@@ -59,13 +58,6 @@ public class GoToSettingViewController: RxBaseViewController<GoToSettingViewMode
             }
             .disposed(by: disposeBag)
     }
-
-    private func setupNavigationBar() {
-        navigationItem.rightBarButtonItem = goToSettingView.barItem
-        navigationItem.rightBarButtonItem?.customView?.frame = CGRect(x: 0, y: 300, width: 26, height: 26)
-    }
-
-
 }
 
 

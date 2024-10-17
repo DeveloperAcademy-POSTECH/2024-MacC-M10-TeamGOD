@@ -28,6 +28,7 @@ class WifiReConnectView: BaseView {
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
+
     lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Retry"

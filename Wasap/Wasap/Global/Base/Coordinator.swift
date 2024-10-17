@@ -108,5 +108,8 @@ public protocol CameraCoordinatorController: AnyObject {
 }
 
 public protocol GoToSettingCoordinatorController: AnyObject {
-    func performTransition(to flow: GoToSettingCoordinator.Flow)
+    func performFinish(to flow: GoToSettingCoordinator.FinishFlow)
 }
+
+
+

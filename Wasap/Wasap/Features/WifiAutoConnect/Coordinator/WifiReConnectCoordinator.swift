@@ -72,6 +72,7 @@ extension WifiReConnectCoordinator: WifiReConnectCoordinatorController {
         }
 
     }
+
     public func performFinish(to flow: FinishFlow) {
         switch flow {
         case .popToRoot:
