@@ -43,7 +43,7 @@ public class GoToSettingCoordinator: NavigationCoordinator {
 
         let viewController = GoToSettingViewController(viewModel: viewModel)
 
-
+        self.navigationController.setNavigationBarHidden(true, animated: false)
         self.navigationController.pushViewController(viewController, animated: true)
     }
 
