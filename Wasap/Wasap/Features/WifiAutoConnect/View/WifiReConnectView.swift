@@ -22,11 +22,6 @@ class WifiReConnectView: BaseView {
         return button
     }()
     
-    lazy var barItem: UIBarButtonItem = {
-        let barButtonItem = UIBarButtonItem(customView: cameraButton)
-        return barButtonItem
-    }()
-    
     lazy var iconImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "RetryViewIcon")
@@ -163,12 +158,19 @@ class WifiReConnectView: BaseView {
         self.addSubview(backgroundView)
         backgroundView.addSubViews(labelStackView,photoImageView,
                                    ssidStackView,pwStackView,
-                                   reConnectButton)
+                                   reConnectButton,cameraButton)
     }
     
     func setConstraints() {
         backgroundView.snp.makeConstraints { $0.edges.equalToSuperview() }
-        
+
+        cameraButton.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(71)
+            $0.trailing.equalToSuperview().offset(-20)
+            $0.width.equalTo(26)
+            $0.height.equalTo(26)
+        }
+
         iconImageView.snp.makeConstraints { $0.width.height.equalTo(26) }
         
         labelStackView.snp.makeConstraints {
@@ -275,7 +277,7 @@ class WifiReConnectView: BaseView {
         
         UIView.animate(withDuration: 0.5, delay: 0, options: [.curveEaseInOut], animations: {
             self.labelStackView.alpha = 0
-            self.barItem.customView?.alpha = 0
+            self.cameraButton.alpha = 0
             self.layoutIfNeeded() // 레이아웃을 즉시 반영
             self.transform = CGAffineTransform(translationX: 0, y: -keyboardHeight / 2)
         }, completion: { _ in
@@ -285,8 +287,8 @@ class WifiReConnectView: BaseView {
     
     @objc private func keyboardWillHide(_ notification: Notification) {
         resetViewState()
-        self.barItem.customView?.alpha = 1
-        
+        self.cameraButton.alpha = 1
+
         // 올라간 화면 원상 복구
         UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseInOut], animations: {
             self.transform = CGAffineTransform.identity

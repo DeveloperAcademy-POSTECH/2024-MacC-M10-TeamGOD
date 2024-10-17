@@ -35,6 +35,10 @@ public class WifiReConnectCoordinator: NavigationCoordinator {
         case gotoSetting(imageData: UIImage,ssid : String, password : String)
     }
 
+    public enum FinishFlow {
+        case popToRoot
+    }
+
     public func start() {
         let repository = wifiAutoConnectDIContainer.makeWiFiConnectRepository()
         let usecase = wifiAutoConnectDIContainer.makeWiFiConnectUseCase(repository)
@@ -68,5 +72,11 @@ extension WifiReConnectCoordinator: WifiReConnectCoordinatorController {
         }
 
     }
-}
+    public func performFinish(to flow: FinishFlow) {
+        switch flow {
+        case .popToRoot:
+            finishUntil(CameraCoordinator.self)
 
+        }
+    }
+}

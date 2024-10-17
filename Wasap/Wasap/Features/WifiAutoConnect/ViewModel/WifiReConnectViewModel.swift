@@ -46,7 +46,7 @@ public class WifiReConnectViewModel: BaseViewModel {
 
         cameraButtonTapped
             .subscribe(onNext: { _ in
-                self.coordinatorController?.performTransition(to: .camera)
+                self.coordinatorController?.performFinish(to: .popToRoot)
             })
             .disposed(by: disposeBag)
 
