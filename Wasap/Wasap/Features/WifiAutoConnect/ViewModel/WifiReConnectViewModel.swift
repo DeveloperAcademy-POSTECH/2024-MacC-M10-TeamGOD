@@ -55,8 +55,6 @@ public class WifiReConnectViewModel: BaseViewModel {
             .subscribe(onNext: { [weak self] image, ssid, password in
                 guard let self = self else { return }
 
-                print("이미지: \(image), SSID: \(ssid), 비밀번호: \(password)")
-
                 // 화면 전환 수행
                 self.coordinatorController?.performTransition(to: .connecting(
                     imageData: image,

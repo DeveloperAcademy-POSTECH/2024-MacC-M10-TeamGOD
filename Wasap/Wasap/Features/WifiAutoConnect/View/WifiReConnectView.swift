@@ -11,7 +11,7 @@ class WifiReConnectView: BaseView {
     
     lazy var backgroundView: UIView = {
         let view = UIView()
-        view.backgroundColor = .gray500
+        view.backgroundColor = .darkBackground
         return view
     }()
     
@@ -37,18 +37,20 @@ class WifiReConnectView: BaseView {
         label.font = UIFont.systemFont(ofSize: 26)
         return label
     }()
+
     lazy var titleStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [iconImageView, titleLabel])
         stackView.axis = .horizontal
         stackView.alignment = .center
-        stackView.spacing = 4
+        stackView.spacing = 3
         return stackView
     }()
     
     lazy var subLabel: UILabel = {
         let label = UILabel()
         label.text = "잘못된 부분이 있나봐요!"
-        label.textColor = .gray400
+        label.textColor = .neutral400
+        label.font = UIFont.systemFont(ofSize: 16)
         label.textAlignment = .left
         return label
     }()
@@ -56,7 +58,7 @@ class WifiReConnectView: BaseView {
     lazy var labelStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [titleStackView, subLabel])
         stackView.axis = .vertical
-        stackView.spacing = 10
+        stackView.spacing = 8
         return stackView
     }()
     
@@ -64,7 +66,7 @@ class WifiReConnectView: BaseView {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "RetryViewPhoto")
         imageView.layer.borderColor = UIColor.green200.cgColor
-        imageView.layer.borderWidth = 2.0
+        imageView.layer.borderWidth = 3.0
         return imageView
     }()
     
@@ -79,9 +81,9 @@ class WifiReConnectView: BaseView {
     lazy var ssidField: UITextField = {
         let textField = UITextField()
         textField.textColor = .neutral200
-        textField.backgroundColor = UIColor(red: 0.26, green: 0.26, blue: 0.275, alpha: 1)
+        textField.backgroundColor = .neutral450
         textField.font = .preferredFont(forTextStyle: .headline)
-        textField.font = UIFont.systemFont(ofSize: 20)
+        textField.font = UIFont.systemFont(ofSize: 18)
         textField.returnKeyType = .done
         textField.layer.cornerRadius = 16
         textField.layer.masksToBounds = true
@@ -111,9 +113,9 @@ class WifiReConnectView: BaseView {
     lazy var pwField: UITextField = {
         let textField = UITextField()
         textField.textColor = .neutral200
-        textField.backgroundColor = UIColor(red: 0.26, green: 0.26, blue: 0.275, alpha: 1)
+        textField.backgroundColor = .neutral450
         textField.font = .preferredFont(forTextStyle: .headline)
-        textField.font = UIFont.systemFont(ofSize: 20)
+        textField.font = UIFont.systemFont(ofSize: 18)
         textField.returnKeyType = .done
         textField.layer.cornerRadius = 16
         textField.layer.masksToBounds = true
@@ -135,7 +137,8 @@ class WifiReConnectView: BaseView {
     lazy var reConnectButton: UIButton = {
         let button = UIButton()
         button.setTitle("다시 연결하기", for: .normal)
-        button.setTitleColor(UIColor.neutral200, for: .normal)
+        button.setTitleColor(.neutral200, for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 16)
         button.backgroundColor = .clear
         button.layer.cornerRadius = 25
         button.layer.borderWidth = 1
@@ -166,28 +169,28 @@ class WifiReConnectView: BaseView {
         backgroundView.snp.makeConstraints { $0.edges.equalToSuperview() }
 
         cameraButton.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(71)
-            $0.trailing.equalToSuperview().offset(-20)
-            $0.width.equalTo(26)
-            $0.height.equalTo(26)
+            $0.top.equalToSuperview().offset(68)
+            $0.trailing.equalToSuperview().inset(20)
+            $0.width.equalTo(32)
+            $0.height.equalTo(32)
         }
 
         iconImageView.snp.makeConstraints { $0.width.height.equalTo(26) }
         
         labelStackView.snp.makeConstraints {
             $0.leading.equalToSuperview().inset(20)
-            $0.top.equalToSuperview().inset(100)
+            $0.top.equalToSuperview().offset(108)
         }
         
         photoImageView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(20)
-            $0.top.equalTo(labelStackView.snp.bottom).offset(53)
+            $0.leading.trailing.equalToSuperview().inset(31)
+            $0.top.equalTo(labelStackView.snp.bottom).offset(50)
             $0.height.equalTo(216)
         }
         
         ssidStackView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(20)
-            $0.top.equalTo(photoImageView.snp.bottom).offset(53)
+            $0.leading.trailing.equalToSuperview().inset(31)
+            $0.top.equalTo(photoImageView.snp.bottom).offset(54)
         }
         
         ssidField.snp.makeConstraints {
@@ -195,7 +198,7 @@ class WifiReConnectView: BaseView {
             $0.width.equalToSuperview()
         }
         pwStackView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.leading.trailing.equalToSuperview().inset(31)
             $0.top.equalTo(ssidStackView.snp.bottom).offset(16)
         }
         
@@ -205,7 +208,7 @@ class WifiReConnectView: BaseView {
         }
         
         reConnectButton.snp.makeConstraints {
-            $0.top.equalTo(pwStackView.snp.bottom).offset(53)
+            $0.top.equalTo(pwStackView.snp.bottom).offset(54)
             $0.leading.trailing.equalToSuperview().inset(20)
             $0.height.equalTo(52)
         }
@@ -222,10 +225,9 @@ class WifiReConnectView: BaseView {
     
     @objc private func textFieldValueChanged() {
         // ssidField 또는 pwField 값이 변경되었는지 확인
-        let ssid : String = "KT_GIGA_5G_B67C"
-        let pw : String  = "dd08ff7107"
-        
-        
+        let ssid : String = ""
+        let pw : String = ""
+
         if ssidField.text != ssid || pwField.text != pw {
             reConnectButton.backgroundColor = .green200  // 값이 변경되면 버튼 색 변경
             reConnectButton.setTitle("다시 연결하기", for: .normal)
@@ -263,35 +265,39 @@ class WifiReConnectView: BaseView {
         ssidField.layer.borderWidth = 0
         
     }
-    
+
+    private var isKeyboardVisible = false  // 키보드가 현재 보이는 상태인지 추적
+
     private func setupKeyboardNotifications() {
-        NotificationCenter.default.addObserver(self,selector: #selector(keyboardWillShow(_:)),
+        NotificationCenter.default.addObserver(self,selector: #selector(keyboardWillShow),
                                                name: UIResponder.keyboardWillShowNotification,object: nil)
         
-        NotificationCenter.default.addObserver(self,selector: #selector(keyboardWillHide(_:)),
+        NotificationCenter.default.addObserver(self,selector: #selector(keyboardWillHide),
                                                name: UIResponder.keyboardWillHideNotification,object: nil)
     }
     
-    @objc private func keyboardWillShow(_ notification: Notification) {
+    @objc private func keyboardWillShow(notification: Notification) {
         guard let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
         let keyboardHeight = keyboardFrame.height
-        
-        UIView.animate(withDuration: 0.5, delay: 0, options: [.curveEaseInOut], animations: {
+        print("open")
+
+        UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseInOut], animations: {
             self.labelStackView.alpha = 0
             self.cameraButton.alpha = 0
-            self.layoutIfNeeded() // 레이아웃을 즉시 반영
             self.transform = CGAffineTransform(translationX: 0, y: -keyboardHeight / 2)
         }, completion: { _ in
             self.labelStackView.isHidden = true
         })
     }
     
-    @objc private func keyboardWillHide(_ notification: Notification) {
+    @objc private func keyboardWillHide(notification: Notification) {
         resetViewState()
         self.cameraButton.alpha = 1
+        print("close")
 
         // 올라간 화면 원상 복구
         UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseInOut], animations: {
+            self.layoutIfNeeded()
             self.transform = CGAffineTransform.identity
         }, completion: nil)
     }
