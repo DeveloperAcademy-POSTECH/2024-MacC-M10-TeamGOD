@@ -83,8 +83,12 @@ extension Coordinator {
 
     /// 인자로 오는 Coordinator가 현재 Coordinator가 될 때 까지 계속 종료합니다.
     public func finishUntil(_ coordinatorType: Coordinator.Type) {
-        while let parentCoordinator, parentCoordinator !== coordinatorType {
-            parentCoordinator.finishCurrentCoordinator()
+        Log.debug("now: \(type(of: self)), finish until \(coordinatorType)")
+        Log.debug("self != coordinatorType : \("\(type(of: self))" != "\(coordinatorType)")")
+        if let parentCoordinator, "\(type(of: self))" != "\(coordinatorType)" {
+            Log.debug("parent: \(parentCoordinator)")
+            defer { parentCoordinator.finishUntil(coordinatorType) }
+            finishCurrentCoordinator()
         }
     }
 }
