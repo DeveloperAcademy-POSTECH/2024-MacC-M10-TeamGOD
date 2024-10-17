@@ -41,6 +41,7 @@ public class WifiReConnectCoordinator: NavigationCoordinator {
         let viewModel = wifiAutoConnectDIContainer.makeWifiReConnectViewModel(wifiConnectUseCase: usecase, coordinatorcontroller: self, imageData: image, ssid: ssid, password: password)
         let viewController = wifiAutoConnectDIContainer.makeWifiReConnectViewController(viewModel)
 
+        self.navigationController.setNavigationBarHidden(true, animated: false)
         self.navigationController.pushViewController(viewController, animated: true)
     }
 
