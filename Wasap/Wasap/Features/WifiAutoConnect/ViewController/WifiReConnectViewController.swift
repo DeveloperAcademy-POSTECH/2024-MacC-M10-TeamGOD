@@ -16,7 +16,6 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
 
     public override func viewDidLoad() {
         super.viewDidLoad()
-        setupNavigationBar()
         setupActions()
     }
 
@@ -92,12 +91,6 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
                 self?.wifiReConnectView.photoImageView.image = image
             }
             .disposed(by: disposeBag)
-    }
-
-
-    private func setupNavigationBar() {
-        navigationItem.rightBarButtonItem = wifiReConnectView.barItem
-        navigationItem.rightBarButtonItem?.customView?.frame = CGRect(x: 0, y: 300, width: 26, height: 26)
     }
 
     private func setupActions() {
