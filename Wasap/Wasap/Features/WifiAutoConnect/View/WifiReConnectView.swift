@@ -152,6 +152,7 @@ class WifiReConnectView: BaseView {
         setConstraints()
         setupKeyboardNotifications()
         setupTapGesture()
+        keyboardLayoutGuide.usesBottomSafeArea = false // safeArea 해제
     }
 
     required init?(coder: NSCoder) {
@@ -185,7 +186,7 @@ class WifiReConnectView: BaseView {
 
         pwStackView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(31)
-            $0.bottom.equalTo(self.keyboardLayoutGuide.snp.top).offset(-157) // - 30 (키보드 레이아웃 가이드)
+            $0.bottom.equalTo(self.keyboardLayoutGuide.snp.top).offset(-187) // - 30 (키보드 레이아웃 가이드)
         }
 
         pwField.snp.makeConstraints {
@@ -215,7 +216,6 @@ class WifiReConnectView: BaseView {
         }
     }
 
-
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder() // 키보드 숨기기
         resetViewState() // 초기 상태로 복구
@@ -241,7 +241,6 @@ class WifiReConnectView: BaseView {
             reConnectButton.backgroundColor = .clear  // 원래 색상으로 복원
         }
     }
-
 
     @objc private func ssidFieldSelected() {
         ssidLabel.textColor = .green200
@@ -283,6 +282,12 @@ class WifiReConnectView: BaseView {
             $0.bottom.equalTo(self.keyboardLayoutGuide.snp.top).offset(-49)
         }
 
+        photoImageView.snp.remakeConstraints{
+            $0.leading.trailing.equalToSuperview().inset(31)
+            $0.bottom.equalTo(self.keyboardLayoutGuide.snp.top).offset(-250)
+            $0.height.equalTo(216)
+        }
+
         UIView.animate(withDuration: 0.1, delay: 0, options: [.curveEaseInOut], animations: {
                 self.labelStackView.alpha = 0
                 self.cameraButton.alpha = 0
@@ -295,8 +300,15 @@ class WifiReConnectView: BaseView {
     @objc private func keyboardWillHide(notification: Notification) {
         resetViewState()
 
-        pwStackView.snp.updateConstraints {
-            $0.bottom.equalTo(self.keyboardLayoutGuide.snp.top).offset(-157)
+        pwStackView.snp.remakeConstraints {
+            $0.leading.trailing.equalToSuperview().inset(31)
+            $0.bottom.equalTo(self.keyboardLayoutGuide.snp.top).offset(-187)
+        }
+
+        photoImageView.snp.remakeConstraints{
+            $0.leading.trailing.equalToSuperview().inset(31)
+            $0.bottom.equalTo(ssidStackView.snp.top).offset(-53)
+            $0.height.equalTo(216)
         }
 
         // 올라간 화면 원상 복구
