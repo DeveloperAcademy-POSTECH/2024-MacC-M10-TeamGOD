@@ -15,7 +15,6 @@ class WifiReConnectView: BaseView {
         return view
     }()
 
-    // MARK: NAVIGATION BAR BTN
     lazy var cameraButton : UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "GoCameraButton"), for: .normal)
@@ -34,7 +33,8 @@ class WifiReConnectView: BaseView {
         label.text = "Retry"
         label.textColor = .primary200
         label.textAlignment = .left
-        label.font = UIFont.systemFont(ofSize: 26)
+        label.font = FontStyle.title.font
+        label.addLabelSpacing(fontStyle: FontStyle.title)
         return label
     }()
 
@@ -50,7 +50,8 @@ class WifiReConnectView: BaseView {
         let label = UILabel()
         label.text = "잘못된 부분이 있나봐요!"
         label.textColor = .neutral400
-        label.font = UIFont.systemFont(ofSize: 16)
+        label.font = FontStyle.subTitle.font
+        label.addLabelSpacing(fontStyle: FontStyle.subTitle)
         label.textAlignment = .left
         return label
     }()
@@ -59,6 +60,7 @@ class WifiReConnectView: BaseView {
         let stackView = UIStackView(arrangedSubviews: [titleStackView, subLabel])
         stackView.axis = .vertical
         stackView.spacing = 8
+        stackView.alignment = .leading
         return stackView
     }()
 
@@ -74,7 +76,9 @@ class WifiReConnectView: BaseView {
         let label = UILabel()
         label.text = "와이파이 ID"
         label.textColor = .neutral200
-        label.font = UIFont.systemFont(ofSize: 12)
+        label.font = FontStyle.caption.font
+        label.addLabelSpacing(fontStyle: FontStyle.caption)
+        label.textAlignment = .left
         return label
     }()
 
@@ -82,8 +86,8 @@ class WifiReConnectView: BaseView {
         let textField = UITextField()
         textField.textColor = .neutral200
         textField.backgroundColor = .neutral450
-        textField.font = .preferredFont(forTextStyle: .headline)
-        textField.font = UIFont.systemFont(ofSize: 18)
+        textField.font = FontStyle.password_M.font
+
         textField.returnKeyType = .done
         textField.layer.cornerRadius = 16
         textField.layer.masksToBounds = true
@@ -106,7 +110,9 @@ class WifiReConnectView: BaseView {
         let label = UILabel()
         label.text = "비밀번호"
         label.textColor = .neutral200
-        label.font = UIFont.systemFont(ofSize: 12)
+        label.font = FontStyle.caption.font
+        label.addLabelSpacing(fontStyle: FontStyle.caption)
+        label.textAlignment = .left
         return label
     }()
 
@@ -114,8 +120,8 @@ class WifiReConnectView: BaseView {
         let textField = UITextField()
         textField.textColor = .neutral200
         textField.backgroundColor = .neutral450
-        textField.font = .preferredFont(forTextStyle: .headline)
-        textField.font = UIFont.systemFont(ofSize: 18)
+        textField.font = FontStyle.password_M.font
+
         textField.returnKeyType = .done
         textField.layer.cornerRadius = 16
         textField.layer.masksToBounds = true
@@ -138,8 +144,10 @@ class WifiReConnectView: BaseView {
         let button = UIButton()
         button.setTitle("다시 연결하기", for: .normal)
         button.setTitleColor(.neutral200, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 16)
+        button.titleLabel?.font = FontStyle.button.font
+        button.titleLabel?.addLabelSpacing(fontStyle: FontStyle.button)
         button.backgroundColor = .clear
+
         button.layer.cornerRadius = 25
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.neutral200.cgColor
@@ -187,7 +195,7 @@ class WifiReConnectView: BaseView {
         pwStackView.snp.makeConstraints {
             $0.width.equalTo(330)
             $0.leading.trailing.equalToSuperview().inset(31)
-            $0.bottom.equalTo(self.keyboardLayoutGuide.snp.top).offset(-187) // - 30 (키보드 레이아웃 가이드)
+            $0.bottom.equalTo(self.keyboardLayoutGuide.snp.top).offset(-187)
         }
 
         pwField.snp.makeConstraints {

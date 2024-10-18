@@ -24,11 +24,18 @@ public class RootCoordinator: Coordinator {
     }
 
     public func start() {
-        let scanCoordinator = CameraCoordinator(navigationController: UINavigationController(), wifiAutoConnectDIContainer: appDIContainer.makeWifiAutoConnectDIContainer())
-        start(childCoordinator: scanCoordinator)
-        window?.rootViewController = scanCoordinator.navigationController
+        let coordinator = WifiReConnectCoordinator(navigationController: UINavigationController(), wifiAutoConnectDIContainer: appDIContainer.makeWifiAutoConnectDIContainer(),image: UIImage(),ssid: "",password: "")
+        start(childCoordinator: coordinator)
+        window?.rootViewController = coordinator.navigationController
         window?.makeKeyAndVisible()
     }
+
+//    public func start() {
+//        let scanCoordinator = CameraCoordinator(navigationController: UINavigationController(), wifiAutoConnectDIContainer: appDIContainer.makeWifiAutoConnectDIContainer())
+//        start(childCoordinator: scanCoordinator)
+//        window?.rootViewController = scanCoordinator.navigationController
+//        window?.makeKeyAndVisible()
+//    }
 
     public func finish() {
         fatalError("You cannot finish Root Coordinator")
