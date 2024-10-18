@@ -14,6 +14,19 @@ public struct FontProperty {
     let letterSpacingMultiiple: CGFloat // 자간(%를 소수로 입력)
 }
 
+/// 폰트 적용 방법
+///
+/// ```
+/// lazy var titleLabel: UILabel = {
+///     let label = UILabel()
+///     label.text = "SCAN"
+///     label.textColor = .textPrimaryHigh
+///     label.font = FontStyle.title.font
+///     label.addLabelSpacing(fontStyle: FontStyle.title)
+///     return label
+/// }()
+/// ```
+///
 public enum FontStyle {
     case title
     case subTitle
@@ -50,15 +63,6 @@ public extension FontStyle {
     }
 }
 
-/// 폰트 적용 방법
-/// lazy var titleLabel: UILabel = {
-///     let label = UILabel()
-///     label.text = "SCAN"
-///     label.textColor = .textPrimaryHigh
-///     label.font = FontStyle.title.font
-///     label.addLabelSpacing(fontStyle: FontStyle.title)
-///     return label
-/// }()
 extension UIFont {
     enum FontType: String {
         case gmarketSansBold = "GmarketSansBold"
