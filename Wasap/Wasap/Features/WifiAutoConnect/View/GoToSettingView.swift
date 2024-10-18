@@ -36,7 +36,8 @@ class GoToSettingView: BaseView {
         label.text = "Sorry"
         label.textColor = .green300
         label.textAlignment = .left
-        label.font = UIFont.systemFont(ofSize: 26)
+        label.font = FontStyle.title.font
+        label.addLabelSpacing(fontStyle: FontStyle.title)
         return label
     }()
 
@@ -52,6 +53,8 @@ class GoToSettingView: BaseView {
         let label = UILabel()
         label.text = "연결 실패"
         label.textColor = .neutral400
+        label.font = FontStyle.subTitle.font
+        label.addLabelSpacing(fontStyle: FontStyle.subTitle)
         label.textAlignment = .left
         return label
     }()
@@ -73,7 +76,7 @@ class GoToSettingView: BaseView {
         let label = UILabel()
         label.text = "와이파이 ID"
         label.textColor = .neutral200
-        label.font = UIFont.systemFont(ofSize: 10)
+//        label.font = FontStyle.caption.font. 
         return label
     }()
 
@@ -83,7 +86,7 @@ class GoToSettingView: BaseView {
         // 450 으로 변경 예정
         label.backgroundColor = UIColor
             .neutral450
-        label.font = .preferredFont(forTextStyle: .headline)
+        label.font = FontStyle.password_M.font
         label.layer.cornerRadius = 13
         label.layer.masksToBounds = true
         label.textAlignment = .center
@@ -102,7 +105,7 @@ class GoToSettingView: BaseView {
         let label = UILabel()
         label.text = "비밀번호"
         label.textColor = .neutral200
-        label.font = UIFont.systemFont(ofSize: 10)
+        label.font = FontStyle.caption.font
         return label
     }()
 
