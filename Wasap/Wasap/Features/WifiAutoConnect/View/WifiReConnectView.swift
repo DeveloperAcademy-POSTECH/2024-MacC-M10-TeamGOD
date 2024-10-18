@@ -226,19 +226,18 @@ class WifiReConnectView: BaseView {
     }
 
     @objc private func textFieldValueChanged() {
-        // ssidField 또는 pwField 값이 변경되었는지 확인
+
         let ssid : String = ""
         let pw : String = ""
 
         if ssidField.text != ssid || pwField.text != pw {
             reConnectButton.backgroundColor = .green200  // 값이 변경되면 버튼 색 변경
-            reConnectButton.setTitle("다시 연결하기", for: .normal)
             reConnectButton.setTitleColor(.black, for: .normal)
-
-            reConnectButton.layer.borderWidth = 1
             reConnectButton.layer.borderColor = UIColor.clear.cgColor
         } else {
-            reConnectButton.backgroundColor = .clear  // 원래 색상으로 복원
+            reConnectButton.backgroundColor = .clear
+            reConnectButton.setTitleColor(.neutral200, for: .normal)
+            reConnectButton.layer.borderColor = UIColor.neutral200.cgColor
         }
     }
 
