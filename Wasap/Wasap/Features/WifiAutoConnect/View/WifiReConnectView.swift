@@ -185,6 +185,7 @@ class WifiReConnectView: BaseView {
         }
 
         pwStackView.snp.makeConstraints {
+            $0.width.equalTo(330)
             $0.leading.trailing.equalToSuperview().inset(31)
             $0.bottom.equalTo(self.keyboardLayoutGuide.snp.top).offset(-187) // - 30 (키보드 레이아웃 가이드)
         }
@@ -242,6 +243,7 @@ class WifiReConnectView: BaseView {
     }
 
     @objc private func ssidFieldSelected() {
+        
         ssidLabel.textColor = .green200
         ssidField.textColor = .green200
         ssidField.layer.borderColor = UIColor.green200.cgColor
@@ -303,6 +305,10 @@ class WifiReConnectView: BaseView {
             $0.leading.trailing.equalToSuperview().inset(31)
             $0.bottom.equalTo(self.keyboardLayoutGuide.snp.top).offset(-187)
         }
+
+        
+        ssidField.textAlignment = .center
+        pwField.textAlignment = .center
 
         photoImageView.snp.remakeConstraints{
             $0.leading.trailing.equalToSuperview().inset(31)
