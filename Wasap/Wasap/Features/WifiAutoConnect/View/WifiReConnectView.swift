@@ -182,8 +182,7 @@ class WifiReConnectView: BaseView {
         cameraButton.snp.makeConstraints {
             $0.top.equalToSuperview().offset(68)
             $0.trailing.equalToSuperview().inset(20)
-            $0.width.equalTo(32)
-            $0.height.equalTo(32)
+            $0.width.height.equalTo(32)
         }
 
         iconImageView.snp.makeConstraints {
@@ -197,32 +196,34 @@ class WifiReConnectView: BaseView {
         labelStackView.snp.makeConstraints {
             $0.leading.equalToSuperview().inset(20)
             $0.bottom.equalTo(photoImageView.snp.top).offset(-53)
-            $0.height.equalTo(66)
+            $0.height.equalTo(63)
         }
 
         photoImageView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(31)
-            $0.bottom.equalTo(ssidStackView.snp.top).offset(-53)
+            $0.bottom.equalTo(ssidStackView.snp.top).offset(-54)
             $0.height.equalTo(216)
         }
 
         ssidStackView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(31)
             $0.bottom.equalTo(pwStackView.snp.top).offset(-16)
+            $0.height.equalTo(78)
         }
 
         ssidField.snp.makeConstraints {
-            $0.height.equalTo(62)
+            $0.height.equalTo(60)
             $0.width.equalTo(330)
         }
 
         pwStackView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(31)
             $0.bottom.equalTo(self.keyboardLayoutGuide.snp.top).offset(-187)
+            $0.height.equalTo(78)
         }
 
         pwField.snp.makeConstraints {
-            $0.height.equalTo(62)
+            $0.height.equalTo(60)
             $0.width.equalTo(330)
         }
 

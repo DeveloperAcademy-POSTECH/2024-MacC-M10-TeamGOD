@@ -187,8 +187,7 @@ class GoToSettingView: BaseView {
         xButton.snp.makeConstraints {
             $0.top.equalToSuperview().offset(71)
             $0.trailing.equalToSuperview().inset(20)
-            $0.width.equalTo(26)
-            $0.height.equalTo(26)
+            $0.width.height.equalTo(26)
         }
 
         iconImageView.snp.makeConstraints { $0.width.height.equalTo(26)
@@ -240,9 +239,8 @@ class GoToSettingView: BaseView {
         
         settingBtn.snp.makeConstraints {
             $0.top.equalTo(infoLabel.snp.bottom).offset(49)
-            $0.trailing.equalToSuperview().inset(20)
+            $0.leading.trailing.equalToSuperview().inset(20)
             $0.height.equalTo(52)
-            $0.width.equalTo(353)
         }
     }
 }
