@@ -4,8 +4,6 @@
 //
 //  Created by 김상준 on 10/15/24.
 //
-
-import Foundation
 import UIKit
 import SnapKit
 
@@ -16,8 +14,7 @@ class GoToSettingView: BaseView {
         view.backgroundColor = .darkBackground
         return view
     }()
-    
-    // MARK: NAVIGATION BAR BTN
+
     lazy var xButton : UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "QuitButtonDefault"), for: .normal)
@@ -44,7 +41,7 @@ class GoToSettingView: BaseView {
     lazy var titleStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [iconImageView, titleLabel])
         stackView.axis = .horizontal
-        stackView.alignment = .center
+        stackView.alignment = .leading
         stackView.spacing = 3
         return stackView
     }()
@@ -63,6 +60,7 @@ class GoToSettingView: BaseView {
         let stackView = UIStackView(arrangedSubviews: [titleStackView, subLabel])
         stackView.axis = .vertical
         stackView.spacing = 8
+        stackView.alignment = .leading
         return stackView
     }()
     
@@ -76,17 +74,17 @@ class GoToSettingView: BaseView {
         let label = UILabel()
         label.text = "와이파이 ID"
         label.textColor = .neutral200
-//        label.font = FontStyle.caption.font. 
+        label.font = FontStyle.subTitle.font.withSize(10)
+        label.addLabelSpacing(fontStyle: FontStyle.subTitle)
+        label.textAlignment = .left
         return label
     }()
 
     lazy var ssidFieldLabel: UILabel = {
         let label = UILabel()
         label.textColor = .neutral200
-        // 450 으로 변경 예정
-        label.backgroundColor = UIColor
-            .neutral450
-        label.font = FontStyle.password_M.font
+        label.backgroundColor = UIColor.neutral450
+        label.font = FontStyle.password_M.font.withSize(15)
         label.layer.cornerRadius = 13
         label.layer.masksToBounds = true
         label.textAlignment = .center
@@ -105,15 +103,17 @@ class GoToSettingView: BaseView {
         let label = UILabel()
         label.text = "비밀번호"
         label.textColor = .neutral200
-        label.font = FontStyle.caption.font
+        label.font = FontStyle.subTitle.font.withSize(10)
+        label.addLabelSpacing(fontStyle: FontStyle.subTitle)
+        label.textAlignment = .left
         return label
     }()
 
     lazy var pwFieldLabel: UILabel = {
         let label = UILabel()
         label.textColor = .neutral200
-        label.backgroundColor = UIColor
-            .neutral450
+        label.backgroundColor = .neutral450
+        label.font = FontStyle.password_M.font.withSize(15)
         label.font = .preferredFont(forTextStyle: .headline)
         label.layer.cornerRadius = 13
         label.layer.masksToBounds = true
@@ -134,6 +134,7 @@ class GoToSettingView: BaseView {
         label.numberOfLines = 0
         label.textColor = .gray100
         label.textAlignment = .center
+        label.font = FontStyle.subTitle.font.withSize(16)
 
         let wifiID = "와이파이 ID"
         let description = "\(wifiID)가 실제와 다를 수 있어요.\n아래 버튼을 누르면 비밀번호를 복사합니다."
@@ -151,9 +152,11 @@ class GoToSettingView: BaseView {
     lazy var settingBtn: UIButton = {
         let button = UIButton()
         button.setTitle("설정에서 연결하기", for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 16)
         button.setTitleColor(.black, for: .normal)
+        button.titleLabel?.font = FontStyle.button.font
+        button.titleLabel?.addLabelSpacing(fontStyle: FontStyle.button)
         button.backgroundColor = .primary200
+
         button.layer.cornerRadius = 25
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.clear.cgColor
@@ -178,7 +181,8 @@ class GoToSettingView: BaseView {
     }
     
     func setConstraints() {
-        backgroundView.snp.makeConstraints { $0.edges.equalToSuperview() }
+        backgroundView.snp.makeConstraints { $0.edges.equalToSuperview()
+        }
 
         xButton.snp.makeConstraints {
             $0.top.equalToSuperview().offset(71)
@@ -187,9 +191,17 @@ class GoToSettingView: BaseView {
             $0.height.equalTo(26)
         }
 
+        iconImageView.snp.makeConstraints { $0.width.height.equalTo(26)
+        }
+
+        titleStackView.snp.makeConstraints {
+            $0.height.equalTo(36)
+        }
+
         labelStackView.snp.makeConstraints {
             $0.leading.equalToSuperview().inset(20)
-            $0.top.equalToSuperview().inset(108)
+            $0.top.equalToSuperview().offset(108)
+            $0.height.equalTo(66)
         }
         
         photoImageView.snp.makeConstraints {
@@ -201,6 +213,7 @@ class GoToSettingView: BaseView {
         ssidStackView.snp.makeConstraints {
             $0.top.equalTo(photoImageView.snp.bottom).offset(29)
             $0.leading.trailing.equalToSuperview().inset(63)
+            $0.height.equalTo(63)
         }
         
         ssidFieldLabel.snp.makeConstraints {
@@ -211,6 +224,7 @@ class GoToSettingView: BaseView {
         pwStackView.snp.makeConstraints {
             $0.top.equalTo(ssidStackView.snp.bottom).offset(16)
             $0.leading.trailing.equalToSuperview().inset(63)
+            $0.height.equalTo(63)
         }
         
         pwFieldLabel.snp.makeConstraints {
@@ -221,6 +235,7 @@ class GoToSettingView: BaseView {
         infoLabel.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(32)
             $0.top.equalTo(pwStackView.snp.bottom).offset(49)
+            $0.height.equalTo(50)
         }
         
         settingBtn.snp.makeConstraints {
