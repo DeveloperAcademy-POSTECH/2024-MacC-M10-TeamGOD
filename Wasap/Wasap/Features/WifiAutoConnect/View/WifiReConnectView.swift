@@ -41,7 +41,7 @@ class WifiReConnectView: BaseView {
     lazy var titleStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [iconImageView, titleLabel])
         stackView.axis = .horizontal
-        stackView.alignment = .center
+        stackView.alignment = .leading
         stackView.spacing = 3
         return stackView
     }()
@@ -175,7 +175,9 @@ class WifiReConnectView: BaseView {
     }
 
     func setConstraints() {
-        backgroundView.snp.makeConstraints { $0.edges.equalToSuperview() }
+        backgroundView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
 
         cameraButton.snp.makeConstraints {
             $0.top.equalToSuperview().offset(68)
@@ -184,23 +186,24 @@ class WifiReConnectView: BaseView {
             $0.height.equalTo(32)
         }
 
-        iconImageView.snp.makeConstraints { $0.width.height.equalTo(26) }
-
-        reConnectButton.snp.makeConstraints {
-            $0.bottom.equalToSuperview().offset(-82)
-            $0.leading.trailing.equalToSuperview().inset(20)
-            $0.height.equalTo(52)
+        iconImageView.snp.makeConstraints {
+            $0.width.height.equalTo(26)
         }
 
-        pwStackView.snp.makeConstraints {
-            $0.width.equalTo(330)
+        titleStackView.snp.makeConstraints {
+            $0.height.equalTo(36)
+        }
+
+        labelStackView.snp.makeConstraints {
+            $0.leading.equalToSuperview().inset(20)
+            $0.bottom.equalTo(photoImageView.snp.top).offset(-53)
+            $0.height.equalTo(66)
+        }
+
+        photoImageView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(31)
-            $0.bottom.equalTo(self.keyboardLayoutGuide.snp.top).offset(-187)
-        }
-
-        pwField.snp.makeConstraints {
-            $0.height.equalTo(62)
-            $0.width.equalTo(330)
+            $0.bottom.equalTo(ssidStackView.snp.top).offset(-53)
+            $0.height.equalTo(216)
         }
 
         ssidStackView.snp.makeConstraints {
@@ -213,15 +216,20 @@ class WifiReConnectView: BaseView {
             $0.width.equalTo(330)
         }
 
-        photoImageView.snp.makeConstraints {
+        pwStackView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(31)
-            $0.bottom.equalTo(ssidStackView.snp.top).offset(-53)
-            $0.height.equalTo(216)
+            $0.bottom.equalTo(self.keyboardLayoutGuide.snp.top).offset(-187)
         }
 
-        labelStackView.snp.makeConstraints {
-            $0.leading.equalToSuperview().inset(20)
-            $0.bottom.equalTo(photoImageView.snp.top).offset(-53)
+        pwField.snp.makeConstraints {
+            $0.height.equalTo(62)
+            $0.width.equalTo(330)
+        }
+
+        reConnectButton.snp.makeConstraints {
+            $0.bottom.equalToSuperview().offset(-82)
+            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.height.equalTo(52)
         }
     }
 
