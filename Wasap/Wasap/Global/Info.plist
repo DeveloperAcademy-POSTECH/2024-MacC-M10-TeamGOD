@@ -2,8 +2,13 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>와이파이 SSID를 추출하기 위해 필요합니다</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>GmarketSansBold.otf</string>
+		<string>GmarketSansMedium.otf</string>
+		<string>RobotoMono-Medium.ttf</string>
+		<string>RobotoMono-Regular.ttf</string>
+	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

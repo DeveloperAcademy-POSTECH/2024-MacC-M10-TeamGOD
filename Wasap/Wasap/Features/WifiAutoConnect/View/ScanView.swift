@@ -18,7 +18,7 @@ class ScanView: BaseView {
     
     lazy var previewView: UIImageView = {
         let previewView = UIImageView()
-        previewView.contentMode = .scaleAspectFit
+        previewView.contentMode = .scaleAspectFill
         previewView.layer.borderWidth = 3.0
         previewView.layer.borderColor = UIColor.green200.cgColor
         previewView.layer.masksToBounds = true
@@ -34,7 +34,8 @@ class ScanView: BaseView {
         let label = UILabel()
         label.text = "SCAN"
         label.textColor = .textPrimaryHigh
-        label.font = .systemFont(ofSize: 26, weight: .bold)
+        label.font = FontStyle.title.font
+        label.addLabelSpacing(fontStyle: FontStyle.title)
         return label
     }()
     
@@ -42,7 +43,8 @@ class ScanView: BaseView {
         let label = UILabel()
         label.text = "스캔 완료!"
         label.textColor = .textNeutralHigh
-        label.font = .systemFont(ofSize: 16, weight: .medium)
+        label.font = FontStyle.subTitle.font
+        label.addLabelSpacing(fontStyle: FontStyle.subTitle)
         return label
     }()
     
@@ -71,11 +73,15 @@ class ScanView: BaseView {
         titleLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.top.equalTo(scanIcon.snp.bottom).offset(9)
+            $0.width.equalTo(88)
+            $0.height.equalTo(36)
         }
         
         subLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.top.equalTo(titleLabel.snp.bottom).offset(7)
+            $0.width.equalTo(71)
+            $0.height.equalTo(22)
         }
 
     }
