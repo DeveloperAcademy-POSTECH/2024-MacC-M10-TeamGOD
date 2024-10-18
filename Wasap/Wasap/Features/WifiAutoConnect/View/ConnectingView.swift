@@ -32,7 +32,8 @@ class ConnectingView: BaseView {
         let label = UILabel()
         label.text = "ASAP!"
         label.textColor = .neutralWhite
-        label.font = .systemFont(ofSize: 26, weight: .bold)
+        label.font = FontStyle.title.font
+        label.addLabelSpacing(fontStyle: FontStyle.title)
         return label
     }()
     
@@ -40,16 +41,9 @@ class ConnectingView: BaseView {
         let label = UILabel()
         label.text = "연결중"
         label.textColor = .neutralWhite
-        label.font = .systemFont(ofSize: 16, weight: .medium)
+        label.font = FontStyle.subTitle.font
+        label.addLabelSpacing(fontStyle: FontStyle.subTitle)
         return label
-    }()
-    
-    lazy var statusStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [mainStatusLabel, subStatusLabel])
-        stackView.axis = .vertical
-        stackView.alignment = .center
-        stackView.spacing = 10
-        return stackView
     }()
     
     lazy var loadingAnimation: LottieAnimationView = {
@@ -61,7 +55,7 @@ class ConnectingView: BaseView {
     
     func setViewHierarchy() {
         self.addSubview(backgroundView)
-        self.addSubViews(loadingAnimation, statusStackView, doneSignIcon, quitButton)
+        self.addSubViews(loadingAnimation, mainStatusLabel, subStatusLabel, doneSignIcon, quitButton)
     }
     
     func setConstraints() {
@@ -73,15 +67,24 @@ class ConnectingView: BaseView {
             $0.width.equalTo(26)
             $0.height.equalTo(26)
         }
-        
-        statusStackView.snp.makeConstraints {
+
+        mainStatusLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.top.equalToSuperview().offset(359)
+            $0.width.equalTo(91)
+            $0.height.equalTo(36)
         }
-        
+
+        subStatusLabel.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.top.equalTo(mainStatusLabel.snp.bottom).offset(6)
+            $0.width.equalTo(71)
+            $0.height.equalTo(16)
+        }
+
         doneSignIcon.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.bottom.equalTo(statusStackView.snp.top).offset(-10)
+            $0.bottom.equalTo(mainStatusLabel.snp.top).offset(-6)
         }
         
         loadingAnimation.snp.makeConstraints {
