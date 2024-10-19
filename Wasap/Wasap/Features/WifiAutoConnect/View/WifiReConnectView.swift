@@ -146,7 +146,6 @@ class WifiReConnectView: BaseView {
         setConstraints()
 
         setupKeyboardNotifications()
-        setupTapGesture()
         keyboardLayoutGuide.usesBottomSafeArea = false // safeArea 해제
     }
 
@@ -220,7 +219,7 @@ class WifiReConnectView: BaseView {
         }
         return true
     }
-    
+
     private func setupKeyboardNotifications() {
         NotificationCenter.default.addObserver(self,selector: #selector(keyboardWillShow),
                                                name: UIResponder.keyboardWillShowNotification,object: nil)
@@ -291,16 +290,6 @@ class WifiReConnectView: BaseView {
         pwField.textColor = .neutral200
         pwField.layer.borderColor = UIColor.clear.cgColor
         pwField.layer.borderWidth = 0
-    }
-
-    private func setupTapGesture() {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
-        self.addGestureRecognizer(tapGesture)
-    }
-
-    @objc private func handleTap() {
-        self.endEditing(true) // 키보드 숨기기
-        resetViewState() // 초기 상태로 복구
     }
 
     deinit {

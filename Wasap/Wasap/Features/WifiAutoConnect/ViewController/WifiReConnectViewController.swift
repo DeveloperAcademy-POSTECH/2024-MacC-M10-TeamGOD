@@ -8,6 +8,7 @@ import UIKit
 import RxSwift
 import SnapKit
 import CoreLocation
+import RxGesture
 
 public class WifiReConnectViewController: RxBaseViewController<WifiReConnectViewModel>{
 
@@ -55,6 +56,20 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
         // MARK: ReConnect 버튼이 눌렸을 때 ViewModel 트리거
         wifiReConnectView.reConnectButton.rx.tap
             .bind(to: viewModel.reConnectButtonTapped)
+            .disposed(by: disposeBag)
+
+        // MARK: BackGround 터치하면 ViewModel 트리거
+        wifiReConnectView.rx.tapGesture()
+            .when(.recognized)
+            .map { _ in } // 이벤트를 빈 값으로 변환하여 Relay로 전달
+            .bind(to: viewModel.bgTouched)
+            .disposed(by: disposeBag)
+
+        // MARK: ViewModel에서 Keyboard hide 전달 받기
+        viewModel.bgTouchedDriver
+            .drive(onNext: { [weak self] isTouch in
+                self?.wifiReConnectView.endEditing(true)
+            })
             .disposed(by: disposeBag)
 
         // MARK: ViewModel에서 버튼 색상 상태를 구독하여 UI 업데이트
