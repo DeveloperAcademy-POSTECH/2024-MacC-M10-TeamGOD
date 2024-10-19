@@ -18,6 +18,7 @@ public class WifiReConnectViewModel: BaseViewModel {
     public let cameraButtonTapped = PublishRelay<Void>()
     public let ssidFieldTouched = PublishRelay<Void>()
     public let pwFieldTouched = PublishRelay<Void>()
+    let bgTouched = PublishRelay<Void>()
 
     public let ssidText = BehaviorRelay<String>(value: "")
     public let pwText = BehaviorRelay<String>(value: "")
@@ -31,6 +32,7 @@ public class WifiReConnectViewModel: BaseViewModel {
     let btnColorChangeDriver: Driver<Bool>
     let ssidTextFieldTouchedDriver: Driver<Bool>
     let pwTextFieldTouchedDriver: Driver<Bool>
+    let bgTouchedDriver: Driver<Bool>
 
     public init(wifiConnectUseCase: WiFiConnectUseCase,
                 coordinatorController: WifiReConnectCoordinatorController,
@@ -56,7 +58,16 @@ public class WifiReConnectViewModel: BaseViewModel {
         let pwTextFieldColorChangeRelay = BehaviorRelay<Bool>(value: false)
         self.pwTextFieldTouchedDriver = pwTextFieldColorChangeRelay.asDriver()
 
+        let bgtouchedRelay = BehaviorRelay<Bool>(value: false)
+        self.bgTouchedDriver = bgtouchedRelay.asDriver()
+
         super.init()
+
+        bgTouched
+            .subscribe(onNext: { () in
+                bgtouchedRelay.accept(true)
+            })
+            .disposed(by: disposeBag)
 
         ssidText
             .skip(2)
