@@ -144,9 +144,6 @@ class WifiReConnectView: BaseView {
         super.init(frame: frame)
         setViewHierarchy()
         setConstraints()
-
-        setupKeyboardNotifications()
-        keyboardLayoutGuide.usesBottomSafeArea = false // safeArea 해제
     }
 
     required init?(coder: NSCoder) {
@@ -209,90 +206,5 @@ class WifiReConnectView: BaseView {
             $0.leading.equalToSuperview().inset(20)
             $0.bottom.equalTo(photoImageView.snp.top).offset(-53)
         }
-    }
-
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder() // 키보드 숨기기
-        resetViewState() // 초기 상태로 복구
-        UIView.animate(withDuration: 0.3) {
-            self.layoutIfNeeded()
-        }
-        return true
-    }
-
-    private func setupKeyboardNotifications() {
-        NotificationCenter.default.addObserver(self,selector: #selector(keyboardWillShow),
-                                               name: UIResponder.keyboardWillShowNotification,object: nil)
-
-        NotificationCenter.default.addObserver(self,selector: #selector(keyboardWillHide),
-                                               name: UIResponder.keyboardWillHideNotification,object: nil)
-    }
-
-    @objc private func keyboardWillShow(notification: Notification) {
-
-        pwStackView.snp.remakeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(31)
-            $0.bottom.equalTo(self.keyboardLayoutGuide.snp.top).offset(-49)
-        }
-
-        photoImageView.snp.remakeConstraints{
-            $0.leading.trailing.equalToSuperview().inset(31)
-            $0.bottom.equalTo(self.keyboardLayoutGuide.snp.top).offset(-250)
-            $0.height.equalTo(216)
-        }
-
-        UIView.animate(withDuration: 0.1, delay: 0, options: [.curveEaseInOut], animations: {
-                self.labelStackView.alpha = 0
-                self.cameraButton.alpha = 0
-                self.layoutIfNeeded()  // 제약 변경 반영
-            }, completion: { _ in
-                self.labelStackView.isHidden = true
-            })
-    }
-
-    @objc private func keyboardWillHide(notification: Notification) {
-        resetViewState()
-
-        pwStackView.snp.remakeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(31)
-            $0.bottom.equalTo(self.keyboardLayoutGuide.snp.top).offset(-187)
-        }
-
-        ssidField.textAlignment = .center
-        pwField.textAlignment = .center
-
-        photoImageView.snp.remakeConstraints{
-            $0.leading.trailing.equalToSuperview().inset(31)
-            $0.bottom.equalTo(ssidStackView.snp.top).offset(-53)
-            $0.height.equalTo(216)
-        }
-
-        // 올라간 화면 원상 복구
-        UIView.animate(withDuration: 0.1, delay: 0, options: [.curveEaseInOut], animations: {
-            self.layoutIfNeeded()  // 제약 변경 반영
-                    self.labelStackView.alpha = 1
-                    self.cameraButton.alpha = 1
-        }, completion: { _ in
-            self.labelStackView.isHidden = false
-        })
-    }
-
-    private func resetViewState() {
-        labelStackView.alpha = 1
-        labelStackView.isHidden = false
-
-        ssidLabel.textColor = .neutral200
-        ssidField.textColor = .neutral200
-        ssidField.layer.borderColor = UIColor.clear.cgColor
-        ssidField.layer.borderWidth = 0
-
-        pwLabel.textColor = .neutral200
-        pwField.textColor = .neutral200
-        pwField.layer.borderColor = UIColor.clear.cgColor
-        pwField.layer.borderWidth = 0
-    }
-
-    deinit {
-        NotificationCenter.default.removeObserver(self)
     }
 }
