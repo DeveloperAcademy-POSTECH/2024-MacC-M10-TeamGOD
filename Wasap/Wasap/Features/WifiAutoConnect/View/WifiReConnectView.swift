@@ -152,6 +152,7 @@ class WifiReConnectView: BaseView {
         super.init(frame: frame)
         setViewHierarchy()
         setConstraints()
+
         setupKeyboardNotifications()
         setupTapGesture()
         keyboardLayoutGuide.usesBottomSafeArea = false // safeArea 해제
@@ -236,6 +237,7 @@ class WifiReConnectView: BaseView {
         }
         return true
     }
+    
     private func setupKeyboardNotifications() {
         NotificationCenter.default.addObserver(self,selector: #selector(keyboardWillShow),
                                                name: UIResponder.keyboardWillShowNotification,object: nil)
@@ -274,7 +276,6 @@ class WifiReConnectView: BaseView {
             $0.bottom.equalTo(self.keyboardLayoutGuide.snp.top).offset(-187)
         }
 
-        
         ssidField.textAlignment = .center
         pwField.textAlignment = .center
 
