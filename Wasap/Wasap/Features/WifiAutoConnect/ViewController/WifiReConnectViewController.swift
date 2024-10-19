@@ -185,6 +185,9 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
             $0.height.equalTo(216)
         }
 
+        wifiReConnectView.ssidField.textAlignment = .center
+        wifiReConnectView.pwField.textAlignment = .center
+
         UIView.animate(withDuration: 0.1, delay: 0, options: [.curveEaseInOut], animations: {
             self.wifiReConnectView.labelStackView.alpha = 1
             self.wifiReConnectView.cameraButton.alpha = 1
