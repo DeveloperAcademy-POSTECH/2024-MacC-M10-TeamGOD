@@ -89,8 +89,6 @@ class WifiReConnectView: BaseView {
         textField.layer.masksToBounds = true
         textField.textAlignment = .center
 
-        textField.addTarget(self, action: #selector(ssidFieldSelected), for: .editingDidBegin)
-
         return textField
     }()
 
@@ -119,8 +117,6 @@ class WifiReConnectView: BaseView {
         textField.layer.cornerRadius = 16
         textField.layer.masksToBounds = true
         textField.textAlignment = .center
-
-        textField.addTarget(self, action: #selector(pwFieldSelected), for: .editingDidBegin)
 
         return textField
     }()
@@ -223,33 +219,6 @@ class WifiReConnectView: BaseView {
         }
         return true
     }
-
-    @objc private func ssidFieldSelected() {
-        
-        ssidLabel.textColor = .green200
-        ssidField.textColor = .green200
-        ssidField.layer.borderColor = UIColor.green200.cgColor
-        ssidField.layer.borderWidth = 1
-
-        pwLabel.textColor = .neutral200
-        pwField.textColor = .neutral200
-        pwField.layer.borderColor = UIColor.neutral200.cgColor
-        pwField.layer.borderWidth = 0
-    }
-
-    @objc private func pwFieldSelected() {
-        pwLabel.textColor = .green200
-        pwField.textColor = .green200
-        pwField.layer.borderColor = UIColor.green200.cgColor
-        pwField.layer.borderWidth = 1
-
-        ssidLabel.textColor = .neutral200
-        ssidField.textColor = .neutral200
-        ssidField.layer.borderColor = UIColor.neutral200.cgColor
-        ssidField.layer.borderWidth = 0
-
-    }
-
     private func setupKeyboardNotifications() {
         NotificationCenter.default.addObserver(self,selector: #selector(keyboardWillShow),
                                                name: UIResponder.keyboardWillShowNotification,object: nil)
