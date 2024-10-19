@@ -18,7 +18,9 @@ public class WifiReConnectViewModel: BaseViewModel {
     public let cameraButtonTapped = PublishRelay<Void>()
     public let ssidFieldTouched = PublishRelay<Void>()
     public let pwFieldTouched = PublishRelay<Void>()
-    let bgTouched = PublishRelay<Void>()
+    public let keyboardWillShow = PublishRelay<Void>()
+    public let keyboardWillHide = PublishRelay<Void>()
+    public let bgTouched = PublishRelay<Void>()
 
     public let ssidText = BehaviorRelay<String>(value: "")
     public let pwText = BehaviorRelay<String>(value: "")
@@ -33,6 +35,7 @@ public class WifiReConnectViewModel: BaseViewModel {
     let ssidTextFieldTouchedDriver: Driver<Bool>
     let pwTextFieldTouchedDriver: Driver<Bool>
     let bgTouchedDriver: Driver<Bool>
+    public let keyboardVisible = PublishRelay<Bool>()
 
     public init(wifiConnectUseCase: WiFiConnectUseCase,
                 coordinatorController: WifiReConnectCoordinatorController,
@@ -63,12 +66,28 @@ public class WifiReConnectViewModel: BaseViewModel {
 
         super.init()
 
+        // MARK: 키보드 보일 때
+        keyboardWillShow
+            .subscribe(onNext: { [weak self] in
+                self?.keyboardVisible.accept(true)
+            })
+            .disposed(by: disposeBag)
+
+        // MARK: 키보드 숨길 때
+        keyboardWillHide
+            .subscribe(onNext: { [weak self] in
+                self?.keyboardVisible.accept(false)
+            })
+            .disposed(by: disposeBag)
+
+        // MARK: 백그라운드 터치 할 때
         bgTouched
             .subscribe(onNext: { () in
                 bgtouchedRelay.accept(true)
             })
             .disposed(by: disposeBag)
 
+        // MARK: SSID 텍스트 필드 입력 할 때
         ssidText
             .skip(2)
             .distinctUntilChanged()
@@ -82,6 +101,7 @@ public class WifiReConnectViewModel: BaseViewModel {
             })
             .disposed(by: disposeBag)
 
+        // MARK: PassWord 텍스트 필드 입력 할 때
         pwText
             .skip(2)
             .distinctUntilChanged()
@@ -95,6 +115,7 @@ public class WifiReConnectViewModel: BaseViewModel {
             })
             .disposed(by: disposeBag)
 
+        // MARK: SSID 텍스트 필드 터치 할 때
         ssidFieldTouched
             .subscribe(onNext: { () in
                 ssidTextFieldColorChangeRelay.accept(true)
@@ -102,6 +123,7 @@ public class WifiReConnectViewModel: BaseViewModel {
             })
             .disposed(by: disposeBag)
 
+        // MARK: PassWord 텍스트 필드 터치 할 때
         pwFieldTouched
             .subscribe(onNext: { () in
                 ssidTextFieldColorChangeRelay.accept(false)
@@ -109,14 +131,14 @@ public class WifiReConnectViewModel: BaseViewModel {
             })
             .disposed(by: disposeBag)
 
-        // 카메라 버튼이 눌렸을 때
+        // MARK: 카메라 버튼이 눌렸을 때
         cameraButtonTapped
             .subscribe(onNext: { [weak self] in
                 self?.coordinatorController?.performFinish(to: .popToRoot)
             })
             .disposed(by: disposeBag)
 
-        // 재연결 버튼이 눌렸을 때
+        // MARK: 재연결 버튼이 눌렸을 때
         reConnectButtonTapped
             .withLatestFrom(Observable.combineLatest(self.photoImage, self.ssidText, self.pwText))
             .subscribe(onNext: { [weak self] image, ssid, password in
