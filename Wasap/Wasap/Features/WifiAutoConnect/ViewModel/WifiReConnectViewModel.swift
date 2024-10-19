@@ -16,6 +16,8 @@ public class WifiReConnectViewModel: BaseViewModel {
     // MARK: - Input
     public let reConnectButtonTapped = PublishRelay<Void>()
     public let cameraButtonTapped = PublishRelay<Void>()
+    public let ssidFieldTouched = PublishRelay<Void>()
+    public let pwFieldTouched = PublishRelay<Void>()
 
     public let ssidText = BehaviorRelay<String>(value: "")
     public let pwText = BehaviorRelay<String>(value: "")
@@ -25,7 +27,10 @@ public class WifiReConnectViewModel: BaseViewModel {
     let ssidDriver: Driver<String>
     let passwordDriver: Driver<String>
     let updatedImageDriver: Driver<UIImage>
-    public let btnColorChangeDriver: Driver<Bool>
+
+    let btnColorChangeDriver: Driver<Bool>
+    let ssidTextFieldTouchedDriver: Driver<Bool>
+    let pwTextFieldTouchedDriver: Driver<Bool>
 
     public init(wifiConnectUseCase: WiFiConnectUseCase,
                 coordinatorController: WifiReConnectCoordinatorController,
@@ -45,22 +50,13 @@ public class WifiReConnectViewModel: BaseViewModel {
         let btnColorChangeRelay = BehaviorRelay<Bool>(value: false)
         self.btnColorChangeDriver = btnColorChangeRelay.asDriver()
 
-        super.init()
+        let ssidTextFieldColorChangeRelay = BehaviorRelay<Bool>(value: false)
+        self.ssidTextFieldTouchedDriver = ssidTextFieldColorChangeRelay.asDriver()
 
-//        // SSID와 PW 값이 변경될 때 두 번의 초기 이벤트를 무시
-//        Observable.combineLatest(ssidText, pwText)
-//            .skip(2) // 두 번의 초기값 전달 무시
-//            .distinctUntilChanged { ssidInput, pwInput in
-//                // 값이 변경되었는지 확인 (초기값과 동일한지 비교)
-//                return ssidInput == ssid && pwInput == password
-//            }
-//            .subscribe(onNext: { [weak self] ssidInput, pwInput in
-//                guard let self = self else { return }
-//                // 값이 달라졌을 때 버튼 색상 변경
-//                let isDifferent = ssidInput != ssid || pwInput != password
-//                btnColorChangeRelay.accept(isDifferent)
-//            })
-//            .disposed(by: disposeBag)
+        let pwTextFieldColorChangeRelay = BehaviorRelay<Bool>(value: false)
+        self.pwTextFieldTouchedDriver = pwTextFieldColorChangeRelay.asDriver()
+
+        super.init()
 
         ssidText
             .skip(2)
@@ -85,6 +81,20 @@ public class WifiReConnectViewModel: BaseViewModel {
                 } else {
                     btnColorChangeRelay.accept(false)
                 }
+            })
+            .disposed(by: disposeBag)
+
+        ssidFieldTouched
+            .subscribe(onNext: { () in
+                ssidTextFieldColorChangeRelay.accept(true)
+                pwTextFieldColorChangeRelay.accept(false)
+            })
+            .disposed(by: disposeBag)
+
+        pwFieldTouched
+            .subscribe(onNext: { () in
+                ssidTextFieldColorChangeRelay.accept(false)
+                pwTextFieldColorChangeRelay.accept(true)
             })
             .disposed(by: disposeBag)
 
