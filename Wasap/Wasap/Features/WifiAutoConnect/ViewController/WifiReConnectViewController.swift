@@ -15,7 +15,6 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
 
     public override func viewDidLoad() {
         super.viewDidLoad()
-        setupActions()
     }
 
     public override func loadView() {
@@ -103,15 +102,5 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
         viewModel.updatedImageDriver
             .drive(wifiReConnectView.photoImageView.rx.image)
             .disposed(by: disposeBag)
-    }
-
-    private func setupActions() {
-        wifiReConnectView.cameraButton.addTarget(self, action: #selector(CameraButtonTapped), for: .touchUpInside)
-    }
-
-    @objc private func CameraButtonTapped() {
-        // 버튼 클릭 시 처리할 로직
-        print("Camera button tapped")
-        dismiss(animated: true, completion: nil) // 현재 화면 닫기
     }
 }
