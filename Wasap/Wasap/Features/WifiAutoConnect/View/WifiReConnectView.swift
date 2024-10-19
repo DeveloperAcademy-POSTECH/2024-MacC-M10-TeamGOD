@@ -93,7 +93,6 @@ class WifiReConnectView: BaseView {
         textField.layer.masksToBounds = true
         textField.textAlignment = .center
 
-        textField.addTarget(self, action: #selector(textFieldValueChanged), for: .editingChanged)
         textField.addTarget(self, action: #selector(ssidFieldSelected), for: .editingDidBegin)
 
         return textField
@@ -127,7 +126,6 @@ class WifiReConnectView: BaseView {
         textField.layer.masksToBounds = true
         textField.textAlignment = .center
 
-        textField.addTarget(self, action: #selector(textFieldValueChanged), for: .editingChanged)
         textField.addTarget(self, action: #selector(pwFieldSelected), for: .editingDidBegin)
 
         return textField
@@ -241,22 +239,6 @@ class WifiReConnectView: BaseView {
             self.layoutIfNeeded()
         }
         return true
-    }
-
-    @objc private func textFieldValueChanged() {
-
-        let ssid : String = ""
-        let pw : String = ""
-
-        if ssidField.text != ssid || pwField.text != pw {
-            reConnectButton.backgroundColor = .green200  // 값이 변경되면 버튼 색 변경
-            reConnectButton.setTitleColor(.black, for: .normal)
-            reConnectButton.layer.borderColor = UIColor.clear.cgColor
-        } else {
-            reConnectButton.backgroundColor = .clear
-            reConnectButton.setTitleColor(.neutral200, for: .normal)
-            reConnectButton.layer.borderColor = UIColor.neutral200.cgColor
-        }
     }
 
     @objc private func ssidFieldSelected() {

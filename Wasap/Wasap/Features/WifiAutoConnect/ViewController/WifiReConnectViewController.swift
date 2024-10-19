@@ -13,7 +13,6 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
 
     private let wifiReConnectView = WifiReConnectView()
 
-
     public override func viewDidLoad() {
         super.viewDidLoad()
         setupActions()
@@ -22,7 +21,6 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
     public override func loadView() {
         super.loadView()
         self.view = wifiReConnectView
-
     }
 
     override init(viewModel: WifiReConnectViewModel) {
@@ -35,7 +33,6 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
     }
 
     private func bind(_ viewModel: WifiReConnectViewModel) {
-
         // 텍스트 필드의 값이 변경될 때마다 ViewModel로 전달
         wifiReConnectView.ssidField.rx.text.orEmpty
             .bind(to: viewModel.ssidText)
@@ -45,88 +42,32 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
             .bind(to: viewModel.pwText)
             .disposed(by: disposeBag)
 
-        // ReConnect 버튼을 눌렀을 때 텍스트 필드의 현재 값을 즉시 가져와서 전달
+        // ReConnect 버튼이 눌렸을 때 ViewModel의 이벤트 트리거
         wifiReConnectView.reConnectButton.rx.tap
-            .subscribe(onNext: { [weak self] in
+            .bind(to: viewModel.reConnectButtonTapped)
+            .disposed(by: disposeBag)
+
+        // ViewModel에서 버튼 색상 상태를 구독하여 UI 업데이트
+        viewModel.btnColorChangeDriver
+            .drive(onNext: { [weak self] isEnabled in
                 guard let self = self else { return }
-
-                // 현재 텍스트 필드 값 가져오기
-                let currentSSID = self.wifiReConnectView.ssidField.text ?? ""
-                let currentPassword = self.wifiReConnectView.pwField.text ?? ""
-
-                // 현재 이미지 가져오기
-                let currentImage = self.wifiReConnectView.photoImageView.image ?? UIImage()
-
-                // ViewModel에 값 반영
-                viewModel.ssidText.accept(currentSSID)
-                viewModel.pwText.accept(currentPassword)
-                viewModel.photoImage.accept(currentImage)
-
-                // ViewModel의 버튼 탭 이벤트 트리거
-                viewModel.reConnectButtonTapped.accept(())
+                self.wifiReConnectView.reConnectButton.backgroundColor = isEnabled ? .green200 : .clear
+                self.wifiReConnectView.reConnectButton.setTitleColor(isEnabled ? .black : .neutral200, for: .normal)
             })
             .disposed(by: disposeBag)
 
-        wifiReConnectView.reConnectButton.rx.controlEvent(.touchDown)
-            .subscribe(onNext: { [weak self] in
-                UIView.animate(withDuration: 0.15) {
-                    self?.wifiReConnectView.reConnectButton.transform = CGAffineTransform(scaleX: 1, y: 0.95)
-
-                    self?.wifiReConnectView.reConnectButton.titleLabel?.font = .systemFont(ofSize: 16)
-
-                    self?.wifiReConnectView.reConnectButton.setTitleColor(.black, for: .normal)
-
-                    self?.wifiReConnectView.reConnectButton.backgroundColor = .green300
-
-                    self?.wifiReConnectView.reConnectButton.layer.borderWidth = 1
-                    self?.wifiReConnectView.reConnectButton.layer.borderColor = UIColor.clear.cgColor
-                }
-            })
-            .disposed(by: disposeBag)
-
-        wifiReConnectView.reConnectButton.rx.controlEvent(.touchUpInside)
-            .subscribe(onNext: { [weak self] in
-                UIView.animate(withDuration: 0.15) {
-                    self?.wifiReConnectView.reConnectButton.transform = CGAffineTransform.identity
-
-                    self?.wifiReConnectView.reConnectButton.backgroundColor = .primary200
-                }
-            })
-            .disposed(by: disposeBag)
-
-        wifiReConnectView.reConnectButton.rx.controlEvent(.touchUpOutside)
-            .subscribe(onNext: { [weak self] in
-                UIView.animate(withDuration: 0.15) {
-                    self?.wifiReConnectView.reConnectButton.transform = CGAffineTransform.identity
-
-                    self?.wifiReConnectView.reConnectButton.backgroundColor = .primary200
-                }
-            })
-            .disposed(by: disposeBag)
-
-        // 카메라 버튼
-        wifiReConnectView.cameraButton.rx.tap
-            .bind(to: viewModel.cameraButtonTapped)
-            .disposed(by: disposeBag)
-
-        // ViewModel로부터 SSID 및 비밀번호 값 받기
+        // MARK: ViewModel로부터 SSID 값 전달 받기
         viewModel.ssidDriver
-            .drive{ [weak self] ssid in
-                self?.wifiReConnectView.ssidField.text = ssid
-            }
+            .drive(wifiReConnectView.ssidField.rx.text)
             .disposed(by: disposeBag)
-
+        // MARK: ViewModel로 부터 PW 값 전달 받기
         viewModel.passwordDriver
-            .drive{ [weak self] pw in
-                self?.wifiReConnectView.pwField.text = pw
-            }
+            .drive(wifiReConnectView.pwField.rx.text)
             .disposed(by: disposeBag)
 
-        // 이미지를 받아서 이미지 뷰에 설정
+        // MARK: ViewModel로 부터 이미지 값 전달 받기
         viewModel.updatedImageDriver
-            .drive { [weak self] image in
-                self?.wifiReConnectView.photoImageView.image = image
-            }
+            .drive(wifiReConnectView.photoImageView.rx.image)
             .disposed(by: disposeBag)
     }
 
@@ -134,12 +75,9 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
         wifiReConnectView.cameraButton.addTarget(self, action: #selector(CameraButtonTapped), for: .touchUpInside)
     }
 
-
     @objc private func CameraButtonTapped() {
         // 버튼 클릭 시 처리할 로직
         print("Camera button tapped")
         dismiss(animated: true, completion: nil) // 현재 화면 닫기
     }
 }
-
-
