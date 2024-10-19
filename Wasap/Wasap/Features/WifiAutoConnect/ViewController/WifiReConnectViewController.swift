@@ -7,7 +7,6 @@
 import UIKit
 import RxSwift
 import SnapKit
-import CoreLocation
 import RxGesture
 
 public class WifiReConnectViewController: RxBaseViewController<WifiReConnectViewModel>{
