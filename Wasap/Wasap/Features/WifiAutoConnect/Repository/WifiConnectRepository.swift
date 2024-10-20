@@ -21,11 +21,11 @@ public protocol WiFiConnectRepository {
 class DefaultWiFiConnectRepository: WiFiConnectRepository {
     private let disposeBag = DisposeBag()
     private let wifiConnectionStatusSubject = BehaviorSubject<Bool>(value: false)
-    
+
     public var wifiConnectionStatus: Observable<Bool> {
         return wifiConnectionStatusSubject.asObservable()
     }
-    
+
     // MARK: - Wi-Fi 연결 시도
     public func connectToWiFi(ssid: String, password: String) -> Single<Bool> {
 
@@ -34,32 +34,39 @@ class DefaultWiFiConnectRepository: WiFiConnectRepository {
                                                 passphrase: password,
                                                 isWEP: false)
             config.joinOnce = false
-            
+
             /// 접속 여부를 자체적으로 판단 하지 않는다. 따라서 네트워크 연결 상태를 알려주는 함수 필요
             NEHotspotConfigurationManager.shared.apply(config) { error in
                 if let err = error as? NSError {
                     switch err.code {
                     case NEHotspotConfigurationError.invalidWPAPassphrase.rawValue:
                         single(.failure(WiFiConnectionErrors.invalidPassword(ssid)))
-                        
                     case NEHotspotConfigurationError.alreadyAssociated.rawValue:
                         single(.failure(WiFiConnectionErrors.alreadyConnected(ssid)))
-                        
+                    case NEHotspotConfigurationError.invalidSSID.rawValue:
+                        single(.failure(WiFiConnectionErrors.invalidSSID))
+                    case NEHotspotConfigurationError.userDenied.rawValue:
+                        Log.print("Alert - 취소버튼 터치 완료")
+                        single(.failure(WiFiConnectionErrors.userDenied))
                     default:
                         print("보지 못한 에러입니다.: \(err.localizedDescription)")
                         single(.failure(err))  // 기타 에러 처리
                     }
                 }
-                
+
                 // 에러가 없을 경우 와이파이에 접속이 되었는지 판단 하는 과정이 필요
                 else {
+                    Log.print("Alert - 연결버튼 터치 완료")
                     self.getCurrentWiFiSSID().subscribe(onSuccess: { currentSSID in
                         // 접속하려는 와이파이와 연결된 와이파이가 같음
                         if currentSSID == ssid {
                             single(.success(true))
                         }
-                        // 접속하려는 와이파이와 연결된 와이파이가 다름
+                        // 연결된 와이파이가 없거나 접속하려는 와이파이와 다름
                         else {
+
+                            Log.print("'다음 네트워크에 연결할 수 없다' Alert")
+                            print("Failed to connect to \(ssid)")
                             single(.failure(WiFiConnectionErrors.failedToConnect(ssid)))
                         }
                     })
@@ -70,7 +77,7 @@ class DefaultWiFiConnectRepository: WiFiConnectRepository {
             return Disposables.create()
         }
     }
-    
+
     // MARK: - 비동기 SSID 가져오기
     func getCurrentWiFiSSID() -> Single<String?> {
         return Single<String?>.create { single in
@@ -81,13 +88,15 @@ class DefaultWiFiConnectRepository: WiFiConnectRepository {
                 }
                 // 연결된 ssid가 없음
                 else {
+                    print("해당 와이파이에 연결되어 있지 않거나 위치 정보가 없습니다.")
+
                     single(.success(nil))
                 }
             }
             return Disposables.create()
         }
     }
-    
+
     // MARK: - Wi-Fi 연결 상태 확인
     func isWiFiConnectedcheck() -> Single<Bool> {
         return getCurrentWiFiSSID().map { ssid in
