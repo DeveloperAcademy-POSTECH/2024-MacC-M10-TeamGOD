@@ -114,10 +114,16 @@ final public class DefaultCameraRepository: NSObject, CameraRepository {
                 single(.failure(CameraErrors.previewLayerError))
                 return Disposables.create()
             }
-            let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-            previewLayer.videoGravity = .resizeAspectFill
-            self?.previewLayer = previewLayer
-            single(.success(previewLayer))
+
+            if let preview = self?.previewLayer {
+                single(.success(preview))
+            } else {
+                let newPreviewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+                newPreviewLayer.videoGravity = .resizeAspectFill
+                self?.previewLayer = newPreviewLayer
+                single(.success(newPreviewLayer))
+            }
+            
             return Disposables.create()
         }
 
@@ -166,11 +172,9 @@ final public class DefaultCameraRepository: NSObject, CameraRepository {
                 single(.success(()))
             }
 
-            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-                self?.captureSession?.startRunning()
-                DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 10) {
-                    single(.failure(CameraErrors.unknown))
-                }
+            self.captureSession?.startRunning()
+            DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 10) {
+                single(.failure(CameraErrors.unknown))
             }
 
             return Disposables.create {
