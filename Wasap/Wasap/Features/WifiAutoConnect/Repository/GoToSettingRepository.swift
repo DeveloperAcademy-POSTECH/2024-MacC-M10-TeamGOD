@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol GoToSettingRepository {
+public protocol GoToSettingRepository {
     
 }
 

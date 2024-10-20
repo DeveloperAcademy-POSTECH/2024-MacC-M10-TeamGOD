@@ -34,14 +34,10 @@ public class GoToSettingCoordinator: NavigationCoordinator {
     }
 
     public func start() {
-        let repository = DefaultGoToSettingRepository()
-        let usecase = DefaultGoToSettingUseCase(repository: repository)
-        let viewModel = GoToSettingViewModel(
-            gotoSettingUseCase: usecase,
-            coordinatorController: self, imageData: imageData,
-            ssid: ssid, password: password)
-
-        let viewController = GoToSettingViewController(viewModel: viewModel)
+        let repository = wifiAutoConnectDIContainer.makeGoToSettingRepository()
+        let usecase = wifiAutoConnectDIContainer.makeGoToSettingUseCase(repository)
+        let viewModel = wifiAutoConnectDIContainer.makeGoToSettingViewModel(goToSettingUseCase: usecase, coordinatorcontroller: self, imageData: imageData, ssid: ssid, password: password)
+        let viewController = wifiAutoConnectDIContainer.makeGoToSettingViewController(viewModel)
 
         self.navigationController.setNavigationBarHidden(true, animated: false)
         self.navigationController.pushViewController(viewController, animated: true)
