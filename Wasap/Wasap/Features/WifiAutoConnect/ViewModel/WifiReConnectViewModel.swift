@@ -139,7 +139,6 @@ public class WifiReConnectViewModel: BaseViewModel {
             .disposed(by: disposeBag)
 
         // MARK: 재연결 버튼이 눌렸을 때
-        
         reConnectButtonTapped
             .withLatestFrom(Observable.combineLatest(self.photoImage, self.ssidText, self.pwText))
             .subscribe(onNext: { [weak self] image, ssid, password in

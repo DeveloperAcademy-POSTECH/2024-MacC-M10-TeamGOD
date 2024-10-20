@@ -55,29 +55,22 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
             .disposed(by: disposeBag)
 
         // MARK: ReConnect 버튼이 눌렸을 때 ViewModel 트리거
-//        wifiReConnectView.reConnectButton.rx.tap
-//            .bind(to: viewModel.reConnectButtonTapped)
-//            .disposed(by: disposeBag)
         wifiReConnectView.reConnectButton.rx.tap
-                    .subscribe(onNext: { [weak self] in
-                        guard let self = self else { return }
+            .subscribe(onNext: { [weak self] in
+                // 텍스트 필드를 작동시키지 않아도 현재 값을 넘기기 위한 의도
+                let currentSSID = self?.wifiReConnectView.ssidField.text ?? ""
+                let currentPassword = self?.wifiReConnectView.pwField.text ?? ""
+                let currentImage = self?.wifiReConnectView.photoImageView.image ?? UIImage()
 
-                        // 현재 텍스트 필드 값 가져오기
-                        let currentSSID = self.wifiReConnectView.ssidField.text ?? ""
-                        let currentPassword = self.wifiReConnectView.pwField.text ?? ""
+                // ViewModel에 값 반영
+                viewModel.ssidText.accept(currentSSID)
+                viewModel.pwText.accept(currentPassword)
+                viewModel.photoImage.accept(currentImage)
 
-                        // 현재 이미지 가져오기
-                        let currentImage = self.wifiReConnectView.photoImageView.image ?? UIImage()
-
-                        // ViewModel에 값 반영
-                        viewModel.ssidText.accept(currentSSID)
-                        viewModel.pwText.accept(currentPassword)
-                        viewModel.photoImage.accept(currentImage)
-
-                        // ViewModel의 버튼 탭 이벤트 트리거
-                        viewModel.reConnectButtonTapped.accept(())
-                    })
-                    .disposed(by: disposeBag)
+                // ViewModel의 버튼 탭 이벤트 트리거
+                viewModel.reConnectButtonTapped.accept(())
+            })
+            .disposed(by: disposeBag)
 
         // MARK: BackGround 터치하면 ViewModel 트리거
         wifiReConnectView.rx.tapGesture()
