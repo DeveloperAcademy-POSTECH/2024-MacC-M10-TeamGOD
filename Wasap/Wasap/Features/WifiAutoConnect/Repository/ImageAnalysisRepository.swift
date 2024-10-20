@@ -38,7 +38,7 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
             let orientation = self.extractOrientation(from: imageData)
             
             let requestHandler = VNImageRequestHandler(cgImage: cgImage, orientation: orientation, options: [:])
-            
+
             let request = VNRecognizeTextRequest { request, error in
                 if let error = error {
                     single(.failure(ImageAnalysisError.ocrFailed(error.localizedDescription)))

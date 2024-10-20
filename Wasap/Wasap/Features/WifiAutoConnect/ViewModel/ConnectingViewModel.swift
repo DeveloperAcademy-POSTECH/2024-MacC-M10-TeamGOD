@@ -23,7 +23,7 @@ public class ConnectingViewModel: BaseViewModel {
     public var isWiFiConnected: Driver<Bool>
     public var isLoading: Driver<Bool>
     
-    public init(wifiConnectUseCase: WiFiConnectUseCase, coordinatorController: ConnectingCoordinatorController, image: UIImage,ssid: String, password: String) {
+    public init(wifiConnectUseCase: WiFiConnectUseCase, coordinatorController: ConnectingCoordinatorController, image: UIImage, ssid: String, password: String) {
         self.wifiConnectUseCase = wifiConnectUseCase
 
         let isWiFiConnectedRelay = BehaviorRelay<Bool>(value: false)
@@ -46,6 +46,7 @@ public class ConnectingViewModel: BaseViewModel {
                 isWiFiConnectedRelay.accept(success)
             } onError: { error in
                 isLoadingRelay.accept(false)
+                print("여기55:\(error)")
                 self.coordinatorController?.performFinish(to: .finishWithError)
                 Log.error("Wi-Fi 연결 중 에러 발생: \(error.localizedDescription)")
             }
