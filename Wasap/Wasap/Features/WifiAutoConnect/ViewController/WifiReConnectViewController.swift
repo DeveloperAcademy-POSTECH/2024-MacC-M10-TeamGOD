@@ -79,6 +79,38 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
             .bind(to: viewModel.bgTouched)
             .disposed(by: disposeBag)
 
+        // MARK: CameraBtn 터치하면 ViewModel 트리거
+        wifiReConnectView.cameraButton.rx.tap
+            .bind(to: viewModel.cameraButtonTapped)
+            .disposed(by: disposeBag)
+
+        // MARK: CameraBtn 터치시 이벤트
+        wifiReConnectView.cameraButton.rx.controlEvent(.touchDown)
+            .subscribe(onNext: { [weak self] in
+                UIView.animate(withDuration: 0.15) {
+                    self?.wifiReConnectView.cameraButton.setImage(UIImage(named: "PressedGoCameraButton"), for: .normal)
+                }
+            })
+            .disposed(by: disposeBag)
+
+        // MARK: CameraBtn 터치시 이벤트
+        wifiReConnectView.cameraButton.rx.controlEvent(.touchUpInside)
+            .subscribe(onNext: { [weak self] in
+                UIView.animate(withDuration: 0.15) {
+                    self?.wifiReConnectView.cameraButton.transform = CGAffineTransform.identity
+                }
+            })
+            .disposed(by: disposeBag)
+
+        // MARK: CameraBtn 터치시 이벤트
+        wifiReConnectView.cameraButton.rx.controlEvent(.touchUpOutside)
+            .subscribe(onNext: { [weak self] in
+                UIView.animate(withDuration: 0.15) {
+                    self?.wifiReConnectView.cameraButton.transform = CGAffineTransform.identity
+                }
+            })
+            .disposed(by: disposeBag)
+
         // MARK: ViewModel에서 Keyboard hide 전달 받기
         viewModel.bgTouchedDriver
             .drive(onNext: { [weak self] isTouch in
