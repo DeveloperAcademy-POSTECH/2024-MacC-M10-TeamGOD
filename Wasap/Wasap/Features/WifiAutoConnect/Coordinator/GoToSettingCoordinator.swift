@@ -21,7 +21,6 @@ public class GoToSettingCoordinator: NavigationCoordinator {
     public init(navigationController: UINavigationController,
                 wifiAutoConnectDIContainer: WifiAutoConnectDIContainer,
                 imageData: UIImage, ssid: String, password: String) {
-        Log.print("GoToSettingCoordinator에서 받은 image: \(imageData), ssid: \(ssid), password: \(password)")
         self.navigationController = navigationController
         self.wifiAutoConnectDIContainer = wifiAutoConnectDIContainer
         self.imageData = imageData
@@ -54,7 +53,6 @@ extension GoToSettingCoordinator: GoToSettingCoordinatorController {
         switch flow {
         case .popToRoot:
             finishUntil(CameraCoordinator.self)
-
         }
     }
 }

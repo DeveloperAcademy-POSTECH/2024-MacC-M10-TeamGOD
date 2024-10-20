@@ -21,7 +21,6 @@ public class WifiReConnectCoordinator: NavigationCoordinator {
     public init(navigationController: UINavigationController,
                 wifiAutoConnectDIContainer: WifiAutoConnectDIContainer,
                 image: UIImage, ssid: String, password: String) {
-        Log.print("WifiReConnectCoordinator에서 받은 image: \(image), ssid: \(ssid), password: \(password)")
         self.navigationController = navigationController
         self.wifiAutoConnectDIContainer = wifiAutoConnectDIContainer
         self.image = image
@@ -58,7 +57,6 @@ extension WifiReConnectCoordinator: WifiReConnectCoordinatorController {
     public func performTransition(to flow: Flow) {
         switch flow {
         case .camera:
-            print("Camara View")
             let coordinator = CameraCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer)
             start(childCoordinator: coordinator)
 
@@ -70,7 +68,6 @@ extension WifiReConnectCoordinator: WifiReConnectCoordinatorController {
             let coordinator = GoToSettingCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, imageData: imageData, ssid: ssid, password: password)
             start(childCoordinator: coordinator)
         }
-
     }
 
     public func performFinish(to flow: FinishFlow) {
