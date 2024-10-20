@@ -27,14 +27,14 @@ public class WifiReConnectViewModel: BaseViewModel {
     public let photoImage = BehaviorRelay<UIImage>(value: UIImage())
 
     // MARK: - Output
-    let ssidDriver: Driver<String>
-    let passwordDriver: Driver<String>
-    let updatedImageDriver: Driver<UIImage>
+    public let ssidDriver: Driver<String>
+    public let passwordDriver: Driver<String>
+    public let updatedImageDriver: Driver<UIImage>
 
-    let btnColorChangeDriver: Driver<Bool>
-    let ssidTextFieldTouchedDriver: Driver<Bool>
-    let pwTextFieldTouchedDriver: Driver<Bool>
-    let bgTouchedDriver: Driver<Bool>
+    public let btnColorChangeDriver: Driver<Bool>
+    public let ssidTextFieldTouchedDriver: Driver<Bool>
+    public let pwTextFieldTouchedDriver: Driver<Bool>
+    public let bgTouchedDriver: Driver<Bool>
     public let keyboardVisible = PublishRelay<Bool>()
 
     public init(wifiConnectUseCase: WiFiConnectUseCase,
@@ -93,7 +93,6 @@ public class WifiReConnectViewModel: BaseViewModel {
             .distinctUntilChanged()
             .subscribe(onNext:{ ssidText in
                 if (ssidText != ssid) {
-                    print("ssid:\(ssid),ssidText:\(ssidText)")
                     btnColorChangeRelay.accept(true)
                 }else {
                     btnColorChangeRelay.accept(false)
@@ -107,7 +106,6 @@ public class WifiReConnectViewModel: BaseViewModel {
             .distinctUntilChanged()
             .subscribe(onNext:{ pwText in
                 if (pwText != password) {
-                    print("password:\(password),pwText:\(pwText)")
                     btnColorChangeRelay.accept(true)
                 } else {
                     btnColorChangeRelay.accept(false)
@@ -143,7 +141,6 @@ public class WifiReConnectViewModel: BaseViewModel {
             .withLatestFrom(Observable.combineLatest(self.photoImage, self.ssidText, self.pwText))
             .subscribe(onNext: { [weak self] image, ssid, password in
                 guard let self = self else { return }
-                // 화면 전환 수행
                 self.coordinatorController?.performTransition(to: .connecting(
                     imageData: image,
                     ssid: ssid,

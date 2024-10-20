@@ -40,13 +40,9 @@ public class GoToSettingViewController: RxBaseViewController<GoToSettingViewMode
             .subscribe(onNext: { [weak self] in
                 UIView.animate(withDuration: 0.15) {
                     self?.goToSettingView.settingBtn.transform = CGAffineTransform(scaleX: 1, y: 0.95)
-
                     self?.goToSettingView.settingBtn.titleLabel?.font = .systemFont(ofSize: 16)
-
                     self?.goToSettingView.settingBtn.setTitleColor(.black, for: .normal)
-
                     self?.goToSettingView.settingBtn.backgroundColor = .green300
-
                     self?.goToSettingView.settingBtn.layer.borderWidth = 1
                     self?.goToSettingView.settingBtn.layer.borderColor = UIColor.clear.cgColor
                 }
@@ -57,7 +53,6 @@ public class GoToSettingViewController: RxBaseViewController<GoToSettingViewMode
             .subscribe(onNext: { [weak self] in
                 UIView.animate(withDuration: 0.15) {
                     self?.goToSettingView.settingBtn.transform = CGAffineTransform.identity
-
                     self?.goToSettingView.settingBtn.backgroundColor = .primary200
                 }
             })
@@ -67,7 +62,6 @@ public class GoToSettingViewController: RxBaseViewController<GoToSettingViewMode
             .subscribe(onNext: { [weak self] in
                 UIView.animate(withDuration: 0.15) {
                     self?.goToSettingView.settingBtn.transform = CGAffineTransform.identity
-
                     self?.goToSettingView.settingBtn.backgroundColor = .primary200
                 }
             })

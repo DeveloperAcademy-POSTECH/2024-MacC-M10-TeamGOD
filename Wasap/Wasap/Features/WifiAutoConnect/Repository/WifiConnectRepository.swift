@@ -56,12 +56,10 @@ class DefaultWiFiConnectRepository: WiFiConnectRepository {
                     self.getCurrentWiFiSSID().subscribe(onSuccess: { currentSSID in
                         // 접속하려는 와이파이와 연결된 와이파이가 같음
                         if currentSSID == ssid {
-                            print("Successfully connected to \(ssid)")
                             single(.success(true))
                         }
                         // 접속하려는 와이파이와 연결된 와이파이가 다름
                         else {
-                            print("Failed to connect to \(ssid)")
                             single(.failure(WiFiConnectionErrors.failedToConnect(ssid)))
                         }
                     })
@@ -79,12 +77,10 @@ class DefaultWiFiConnectRepository: WiFiConnectRepository {
             NEHotspotNetwork.fetchCurrent { network in
                 // 연결된 ssid 반환
                 if let ssid = network?.ssid {
-                    print("현재 SSID: \(ssid)")
                     single(.success(ssid))
                 }
                 // 연결된 ssid가 없음
                 else {
-                    print("와이파이가 연결되어 있지 않습니다.")
                     single(.success(nil))
                 }
             }

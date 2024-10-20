@@ -16,13 +16,13 @@ public class GoToSettingViewModel: BaseViewModel {
     private weak var coordinatorController: GoToSettingCoordinatorController?
 
     // MARK: - Input
-    let setButtonTapped = PublishRelay<Void>()
-    let xButtonTapped = PublishRelay<Void>()
+    public let setButtonTapped = PublishRelay<Void>()
+    public let xButtonTapped = PublishRelay<Void>()
 
-    // MARK: - Property
-    let ssidDriver: Driver<String>
-    let passwordDriver: Driver<String>
-    let imageDriver: Driver<UIImage>
+    // MARK: - Output
+    public let ssidDriver: Driver<String>
+    public let passwordDriver: Driver<String>
+    public let imageDriver: Driver<UIImage>
 
     public init(goToSettingUseCase: GoToSettingUseCase,
                 coordinatorController: GoToSettingCoordinatorController,
