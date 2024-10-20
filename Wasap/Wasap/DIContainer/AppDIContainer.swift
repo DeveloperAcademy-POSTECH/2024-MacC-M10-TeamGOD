@@ -20,6 +20,7 @@ final public class AppDIContainer {
 
 final public class WifiAutoConnectDIContainer {
 
+    // MARK: Repository
     public func makeImageAnalysisRepository() -> ImageAnalysisRepository {
         return DefaultImageAnalysisRepository()
     }
@@ -32,6 +33,11 @@ final public class WifiAutoConnectDIContainer {
         return DefaultCameraRepository()
     }
 
+    public func makeGoToSettingRepository() -> GoToSettingRepository {
+        return DefaultGoToSettingRepository()
+    }
+
+    // MARK: UseCase
     public func makeImageAnalysisUseCase(_ repository: ImageAnalysisRepository) -> ImageAnalysisUseCase {
         return DefaultImageAnalysisUseCase(imageAnalysisRepository: repository)
     }
@@ -44,6 +50,11 @@ final public class WifiAutoConnectDIContainer {
         return DefaultCameraUseCase(repository: repository)
     }
 
+    public func makeGoToSettingUseCase(_ repository: GoToSettingRepository) -> GoToSettingUseCase {
+        return DefaultGoToSettingUseCase(repository: repository)
+    }
+
+    // MARK: ViewModel
     public func makeScanViewModel(imageAnalysisUseCase: ImageAnalysisUseCase, coordinatorcontroller: ScanCoordinatorController, image: UIImage) -> ScanViewModel {
         return ScanViewModel(imageAnalysisUseCase: imageAnalysisUseCase, coordinatorController: coordinatorcontroller, previewImage: image)
     }
@@ -60,6 +71,13 @@ final public class WifiAutoConnectDIContainer {
         return CameraViewModel(cameraUseCase: cameraUseCase, coordinatorController: coordinatorcontroller)
     }
 
+    public func makeGoToSettingViewModel(goToSettingUseCase: GoToSettingUseCase, coordinatorcontroller: GoToSettingCoordinatorController,
+                                         imageData: UIImage, ssid: String, password: String) -> GoToSettingViewModel {
+        return GoToSettingViewModel(goToSettingUseCase: goToSettingUseCase, coordinatorController: coordinatorcontroller,
+                                    imageData: imageData, ssid: ssid, password: password)
+    }
+
+    // MARK: ViewController
     public func makeScanViewController(_ viewModel: ScanViewModel) -> ScanViewController {
         return ScanViewController(viewModel: viewModel)
     }
@@ -74,5 +92,9 @@ final public class WifiAutoConnectDIContainer {
 
     public func makeCameraViewController(_ viewModel: CameraViewModel) -> CameraViewController {
         return CameraViewController(viewModel: viewModel)
+    }
+
+    public func makeGoToSettingViewController(_ viewModel: GoToSettingViewModel) -> GoToSettingViewController {
+        return GoToSettingViewController(viewModel: viewModel)
     }
 }
