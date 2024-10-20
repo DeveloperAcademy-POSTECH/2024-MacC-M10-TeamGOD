@@ -16,14 +16,14 @@ enum WiFiConnectionErrors: Error {
         switch self {
         /// 1) ID&PW 둘 다 틀렸을 때
         /// 2) ID는 틀렸으나 PW 맞을 때
+        /// 3)  (다른 와이파이 이미 연결상태) ID는 맞으나 PW가 틀렸을 때
         case .failedToConnect(let ssid):
             return "Failed to connect to \(ssid)"
 
         /// <Alert없이 바로 retry>
         /// 1) PW가 ""일 때
-        /// 2) ID는 맞으나 PW가 틀렸을 때 (?? 다른 와이파이)
-        /// 3) PW가 8자리 미만
-        /// 4) WiFi 라벨과 PW만 있을 때 (로직 상 PW를 ID로 먼저 인식)
+        /// 2) PW가 8자리 미만
+        /// 3) WiFi 라벨과 PW만 있을 때 (로직 상 PW를 ID로 먼저 인식)
         case .invalidPassword(let ssid):
             return "SSID 나 비밀번호가 형식에 맞지 않습니다: \(ssid)"
 
