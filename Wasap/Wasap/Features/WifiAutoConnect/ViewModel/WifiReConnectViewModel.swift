@@ -4,7 +4,6 @@
 //
 //  Created by 김상준 on 10/7/24.
 //
-
 import RxSwift
 import RxCocoa
 import UIKit
@@ -17,15 +16,26 @@ public class WifiReConnectViewModel: BaseViewModel {
     // MARK: - Input
     public let reConnectButtonTapped = PublishRelay<Void>()
     public let cameraButtonTapped = PublishRelay<Void>()
+    public let ssidFieldTouched = PublishRelay<Void>()
+    public let pwFieldTouched = PublishRelay<Void>()
+    public let keyboardWillShow = PublishRelay<Void>()
+    public let keyboardWillHide = PublishRelay<Void>()
+    public let bgTouched = PublishRelay<Void>()
 
     public let ssidText = BehaviorRelay<String>(value: "")
     public let pwText = BehaviorRelay<String>(value: "")
     public let photoImage = BehaviorRelay<UIImage>(value: UIImage())
 
     // MARK: - Output
-    let ssidDriver: Driver<String>
-    let passwordDriver: Driver<String>
-    let updatedImageDriver: Driver<UIImage>
+    public let ssidDriver: Driver<String>
+    public let passwordDriver: Driver<String>
+    public let updatedImageDriver: Driver<UIImage>
+
+    public let btnColorChangeDriver: Driver<Bool>
+    public let ssidTextFieldTouchedDriver: Driver<Bool>
+    public let pwTextFieldTouchedDriver: Driver<Bool>
+    public let bgTouchedDriver: Driver<Bool>
+    public let keyboardVisible = PublishRelay<Bool>()
 
     public init(wifiConnectUseCase: WiFiConnectUseCase,
                 coordinatorController: WifiReConnectCoordinatorController,
@@ -42,20 +52,95 @@ public class WifiReConnectViewModel: BaseViewModel {
         let passwordRelay = BehaviorRelay<String>(value: password)
         self.passwordDriver = passwordRelay.asDriver()
 
+        let btnColorChangeRelay = BehaviorRelay<Bool>(value: false)
+        self.btnColorChangeDriver = btnColorChangeRelay.asDriver()
+
+        let ssidTextFieldColorChangeRelay = BehaviorRelay<Bool>(value: false)
+        self.ssidTextFieldTouchedDriver = ssidTextFieldColorChangeRelay.asDriver()
+
+        let pwTextFieldColorChangeRelay = BehaviorRelay<Bool>(value: false)
+        self.pwTextFieldTouchedDriver = pwTextFieldColorChangeRelay.asDriver()
+
+        let bgtouchedRelay = BehaviorRelay<Bool>(value: false)
+        self.bgTouchedDriver = bgtouchedRelay.asDriver()
+
         super.init()
 
-        cameraButtonTapped
-            .subscribe(onNext: { _ in
-                self.coordinatorController?.performFinish(to: .popToRoot)
+        // MARK: 키보드 보일 때
+        keyboardWillShow
+            .subscribe(onNext: { [weak self] in
+                self?.keyboardVisible.accept(true)
             })
             .disposed(by: disposeBag)
 
+        // MARK: 키보드 숨길 때
+        keyboardWillHide
+            .subscribe(onNext: { [weak self] in
+                self?.keyboardVisible.accept(false)
+            })
+            .disposed(by: disposeBag)
+
+        // MARK: 백그라운드 터치 할 때
+        bgTouched
+            .subscribe(onNext: { () in
+                bgtouchedRelay.accept(true)
+            })
+            .disposed(by: disposeBag)
+
+        // MARK: SSID 텍스트 필드 입력 할 때
+        ssidText
+            .skip(2)
+            .distinctUntilChanged()
+            .subscribe(onNext:{ ssidText in
+                if (ssidText != ssid) {
+                    btnColorChangeRelay.accept(true)
+                }else {
+                    btnColorChangeRelay.accept(false)
+                }
+            })
+            .disposed(by: disposeBag)
+
+        // MARK: PassWord 텍스트 필드 입력 할 때
+        pwText
+            .skip(2)
+            .distinctUntilChanged()
+            .subscribe(onNext:{ pwText in
+                if (pwText != password) {
+                    btnColorChangeRelay.accept(true)
+                } else {
+                    btnColorChangeRelay.accept(false)
+                }
+            })
+            .disposed(by: disposeBag)
+
+        // MARK: SSID 텍스트 필드 터치 할 때
+        ssidFieldTouched
+            .subscribe(onNext: { () in
+                ssidTextFieldColorChangeRelay.accept(true)
+                pwTextFieldColorChangeRelay.accept(false)
+            })
+            .disposed(by: disposeBag)
+
+        // MARK: PassWord 텍스트 필드 터치 할 때
+        pwFieldTouched
+            .subscribe(onNext: { () in
+                ssidTextFieldColorChangeRelay.accept(false)
+                pwTextFieldColorChangeRelay.accept(true)
+            })
+            .disposed(by: disposeBag)
+
+        // MARK: 카메라 버튼이 눌렸을 때
+        cameraButtonTapped
+            .subscribe(onNext: { [weak self] in
+                self?.coordinatorController?.performFinish(to: .popToRoot)
+            })
+            .disposed(by: disposeBag)
+
+        // MARK: 재연결 버튼이 눌렸을 때
         reConnectButtonTapped
             .withLatestFrom(Observable.combineLatest(self.photoImage, self.ssidText, self.pwText))
             .subscribe(onNext: { [weak self] image, ssid, password in
                 guard let self = self else { return }
-
-                // 화면 전환 수행
                 self.coordinatorController?.performTransition(to: .connecting(
                     imageData: image,
                     ssid: ssid,

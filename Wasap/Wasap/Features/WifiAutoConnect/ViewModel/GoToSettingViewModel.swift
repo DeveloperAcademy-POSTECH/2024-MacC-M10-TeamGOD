@@ -13,19 +13,19 @@ import RxCocoa
 public class GoToSettingViewModel: BaseViewModel {
 
     // MARK: - Coordinator
-    private weak var coordinatorController: GoToSettingCoordinator?
+    private weak var coordinatorController: GoToSettingCoordinatorController?
 
     // MARK: - Input
-    let setButtonTapped = PublishRelay<Void>()
-    let xButtonTapped = PublishRelay<Void>()
+    public let setButtonTapped = PublishRelay<Void>()
+    public let xButtonTapped = PublishRelay<Void>()
 
-    // MARK: - Property
-    let ssidDriver: Driver<String>
-    let passwordDriver: Driver<String>
-    let imageDriver: Driver<UIImage>
+    // MARK: - Output
+    public let ssidDriver: Driver<String>
+    public let passwordDriver: Driver<String>
+    public let imageDriver: Driver<UIImage>
 
-    public init(gotoSettingUseCase: GoToSettingUseCase,
-                coordinatorController: GoToSettingCoordinator,
+    public init(goToSettingUseCase: GoToSettingUseCase,
+                coordinatorController: GoToSettingCoordinatorController,
                 imageData: UIImage, ssid : String, password: String) {
 
         self.coordinatorController = coordinatorController
@@ -49,8 +49,8 @@ public class GoToSettingViewModel: BaseViewModel {
 
         setButtonTapped
             .subscribe(onNext: {
-                gotoSettingUseCase.openSettings()
-                gotoSettingUseCase.copyPassword(pw: password)
+                goToSettingUseCase.openSettings()
+                goToSettingUseCase.copyPassword(pw: password)
             })
             .disposed(by: disposeBag)
     }
