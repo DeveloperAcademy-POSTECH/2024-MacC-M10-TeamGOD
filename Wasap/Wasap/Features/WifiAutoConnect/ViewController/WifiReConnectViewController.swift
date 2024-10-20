@@ -72,6 +72,39 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
             })
             .disposed(by: disposeBag)
 
+        wifiReConnectView.reConnectButton.rx.controlEvent(.touchDown)
+            .subscribe(onNext: { [weak self] in
+                UIView.animate(withDuration: 0.15) {
+                    self?.wifiReConnectView.reConnectButton.transform = CGAffineTransform(scaleX: 1, y: 0.95)
+                    self?.wifiReConnectView.reConnectButton.setTitleColor(.black, for: .normal)
+                    self?.wifiReConnectView.reConnectButton.titleLabel?.font = FontStyle.button.font
+                    self?.wifiReConnectView.reConnectButton.titleLabel?.addLabelSpacing(fontStyle: FontStyle.button)
+                    self?.wifiReConnectView.reConnectButton.backgroundColor = .green300
+                    
+                    self?.wifiReConnectView.reConnectButton.layer.borderWidth = 1
+                    self?.wifiReConnectView.reConnectButton.layer.borderColor = UIColor.clear.cgColor
+                }
+            })
+            .disposed(by: disposeBag)
+
+        wifiReConnectView.reConnectButton.rx.controlEvent(.touchUpInside)
+            .subscribe(onNext: { [weak self] in
+                UIView.animate(withDuration: 0.15) {
+                    self?.wifiReConnectView.reConnectButton.transform = CGAffineTransform.identity
+                    self?.wifiReConnectView.reConnectButton.backgroundColor = .primary200
+                }
+            })
+            .disposed(by: disposeBag)
+
+        wifiReConnectView.reConnectButton.rx.controlEvent(.touchUpOutside)
+            .subscribe(onNext: { [weak self] in
+                UIView.animate(withDuration: 0.15) {
+                    self?.wifiReConnectView.reConnectButton.transform = CGAffineTransform.identity
+                    self?.wifiReConnectView.reConnectButton.backgroundColor = .primary200
+                }
+            })
+            .disposed(by: disposeBag)
+
         // MARK: BackGround 터치하면 ViewModel 트리거
         wifiReConnectView.rx.tapGesture()
             .when(.recognized)
@@ -93,7 +126,7 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
             })
             .disposed(by: disposeBag)
 
-        // MARK: CameraBtn 터치시 이벤트
+        // MARK: CameraBtn 땔 시 이벤트
         wifiReConnectView.cameraButton.rx.controlEvent(.touchUpInside)
             .subscribe(onNext: { [weak self] in
                 UIView.animate(withDuration: 0.15) {
@@ -102,7 +135,7 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
             })
             .disposed(by: disposeBag)
 
-        // MARK: CameraBtn 터치시 이벤트
+        // MARK: CameraBtn 땔 시 이벤트
         wifiReConnectView.cameraButton.rx.controlEvent(.touchUpOutside)
             .subscribe(onNext: { [weak self] in
                 UIView.animate(withDuration: 0.15) {
@@ -124,6 +157,7 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
                 guard let self = self else { return }
                 self.wifiReConnectView.reConnectButton.backgroundColor = isEnabled ? .green200 : .clear
                 self.wifiReConnectView.reConnectButton.setTitleColor(isEnabled ? .black : .neutral200, for: .normal)
+                self.wifiReConnectView.reConnectButton.layer.borderColor = isEnabled ? UIColor.clear.cgColor : UIColor.neutral200.cgColor
             })
             .disposed(by: disposeBag)
 
